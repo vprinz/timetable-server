@@ -1,0 +1,4 @@
+.idea/
+.static/
+*.py[cod]
+db.sqlite3
