@@ -10,7 +10,7 @@ class UserManager(BaseUserManager):
 
     def _create_user(self, email, password, **extra_fields):
         if not email:
-            raise ValueError('Необходимо указать адрес электронной почты')
+            raise ValueError('Необходимо указать email')
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
@@ -36,26 +36,24 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
 
-    object = UserManager()
+    objects = UserManager()
 
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=60)
+    first_name = models.CharField(max_length=30, blank=True)
+    last_name = models.CharField(max_length=60, blank=True)
     email = models.CharField(max_length=120, unique=True)
 
     is_staff = models.BooleanField(
-        ('staff status'),
+        'staff status',
         default=False,
-        help_text=('Указывает, может ли пользователь войти на этот сайт как администратор.'),
+        help_text='Указывает, может ли пользователь войти на этот сайт как администратор.',
     )
     is_active = models.BooleanField(
-        ('active'),
+        'active',
         default=True,
-        help_text=(
-            'Указывает, следует ли считать этого пользователя активным. '
-            'Отмените выбор вместо удаления учетных записей.'
-        ),
+        help_text='Указывает, следует ли считать этого пользователя активным. Отмените выбор вместо удаления'
+                  'учетных записей.'
     )
 
     class Meta:
-        verbose_name = ('Пользователи')
-        verbose_name_plural = ('Пользователи')
+        verbose_name = 'Пользователи'
+        verbose_name_plural = 'Пользователи'
