@@ -9,7 +9,7 @@ from .models import User
 
 
 class UserAPIView(ModelViewSet):
-    queryset = User.object.all()
+    queryset = User.objects.all()
     serializer_class = UserSerializer
 
     def create(self, request, *args, **kwargs):

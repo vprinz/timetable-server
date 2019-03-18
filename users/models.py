@@ -10,7 +10,7 @@ class UserManager(BaseUserManager):
 
     def _create_user(self, email, password, **extra_fields):
         if not email:
-            raise ValueError('Необходимо указать адрес электронной почты')
+            raise ValueError('Необходимо указать email')
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
@@ -36,7 +36,7 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
 
-    object = UserManager()
+    objects = UserManager()
 
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=60, blank=True)
