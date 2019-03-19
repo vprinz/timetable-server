@@ -5,7 +5,7 @@ from django.conf.urls import url, include
 from users import views
 
 V1 = {
-    r'create-account': views.UserAPIView,
+    r'users': views.UserAPIView,
 }
 
 
