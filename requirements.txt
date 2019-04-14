@@ -1,5 +1,5 @@
 dataclasses==0.6
-Django==2.1.7
+Django==2.1.3
 django-stubs==0.9.0
 djangorestframework==3.9.2
 djangorestframework-stubs==0.3.0
