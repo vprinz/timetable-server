@@ -7,7 +7,7 @@ from university import views as university
 
 V1 = {
     r'users': users.UserAPIView,
-    r'university': university.FacultyAPIView,
+    r'university': university.UniversityAPIView,
 }
 
 

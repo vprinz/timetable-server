@@ -31,5 +31,9 @@ class Occupation(models.Model):
 class Group(models.Model):
     title = models.CharField(max_length=2, primary_key=True)
 
+    class Meta:
+        verbose_name = 'Группа студента'
+        verbose_name_plural = 'Группы студентов'
+
     def __str__(self):
         return self.title
