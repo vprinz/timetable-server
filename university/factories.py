@@ -6,6 +6,7 @@ from .models import Faculty, Occupation, Group
 
 class FacultyFactory(factory.DjangoModelFactory):
     title = factory.Sequence(lambda n: 'Faculty {0}'.format(n))
+    short_title = factory.fuzzy.FuzzyText(length=10)
 
     class Meta:
         model = Faculty
@@ -13,7 +14,7 @@ class FacultyFactory(factory.DjangoModelFactory):
 
 class OccupationFactory(factory.DjangoModelFactory):
     title = factory.Sequence(lambda n: 'Occupation {0}'.format(n))
-    code = factory.fuzzy.FuzzyText(chars=string.digits)
+    code = factory.fuzzy.FuzzyText(length=10, chars=string.digits)
 
     class Meta:
         model = Occupation

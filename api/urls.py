@@ -2,11 +2,12 @@ from rest_framework import routers
 
 from django.conf.urls import url, include
 
-from users import views
-from university.views import FacultyView
+from users import views as users
+from university import views as university
 
 V1 = {
-    r'users': views.UserAPIView,
+    r'users': users.UserAPIView,
+    r'university': university.FacultyAPIView,
 }
 
 
@@ -19,6 +20,5 @@ def version_urls(version):
 
 
 urlpatterns = [
-    url(r'^(?P<version>[v1]+)/', include(version_urls(V1))),
-    url(r'^faculties/$', FacultyView.as_view(), name='faculties')
+    url(r'^(?P<version>[v1]+)/', include(version_urls(V1)))
 ]
