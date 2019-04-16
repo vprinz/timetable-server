@@ -1,26 +1,30 @@
-from rest_framework.test import APITestCase
+import json
 
-from django.urls import reverse
+from common.tests import BaseAPITestCase
+from .models import Faculty
+from .factories import FacultyFactory
 
-from .factories import FacultyFactory, OccupationFactory
+
+def compare_faculties_with_response(response):
+    faculty_ids = [faculty['id'] for faculty in response]
+    faculties = Faculty.objects.filter(id__in=faculty_ids)
+    result = []
+    for faculty in faculties:
+        result.append({
+            'id': faculty.id,
+            'title': faculty.title,
+            'short_title': faculty.short_title
+        })
+
+    return result
 
 
-class RestAPIUniversity(APITestCase):
+class RestAPIUniversity(BaseAPITestCase):
 
     def test_get_all_faculties(self):
-        factories = FacultyFactory.create_batch(3)
+        FacultyFactory.create_batch(3)
 
-        url = reverse('faculties')
+        url = self.reverse('university-faculties')
         response = self.client.get(url)
-        faculties = [faculty.title for faculty in factories]
 
-        self.assertEqual(response.data, faculties)
-
-    def test_get_all_occupations(self):
-        factories = OccupationFactory.create_batch(3)
-
-        url = reverse('occupations')
-        response = self.client.get(url)
-        occupations = [occupation.title for occupation in factories]
-
-        self.assertEqual(response.data, occupations)
+        self.assertEqual(json.loads(response.content), compare_faculties_with_response(json.loads(response.content)))

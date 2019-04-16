@@ -37,3 +37,15 @@ class Group(models.Model):
 
     def __str__(self):
         return self.number
+
+
+class Subgroup(models.Model):
+    number = models.CharField(max_length=1)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'Подгруппа студента'
+        verbose_name_plural = 'Подгруппы студентов'
+
+    def __str__(self):
+        return f'{self.group.number}/{self.number}'
