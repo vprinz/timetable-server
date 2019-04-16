@@ -1,6 +1,6 @@
 from common.tests import BaseAPITestCase
 from .models import Faculty, Occupation, Group
-from .factories import FacultyFactory, OccupationFactory, GroupFactory
+from .factories import FacultyFactory, OccupationFactory, GroupFactory, SubgroupFactory
 
 
 def compare_faculties_with_response(response):
@@ -38,7 +38,8 @@ def compare_groups_with_response(response):
     result = []
     for group in groups:
         result.append({
-            'number': group.number
+            'number': group.number,
+            'subgroups': [{'id': subgroup.id, 'number': subgroup.number} for subgroup in group.subgroups.all()]
         })
 
     return result
@@ -69,6 +70,8 @@ class RestAPIUniversity(BaseAPITestCase):
 
     def test_get_groups_by_occupation_id(self):
         occupation = OccupationFactory(groups=self.groups)
+        SubgroupFactory.create_batch(2, group=self.groups[0])
+
         url = self.reverse('university-groups')
         response = self.client.post(url, {'occupation_id': occupation.id})
 

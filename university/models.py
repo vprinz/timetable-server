@@ -41,7 +41,7 @@ class Group(models.Model):
 
 class Subgroup(models.Model):
     number = models.CharField(max_length=1)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, related_name='subgroups', on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = 'Подгруппа студента'

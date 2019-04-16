@@ -42,7 +42,7 @@ class GroupFactory(factory.DjangoModelFactory):
 
 class SubgroupFactory(factory.DjangoModelFactory):
     number = factory.fuzzy.FuzzyText(length=1, chars=string.digits)
-    groups = factory.SubFactory(GroupFactory)
+    group = factory.SubFactory(GroupFactory)
 
     class Meta:
         model = Subgroup
