@@ -18,4 +18,4 @@ class OccupationSerializer(serializers.ModelSerializer):
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
-        fields = ('title',)
+        fields = ('number',)

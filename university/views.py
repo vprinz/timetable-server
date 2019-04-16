@@ -17,14 +17,14 @@ class UniversityAPIView(GenericViewSet):
         return Response(serializer.data)
 
     @required_params
-    @action(methods=['get'], detail=False)
+    @action(methods=['post'], detail=False)
     def occupations(self, request, faculty_id, *args, **kwargs):
         instance = Occupation.objects.filter(faculty=Faculty.objects.get(id=faculty_id))
         serializer = OccupationSerializer(instance, many=True)
         return Response(serializer.data)
 
     @required_params
-    @action(methods=['get'], detail=False)
+    @action(methods=['post'], detail=False)
     def groups(self, request, occupation_id, *args, **kwargs):
         instance = Group.objects.filter(occupation=Occupation.objects.get(id=occupation_id))
         serializer = GroupSerializer(instance, many=True)
