@@ -49,3 +49,9 @@ class Subgroup(models.Model):
 
     def __str__(self):
         return f'{self.group.number}/{self.number}'
+
+
+class Subscription(models.Model):
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
+    subgroup = models.ForeignKey(Subgroup, on_delete=models.CASCADE)
+    is_main = models.BooleanField(default=False)
