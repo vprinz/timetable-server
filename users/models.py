@@ -43,7 +43,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=60, blank=True)
     email = models.CharField(max_length=120, unique=True)
-    group = models.ForeignKey(Group, null=True, blank=True, on_delete=models.CASCADE)
 
     is_staff = models.BooleanField(
         'staff status',

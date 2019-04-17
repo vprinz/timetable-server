@@ -4,7 +4,6 @@ from django.db import models
 class Faculty(models.Model):
     title = models.CharField(max_length=256, unique=True)
     short_title = models.CharField(max_length=16, unique=True, null=True, help_text='Сокращённое название факультета.')
-    occupations = models.ManyToManyField('university.Occupation', blank=True)
 
     class Meta:
         verbose_name = 'Факультет'
@@ -18,7 +17,7 @@ class Occupation(models.Model):
     title = models.CharField(max_length=256, unique=True)
     short_title = models.CharField(max_length=16, unique=True, null=True, help_text='Сокращённое название направления.')
     code = models.CharField(max_length=10, unique=True)
-    groups = models.ManyToManyField('university.Group', blank=True)
+    faculty = models.ForeignKey(Faculty, related_name='occupations', null=True, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = 'Направление'
@@ -30,6 +29,7 @@ class Occupation(models.Model):
 
 class Group(models.Model):
     number = models.CharField(max_length=2, primary_key=True)
+    occupation = models.ForeignKey(Occupation, related_name='groups', null=True, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = 'Группа студента'
@@ -41,7 +41,7 @@ class Group(models.Model):
 
 class Subgroup(models.Model):
     number = models.CharField(max_length=1)
-    group = models.ForeignKey(Group, related_name='subgroups', on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, related_name='subgroups', null=True, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = 'Подгруппа студента'
