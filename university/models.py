@@ -52,6 +52,7 @@ class Subgroup(models.Model):
 
 
 class Subscription(models.Model):
+    name = models.CharField(max_length=150, null=True)
     user = models.ForeignKey('users.User', on_delete=models.CASCADE)
     subgroup = models.ForeignKey(Subgroup, on_delete=models.CASCADE)
     is_main = models.BooleanField(default=False)

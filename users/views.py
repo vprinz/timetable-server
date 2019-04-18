@@ -7,12 +7,13 @@ from rest_framework.decorators import action
 
 from django.contrib.auth import login, logout
 
+from common.mixins import LoginNotRequiredMixin
 from .serializers import UserSerializer
 from .forms import AuthenticationForm
 from .models import User
 
 
-class UserAPIView(GenericViewSet):
+class UserAPIView(LoginNotRequiredMixin, GenericViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
@@ -46,4 +47,3 @@ class UserAPIView(GenericViewSet):
             return Response(serializer.data)
         else:
             return Response(self.get_serializer(request.user).data)
-

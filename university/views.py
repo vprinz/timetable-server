@@ -29,3 +29,13 @@ class UniversityAPIView(GenericViewSet):
         instance = Group.objects.filter(occupation=Occupation.objects.get(id=occupation_id))
         serializer = GroupSerializer(instance, many=True)
         return Response(serializer.data)
+
+    @action(methods=['post'], detail=False, url_path='add-subscription')
+    def add_subscription(self, request, *args, **kwargs):
+        user = request.user
+        subgroup = request.data.get('subgroup')
+
+        print(user)
+        print(subgroup)
+
+        return Response()

@@ -3,6 +3,9 @@ from functools import wraps
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
 
+from django.utils.decorators import available_attrs
+
+
 def required_params(func):
     from inspect import signature, Parameter
 
@@ -19,4 +22,13 @@ def required_params(func):
             else:
                 args.append(value)
         return func(*args, **kwargs)
+
     return wrapper
+
+
+def login_not_required(view_func):
+    def wrapped_view(*args, **kwargs):
+        return view_func(*args, **kwargs)
+
+    wrapped_view.login_not_required = True
+    return wraps(view_func, assigned=available_attrs(view_func))(wrapped_view)
