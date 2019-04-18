@@ -11,4 +11,4 @@ class LoginRequiredMiddleware(MiddlewareMixin):
         )
 
         if not (request.user.is_authenticated or getattr(request, '_force_auth_user', False)) and login_required:
-            return HttpResponse(status=401, content='The user must be registered.')
+            return HttpResponse(status=401, content='The user must be authorized.')

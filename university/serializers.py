@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Faculty, Occupation, Group, Subgroup
+from .models import Faculty, Occupation, Group, Subgroup, Subscription
 
 
 class FacultySerializer(serializers.ModelSerializer):
@@ -27,3 +27,9 @@ class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
         fields = ('number', 'subgroups')
+
+
+class SubscriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subscription
+        fields = ('name', 'subgroup', 'is_main')

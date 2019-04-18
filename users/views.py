@@ -1,6 +1,5 @@
-from __future__ import unicode_literals
-
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -38,7 +37,7 @@ class UserAPIView(LoginNotRequiredMixin, GenericViewSet):
         else:
             return Response(form.errors, status=HTTP_400_BAD_REQUEST)
 
-    @action(methods=['get', 'patch'], detail=False, url_path='info')
+    @action(methods=['get', 'patch'], detail=False, url_path='info', permission_classes=[IsAuthenticated])
     def user_info(self, request, *args, **kwargs):
         if request.method == 'PATCH':
             serializer = self.get_serializer(instance=request.user, data=request.data, partial=True)

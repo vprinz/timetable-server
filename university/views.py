@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 
 from common.decorators import required_params
-from .models import Faculty, Occupation, Group
-from .serializers import FacultySerializer, OccupationSerializer, GroupSerializer
+from .models import Faculty, Occupation, Group, Subgroup, Subscription
+from .serializers import FacultySerializer, OccupationSerializer, GroupSerializer, SubscriptionSerializer
 
 
 class UniversityAPIView(GenericViewSet):
@@ -32,10 +32,8 @@ class UniversityAPIView(GenericViewSet):
 
     @action(methods=['post'], detail=False, url_path='add-subscription')
     def add_subscription(self, request, *args, **kwargs):
-        user = request.user
-        subgroup = request.data.get('subgroup')
+        serializer = SubscriptionSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=request.user)
 
-        print(user)
-        print(subgroup)
-
-        return Response()
+        return Response(serializer.data)
