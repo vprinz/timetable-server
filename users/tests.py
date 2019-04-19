@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 
 from common.tests import BaseAPITestCase
