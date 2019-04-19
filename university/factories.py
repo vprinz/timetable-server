@@ -22,19 +22,15 @@ class OccupationFactory(factory.DjangoModelFactory):
     title = factory.Sequence(lambda n: 'Occupation {0}'.format(n))
     short_title = factory.fuzzy.FuzzyText(length=16)
     code = factory.fuzzy.FuzzyText(length=10, chars=string.digits)
+    faculty = factory.SubFactory(FacultyFactory)
 
     class Meta:
         model = Occupation
 
-    @factory.post_generation
-    def groups(self, create, extracted, **kwargs):
-        if create and extracted:
-            for extract in extracted:
-                self.groups.add(extract)
-
 
 class GroupFactory(factory.DjangoModelFactory):
     number = factory.fuzzy.FuzzyText(length=2, chars=string.digits)
+    occupation = factory.SubFactory(OccupationFactory)
 
     class Meta:
         model = Group

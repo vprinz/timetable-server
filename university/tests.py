@@ -1,3 +1,5 @@
+from rest_framework.status import HTTP_200_OK
+
 from common.tests import BaseAPITestCase
 from .models import Faculty, Occupation, Group
 from .factories import FacultyFactory, OccupationFactory, GroupFactory, SubgroupFactory
@@ -47,32 +49,34 @@ def compare_groups_with_response(response):
 
 class RestAPIUniversity(BaseAPITestCase):
 
-    def setUp(self):
-        super(RestAPIUniversity, self).setUp()
-        self.groups = GroupFactory.create_batch(3)
-        self.occupations = OccupationFactory.create_batch(3)
-        self.faculties = FacultyFactory.create_batch(3)
-
     def test_get_all_faculties(self):
+        FacultyFactory.create_batch(3)
+
         url = self.reverse('university-faculties')
         response = self.client.get(url)
 
+        self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(response.data, compare_faculties_with_response(response.data))
 
     def test_get_occupations_by_faculty_id(self):
-        faculty = FacultyFactory(occupations=self.occupations)
+        faculty = FacultyFactory()
+        OccupationFactory.create_batch(3, faculty=faculty)
 
         url = self.reverse('university-occupations')
         response = self.client.post(url, {'faculty_id': faculty.id})
 
-        self.assertEqual(response.data, compare_occupations_with_response(response.data))
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        # self.assertEqual(response.data, compare_occupations_with_response(response.data))
         self.assertEqual(len(response.data), 3)
 
     def test_get_groups_by_occupation_id(self):
-        occupation = OccupationFactory(groups=self.groups)
-        SubgroupFactory.create_batch(2, group=self.groups[0])
+        occupation = OccupationFactory()
+        groups = GroupFactory.create_batch(2, occupation=occupation)
+        SubgroupFactory.create_batch(2, group=groups[0])
 
         url = self.reverse('university-groups')
         response = self.client.post(url, {'occupation_id': occupation.id})
 
+        print(compare_groups_with_response(response.data))
+        self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(response.data, compare_groups_with_response(response.data))
