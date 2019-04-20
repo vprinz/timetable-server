@@ -1,5 +1,7 @@
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
+from rest_framework.status import HTTP_201_CREATED
 from rest_framework.decorators import action
 
 from common.decorators import required_params
@@ -30,10 +32,27 @@ class UniversityAPIView(GenericViewSet):
         serializer = GroupSerializer(instance, many=True)
         return Response(serializer.data)
 
-    @action(methods=['post'], detail=False, url_path='add-subscription')
-    def add_subscription(self, request, *args, **kwargs):
-        serializer = SubscriptionSerializer(data=request.data)
+
+class SubscriptionAPIView(ModelViewSet):
+    queryset = Subscription.objects.all()
+    serializer_class = SubscriptionSerializer
+
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        data['user'] = request.user.id
+
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
-        serializer.save(user=request.user)
+        serializer.save()
+
+        return Response(serializer.data, status=HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        serializer = self.serializer_class(self.get_object(), request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
         return Response(serializer.data)

@@ -1,7 +1,8 @@
 import string
 import factory.fuzzy
 
-from .models import Faculty, Occupation, Group, Subgroup
+from users.factories import UserFactory
+from .models import Faculty, Occupation, Group, Subgroup, Subscription
 
 
 class FacultyFactory(factory.DjangoModelFactory):
@@ -42,3 +43,13 @@ class SubgroupFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = Subgroup
+
+
+class SubscriptionFactory(factory.DjangoModelFactory):
+    name = factory.fuzzy.FuzzyText(length=20)
+    user = factory.SubFactory(UserFactory)
+    subgroup = factory.SubFactory(Subgroup)
+    is_main = False
+
+    class Meta:
+        model = Subscription

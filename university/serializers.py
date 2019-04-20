@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 
 from .models import Faculty, Occupation, Group, Subgroup, Subscription
 
@@ -32,4 +33,10 @@ class GroupSerializer(serializers.ModelSerializer):
 class SubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscription
-        fields = ('name', 'subgroup', 'is_main')
+        fields = ('id', 'name', 'user', 'subgroup', 'is_main')
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Subscription.objects.all(),
+                fields=('user', 'subgroup'),
+            )
+        ]

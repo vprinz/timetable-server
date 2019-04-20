@@ -6,6 +6,7 @@ from users.factories import UserFactory
 
 class BaseAPITestCase(APITestCase):
     version = 'v1'
+    content_type = 'application/json'
 
     @classmethod
     def setUpClass(cls):

@@ -56,3 +56,6 @@ class Subscription(models.Model):
     user = models.ForeignKey('users.User', on_delete=models.CASCADE)
     subgroup = models.ForeignKey(Subgroup, on_delete=models.CASCADE)
     is_main = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('user', 'subgroup')
