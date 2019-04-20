@@ -172,6 +172,18 @@ class RestAPISubscription(BaseAPITestCase):
         self.assertEqual(len(response.data), 2)
         self.assertEqual(User.objects.get(id__in=users_id), self.user)
 
+    def test_get_subscription_by_id(self):
+        url = self.reverse('subscription-detail', kwargs={'pk': self.subscription.id})
+
+        response = self.client.get(url)
+
+        subscription = Subscription.objects.get(id=response.data['id'])
+
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertEqual(subscription.user, self.user)
+        self.assertEqual(subscription.subgroup, self.first_subgroup)
+        self.assertTrue(subscription.is_main)
+
     def test_get_subscriptions_which_not_belong_to_user(self):
         url = self.reverse('subscription-detail', kwargs={'pk': self.not_user_subscription.id})
 
