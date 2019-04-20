@@ -1,11 +1,10 @@
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
-from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED
 from rest_framework.decorators import action
 
 from common.decorators import required_params
-from .models import Faculty, Occupation, Group, Subgroup, Subscription
+from .models import Faculty, Occupation, Group, Subscription
 from .serializers import FacultySerializer, OccupationSerializer, GroupSerializer, SubscriptionSerializer
 
 

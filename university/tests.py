@@ -129,8 +129,8 @@ class RestAPISubscription(BaseAPITestCase):
 
         self.subscription = SubscriptionFactory(name='Моё расписание на 2 семестр', user=self.user,
                                                 subgroup=self.first_subgroup, is_main=True)
-        self.subscription_for_student = SubscriptionFactory(name='Timetable', user=self.student,
-                                                            subgroup=self.second_subgroup)
+        self.not_user_subscription = SubscriptionFactory(name='Timetable', user=self.student,
+                                                           subgroup=self.second_subgroup)
 
     def test_create_subscription(self):
         url = self.reverse('subscription-list')
@@ -172,6 +172,14 @@ class RestAPISubscription(BaseAPITestCase):
         self.assertEqual(len(response.data), 2)
         self.assertEqual(User.objects.get(id__in=users_id), self.user)
 
+    def test_get_subscriptions_which_not_belong_to_user(self):
+        url = self.reverse('subscription-detail', kwargs={'pk': self.not_user_subscription.id})
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, HTTP_404_NOT_FOUND)
+        self.assertEqual(json.loads(response.content)['detail'], 'Не найдено.')
+
     def test_update_subscription(self):
         url = self.reverse('subscription-detail', kwargs={'pk': self.subscription.id})
         new_name = 'New name for the subscription'
@@ -186,7 +194,7 @@ class RestAPISubscription(BaseAPITestCase):
         self.assertEqual(subscription.subgroup, self.first_subgroup)
 
     def test_update_subscription_which_not_belong_to_user(self):
-        url = self.reverse('subscription-detail', kwargs={'pk': self.subscription_for_student.id})
+        url = self.reverse('subscription-detail', kwargs={'pk': self.not_user_subscription.id})
         new_name = 'New name for the subscription'
         data = {'name': new_name}
         response = self.client.patch(url, data=json.dumps(data), content_type=self.content_type)
