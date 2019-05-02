@@ -16,18 +16,16 @@ class Command(BaseCommand):
         ]
         list(map(lambda user: User.objects.create(**user), users))
 
-        Faculty.objects.create(title='Факультет Компьютерных Технологий и Прикладной Математики', short_title='ФКТиПМ')
+        Faculty.objects.create(title='Факультет Компьютерных Технологий и Прикладной Математики')
 
         occupations = [
             {
                 'title': 'Математическое обеспечение и администрирование информационных систем',
-                'short_title': 'МОиАИС',
                 'code': '02.03.03',
                 'faculty': Faculty.objects.first()
             },
             {
                 'title': 'Фундаментальная информатика и информационные технологии',
-                'short_title': 'ФИиИТ',
                 'code': '02.03.02',
                 'faculty': Faculty.objects.first()
             }
