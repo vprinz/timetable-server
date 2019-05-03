@@ -5,8 +5,8 @@ from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_RE
 from common.tests import BaseAPITestCase
 from users.factories import UserFactory
 from users.models import User
-from .models import Faculty, Occupation, Group, Subscription
 from .factories import FacultyFactory, OccupationFactory, GroupFactory, SubgroupFactory, SubscriptionFactory
+from .models import Faculty, Occupation, Group, Subscription
 
 
 def compare_faculties_with_response(response):
@@ -16,8 +16,7 @@ def compare_faculties_with_response(response):
     for faculty in faculties:
         result.append({
             'id': faculty.id,
-            'title': faculty.title,
-            'short_title': faculty.short_title
+            'title': faculty.title
         })
 
     return result
@@ -31,7 +30,6 @@ def compare_occupations_with_response(response):
         result.append({
             'id': occupation.id,
             'title': occupation.title,
-            'short_title': occupation.short_title,
             'code': occupation.code
         })
 
@@ -89,16 +87,14 @@ class RestAPISubscription(BaseAPITestCase):
 
     def setUp(self):
         super(RestAPISubscription, self).setUp()
-        self.faculty = FacultyFactory(title='Факультет прикладной математики', short_title='ФПМ')
+        self.faculty = FacultyFactory(title='Факультет прикладной математики')
         self.first_occupation = OccupationFactory(
             title='Математическое обеспечение и администрирование информационных систем',
-            short_title='МОиАИС',
             code='02.03.03',
             faculty=self.faculty
         )
         self.second_occupation = OccupationFactory(
             title='Фундаментальная информатика и информационные технологии',
-            short_title='ФИиИТ',
             code='02.03.02',
             faculty=self.faculty
         )
@@ -127,14 +123,14 @@ class RestAPISubscription(BaseAPITestCase):
 
         self.student = UserFactory()
 
-        self.subscription = SubscriptionFactory(name='Моё расписание на 2 семестр', user=self.user,
+        self.subscription = SubscriptionFactory(title='Моё расписание на 2 семестр', user=self.user,
                                                 subgroup=self.first_subgroup, is_main=True)
-        self.not_user_subscription = SubscriptionFactory(name='Timetable', user=self.student,
-                                                           subgroup=self.second_subgroup)
+        self.not_user_subscription = SubscriptionFactory(title='Timetable', user=self.student,
+                                                         subgroup=self.second_subgroup)
 
     def test_create_subscription(self):
         url = self.reverse('subscription-list')
-        data = {'subgroup': self.third_subgroup.id, 'name': 'Test Subscription'}
+        data = {'subgroup': self.third_subgroup.id, 'title': 'Test Subscription'}
         response = self.client.post(url, data=json.dumps(data), content_type=self.content_type)
 
         subscription = Subscription.objects.get(id=response.data['id'])
@@ -146,7 +142,7 @@ class RestAPISubscription(BaseAPITestCase):
 
     def test_create_subscription_which_exists(self):
         url = self.reverse('subscription-list')
-        data = {'subgroup': self.first_subgroup.id, 'name': 'User already has this subscription'}
+        data = {'subgroup': self.first_subgroup.id, 'title': 'User already has this subscription'}
         response = self.client.post(url, data=json.dumps(data), content_type=self.content_type)
 
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
@@ -154,7 +150,7 @@ class RestAPISubscription(BaseAPITestCase):
 
     def test_create_subscription_with_not_existing_subgroup(self):
         url = self.reverse('subscription-list')
-        data = {'subgroup': 101, 'name': 'This subgroup does not exist'}
+        data = {'subgroup': 101, 'title': 'This subgroup does not exist'}
         response = self.client.post(url, data=json.dumps(data), content_type=self.content_type)
 
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
@@ -162,7 +158,7 @@ class RestAPISubscription(BaseAPITestCase):
 
     def test_get_all_subscriptions(self):
         url = self.reverse('subscription-list')
-        data = {'subgroup': self.third_subgroup.id, 'name': 'Test Subscription'}
+        data = {'subgroup': self.third_subgroup.id, 'title': 'Test Subscription'}
         self.client.post(url, data=json.dumps(data), content_type=self.content_type)
 
         response = self.client.get(url)
@@ -194,21 +190,21 @@ class RestAPISubscription(BaseAPITestCase):
 
     def test_update_subscription(self):
         url = self.reverse('subscription-detail', kwargs={'pk': self.subscription.id})
-        new_name = 'New name for the subscription'
-        data = {'name': new_name}
+        new_title = 'New title for the subscription'
+        data = {'title': new_title}
         response = self.client.patch(url, data=json.dumps(data), content_type=self.content_type)
 
         subscription = Subscription.objects.get(id=response.data['id'])
 
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(subscription.user, self.user)
-        self.assertEqual(subscription.name, new_name)
+        self.assertEqual(subscription.title, new_title)
         self.assertEqual(subscription.subgroup, self.first_subgroup)
 
     def test_update_subscription_which_not_belong_to_user(self):
         url = self.reverse('subscription-detail', kwargs={'pk': self.not_user_subscription.id})
-        new_name = 'New name for the subscription'
-        data = {'name': new_name}
+        new_title = 'New title for the subscription'
+        data = {'title': new_title}
         response = self.client.patch(url, data=json.dumps(data), content_type=self.content_type)
 
         self.assertEqual(response.status_code, HTTP_404_NOT_FOUND)

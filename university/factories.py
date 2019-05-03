@@ -7,21 +7,13 @@ from .models import Faculty, Occupation, Group, Subgroup, Subscription
 
 class FacultyFactory(factory.DjangoModelFactory):
     title = factory.Sequence(lambda n: 'Faculty {0}'.format(n))
-    short_title = factory.fuzzy.FuzzyText(length=10)
 
     class Meta:
         model = Faculty
 
-    @factory.post_generation
-    def occupations(self, create, extracted, **kwargs):
-        if create and extracted:
-            for extract in extracted:
-                self.occupations.add(extract)
-
 
 class OccupationFactory(factory.DjangoModelFactory):
     title = factory.Sequence(lambda n: 'Occupation {0}'.format(n))
-    short_title = factory.fuzzy.FuzzyText(length=16)
     code = factory.fuzzy.FuzzyText(length=10, chars=string.digits)
     faculty = factory.SubFactory(FacultyFactory)
 
@@ -46,7 +38,7 @@ class SubgroupFactory(factory.DjangoModelFactory):
 
 
 class SubscriptionFactory(factory.DjangoModelFactory):
-    name = factory.fuzzy.FuzzyText(length=20)
+    title = factory.fuzzy.FuzzyText(length=20)
     user = factory.SubFactory(UserFactory)
     subgroup = factory.SubFactory(Subgroup)
     is_main = False

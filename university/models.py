@@ -27,7 +27,7 @@ class Occupation(models.Model):
 
 
 class Group(models.Model):
-    number = models.CharField(max_length=2, primary_key=True)
+    number = models.CharField(max_length=2, primary_key=True) # TODO убрать primary_key
     occupation = models.ForeignKey(Occupation, related_name='groups', null=True, on_delete=models.CASCADE)
 
     class Meta:

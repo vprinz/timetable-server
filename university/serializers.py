@@ -7,13 +7,13 @@ from .models import Faculty, Occupation, Group, Subgroup, Subscription
 class FacultySerializer(serializers.ModelSerializer):
     class Meta:
         model = Faculty
-        fields = ('id', 'title', 'short_title')
+        fields = ('id', 'title')
 
 
 class OccupationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Occupation
-        fields = ('id', 'title', 'short_title', 'code')
+        fields = ('id', 'title', 'code')
 
 
 class SubgroupSerializer(serializers.ModelSerializer):
@@ -33,7 +33,7 @@ class GroupSerializer(serializers.ModelSerializer):
 class SubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscription
-        fields = ('id', 'name', 'user', 'subgroup', 'is_main')
+        fields = ('id', 'title', 'user', 'subgroup', 'is_main')
         validators = [
             UniqueTogetherValidator(
                 queryset=Subscription.objects.all(),
