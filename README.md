@@ -1,2 +1,2 @@
 # timetable-server
- Application allows follow for changes of timetable.
+ Application allows to follow changes of timetable.
