@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
 
+    'channels',
     'rest_framework',
 
     'api',
@@ -57,7 +58,7 @@ ROOT_URLCONF = 'timetable.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -71,6 +72,18 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'timetable.wsgi.application'
+
+# Channels
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'prefix': 'timetable-asgi-meta:',
+            'hosts': [('127.0.0.1', 6379)],
+        },
+    },
+}
+ASGI_APPLICATION = 'timetable.routing.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
