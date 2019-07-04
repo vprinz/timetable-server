@@ -1,11 +1,11 @@
 from django.conf.urls import url, include
 from django.contrib import admin
 
-from common.decorators import login_not_required
-from common.views import HomeView
+from common.views import home_page, ws_test
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include('api.urls')),
-    url(r'^$', login_not_required(HomeView.as_view()))
+    url(r'^$', home_page),
+    url(r'test/', ws_test)
 ]

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Timetable | WebSockets - Test</title>
+</head>
+<body>
+<div id="list"></div>
+<script>
+    function log(text) {
+        var element = document.getElementById('list');
+        element.innerHTML += text + '<br>';
+        console.log(text);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var socket = new WebSocket("ws://127.0.0.1:8000/notifications/");
+        socket.onopen = function () {
+            log("Соединение установлено.");
+        };
+
+        socket.onmessage = function (event) {
+            log("Получены данные " + event.data);
+        };
+    })
+</script>
+</body>
+</html>

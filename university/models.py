@@ -1,4 +1,10 @@
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+
+from common.utils import get_model_field_names
 
 
 class Faculty(models.Model):
@@ -27,7 +33,7 @@ class Occupation(models.Model):
 
 
 class Group(models.Model):
-    number = models.CharField(max_length=2, primary_key=True) # TODO убрать primary_key
+    number = models.CharField(max_length=2, primary_key=True)  # TODO убрать primary_key
     occupation = models.ForeignKey(Occupation, related_name='groups', null=True, on_delete=models.CASCADE)
 
     class Meta:
@@ -153,3 +159,28 @@ class Class(models.Model):
 
     def __str__(self):
         return f'{self.title} | {self.timetable.subgroup}'
+
+
+def get_changed_fields(instance):
+    if instance.id is None:
+        return
+    else:
+        changed_fields = []
+        previous = Class.objects.get(id=instance.id)
+        fields = get_model_field_names(Class)
+        for field in fields:
+            if getattr(previous, field, None) != getattr(instance, field, None):
+                changed_fields.append(field)
+        return changed_fields
+
+
+@receiver(pre_save, sender=Class)
+def on_change_timetable(sender, instance, **kwargs):
+    print(instance)
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        'ntf', {
+            'event': 'Changes of Timetable',
+            'fields': get_changed_fields(instance)
+        }
+    )

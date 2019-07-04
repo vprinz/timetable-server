@@ -32,17 +32,5 @@
     <p>Welcome to <b>Timetable</b> server.</p>
     <p>If you have access to the admin panel, you can <a href="{% url 'admin:index' %}">log in</a>.</p>
 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var socket = new WebSocket("ws://127.0.0.1:8000/notifications/");
-        socket.onopen = function () {
-            console.log("Соединение установлено.");
-        };
-
-        socket.onmessage = function (event) {
-            console.log("Получены данные " + event.data);
-        };
-    })
-</script>
 </body>
 </html>
