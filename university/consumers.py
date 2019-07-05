@@ -1,17 +1,14 @@
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
 
-class NoseyConsumer(AsyncJsonWebsocketConsumer):
+class UniversityConsumer(AsyncJsonWebsocketConsumer):
 
     async def connect(self):
         await self.accept()
-        await self.channel_layer.group_add('test', self.channel_name)
-        print(f'Added {self.channel_name} channel to ntf.')
+        await self.channel_layer.group_add('gossip', self.channel_name)
 
     async def disconnect(self):
         await self.channel_layer.group_discard('gossip', self.channel_name)
-        print(f'Removed {self.channel_name} channel from ntf.')
 
-    async def user_gossip(self, event):
+    async def university_gossip(self, event):
         await self.send_json(event)
-        print(f'Got message {event} at {self.channel_name}')

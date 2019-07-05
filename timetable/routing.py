@@ -1,10 +1,10 @@
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.urls import path
 
-from users.consumers import NoseyConsumer
+from university.consumers import UniversityConsumer
 
 application = ProtocolTypeRouter({
     'websocket': URLRouter([
-        path('notifications/', NoseyConsumer)
+        path('notifications/', UniversityConsumer)
     ])
 })

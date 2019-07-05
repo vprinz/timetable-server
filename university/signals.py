@@ -9,7 +9,7 @@ from university.models import Class
 
 def get_changed_fields(instance):
     if instance.id is None:
-        return
+        return ['Added new class']
     else:
         changed_fields = []
         previous = Class.objects.get(id=instance.id)
@@ -20,12 +20,12 @@ def get_changed_fields(instance):
         return changed_fields
 
 
-@receiver(pre_save)
+@receiver(pre_save, sender=Class)
 def on_change_timetable(sender, instance, **kwargs):
-    print(sender)
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
-        'ntf', {
+        'gossip', {
+            'type': 'university.gossip',
             'event': 'Changes of Timetable',
             'fields': get_changed_fields(instance)
         }
