@@ -1,0 +1,5 @@
+{
+  "debug": true,
+  "database_host_default": "localhost",
+  "redis_host": "127.0.0.1"
+}

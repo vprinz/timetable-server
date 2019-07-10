@@ -1,5 +1,9 @@
 import os
 
+from .jsonenv import JsonEnv
+
+env = JsonEnv('config.json')
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -10,7 +14,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'lzqbf5&hc9r)pj8ge0-2a0spyefzy8(!-l7v#er168$9l4ij0d'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env['debug']
 
 ALLOWED_HOSTS = ['*']
 
@@ -91,11 +95,11 @@ ASGI_APPLICATION = 'timetable.routing.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'HOST': 'localhost',
-        'NAME': 'timetable',
-        'PASSWORD': 'timetable',
-        'PORT': 5432,
-        'USER': 'timetable',
+        'HOST': env['database_host'],
+        'NAME': env.get('database_name', 'timetable'),
+        'PASSWORD': env.get('database_password', 'timetable'),
+        'PORT': env.get('database_port', 'timetable'),
+        'USER': env.get('database_user', 'timetable'),
     }
 }
 
