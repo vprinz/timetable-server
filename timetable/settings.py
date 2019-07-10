@@ -98,7 +98,7 @@ DATABASES = {
         'HOST': env['database_host'],
         'NAME': env.get('database_name', 'timetable'),
         'PASSWORD': env.get('database_password', 'timetable'),
-        'PORT': env.get('database_port', 'timetable'),
+        'PORT': env.get('database_port', 5432),
         'USER': env.get('database_user', 'timetable'),
     }
 }
