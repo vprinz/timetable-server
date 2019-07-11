@@ -15,6 +15,8 @@ SECRET_KEY = 'lzqbf5&hc9r)pj8ge0-2a0spyefzy8(!-l7v#er168$9l4ij0d'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env['debug']
+REDIS_HOST = env['redis_host']
+SERVER_FULL_URL = env['server_full_url']
 
 ALLOWED_HOSTS = ['*']
 
@@ -83,7 +85,7 @@ CHANNEL_LAYERS = {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
             'prefix': 'timetable-asgi-meta:',
-            'hosts': [('127.0.0.1', 6379)],
+            'hosts': [(REDIS_HOST, 6379)],
         },
     },
 }

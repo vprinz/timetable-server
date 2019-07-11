@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render
 
 from common.decorators import login_not_required
@@ -10,4 +11,6 @@ def home_page(request):
 
 @login_not_required
 def ws_test(request):
-    return render(request, 'ws_test.html')
+    host = settings.SERVER_FULL_URL.split(':')[0]
+    port = 8000
+    return render(request, 'ws_test.html', {'ws_url': f'ws:{host}:{port}/notifications/'})
