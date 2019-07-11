@@ -2,8 +2,8 @@
   "debug": true,
   "database_host": "localhost",
 
-  "server_full_url": "//127.0.0.1:8000",
+  "server_full_url": "//kubsu-timetable.info",
   "server_protocol": "http",
 
-  "redis_host": "127.0.0.1"
+  "redis_host": "104.248.153.111"
 }
