@@ -1,6 +1,7 @@
 {
   "debug": true,
   "database_host": "localhost",
+  "deployment_name": "stage",
 
   "server_full_url": "//kubsu-timetable.info",
   "server_protocol": "http",

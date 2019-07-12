@@ -2,7 +2,7 @@ import os
 
 from .jsonenv import JsonEnv
 
-env = JsonEnv('config.json')
+env = JsonEnv('config_local.json')
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -17,6 +17,7 @@ SECRET_KEY = 'lzqbf5&hc9r)pj8ge0-2a0spyefzy8(!-l7v#er168$9l4ij0d'
 DEBUG = env['debug']
 REDIS_HOST = env['redis_host']
 SERVER_FULL_URL = env['server_full_url']
+DEPLOYMENT_NAME = env['local']
 
 ALLOWED_HOSTS = ['*']
 
