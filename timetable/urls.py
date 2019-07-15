@@ -1,11 +1,11 @@
 from django.conf.urls import url, include
 from django.contrib import admin
 
-from common.views import home_page, ws_test
+from common import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include('api.urls')),
-    url(r'^$', home_page),
-    url(r'test/', ws_test)
+    url(r'^$', views.home_page),
+    url(r'ntf/test/', views.ws_test)
 ]
