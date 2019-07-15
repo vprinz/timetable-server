@@ -1,6 +1,6 @@
 from django.contrib import admin
-from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin, UserAdmin
+from django.utils.translation import ugettext_lazy as _
 
 from university.models import Subscription
 from .models import User
@@ -16,12 +16,14 @@ class UserAdmin(DjangoUserAdmin):
     list_display = ('id', 'first_name', 'last_name', 'email')
     ordering = ('-id',)
     inlines = (SubscriptionInline,)
+    readonly_fields = ('id',)
 
     fieldsets = (
         (None, {'fields': (
+            'id',
             ('first_name', 'last_name'),
-            ('email',),
-            ('password')
+            ('email', 'password'),
+            ('last_login', 'date_joined')
         )}),
     )
 

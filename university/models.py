@@ -1,10 +1,4 @@
-from asgiref.sync import async_to_sync
-from channels.layers import get_channel_layer
 from django.db import models
-from django.db.models.signals import pre_save
-from django.dispatch import receiver
-
-from common.utils import get_model_field_names
 
 
 class Faculty(models.Model):
@@ -82,6 +76,8 @@ class Timetbale(models.Model):
 
     type_of_week = models.SmallIntegerField(choices=TYPE_OF_WEEK)
     subgroup = models.ForeignKey(Subgroup, on_delete=models.CASCADE)
+    created_timestamp = models.DateTimeField(auto_now_add=True)
+    modified_timestamp = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = ('subgroup', 'type_of_week')
@@ -152,6 +148,8 @@ class Class(models.Model):
     weekday = models.SmallIntegerField(choices=WEEKDAYS)
     lecturer = models.ForeignKey(Lecturer, on_delete=models.PROTECT)
     timetable = models.ForeignKey(Timetbale, on_delete=models.CASCADE)
+    created_timestamp = models.DateTimeField(auto_now_add=True)
+    modified_timestamp = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = 'Занятие'

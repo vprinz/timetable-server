@@ -1,8 +1,7 @@
-from __future__ import unicode_literals
-
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
+from django.utils import timezone
 
 from university.models import Group
 
@@ -43,6 +42,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=60, blank=True)
     email = models.CharField(max_length=120, unique=True)
+    date_joined = models.DateTimeField(default=timezone.now)
 
     is_staff = models.BooleanField(
         'staff status',
