@@ -34,7 +34,7 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(PermissionsMixin, AbstractBaseUser):
     USERNAME_FIELD = 'email'
 
     objects = UserManager()
