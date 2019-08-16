@@ -16,7 +16,8 @@ class OccupationInline(admin.TabularInline):
 class ClassInline(admin.TabularInline):
     model = Class
     extra = 0
-    fields = ('title', 'type_of_class', 'classroom', 'time_class', 'weekday', 'lecturer')
+    fields = ('title', 'type_of_class', 'classroom', 'class_time', 'weekday', 'lecturer')
+    ordering = ('weekday', 'class_time')
 
 
 @admin.register(Faculty)

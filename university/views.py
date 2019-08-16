@@ -1,20 +1,19 @@
-from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED
-from rest_framework.decorators import action
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from common.decorators import required_params
-from .models import Faculty, Occupation, Group, Subscription
-from .serializers import FacultySerializer, OccupationSerializer, GroupSerializer, SubscriptionSerializer
+from .models import Faculty, Occupation, Group, Subscription, Timetbale
+from .serializers import (FacultySerializer, OccupationSerializer, GroupSerializer, SubscriptionSerializer,
+                          TimetableSerializer)
 
 
 class UniversityAPIView(GenericViewSet):
-    queryset = Faculty.objects.all()
-    serializer_class = FacultySerializer
-
     @action(methods=['get'], detail=False)
     def faculties(self, request, *args, **kwargs):
-        serializer = FacultySerializer(self.queryset, many=True)
+        queryset = Faculty.objects.all()
+        serializer = FacultySerializer(queryset, many=True)
         return Response(serializer.data)
 
     @required_params
@@ -54,4 +53,19 @@ class SubscriptionAPIView(ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
+        return Response(serializer.data)
+
+
+class TimetableAPIView(GenericViewSet):
+    queryset = Timetbale.objects.all()
+    serializer_class = TimetableSerializer
+
+    # def get_queryset(self):
+    #     return self.queryset.filter(user=self.request.user)
+
+    @action(methods=['post'], detail=False)
+    @required_params
+    def classes(self, request, subgroup_id, *args, **kwargs):
+        queryset = self.get_queryset().filter(subgroup_id=subgroup_id)
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)

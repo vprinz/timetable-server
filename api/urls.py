@@ -1,14 +1,14 @@
+from django.conf.urls import url, include
 from rest_framework import routers
 
-from django.conf.urls import url, include
-
-from users import views as users
 from university import views as university
+from users import views as users
 
 V1 = {
     r'users': users.UserAPIView,
     r'university': university.UniversityAPIView,
     r'subscriptions': university.SubscriptionAPIView,
+    r'timetable': university.TimetableAPIView,
 }
 
 

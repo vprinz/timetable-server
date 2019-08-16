@@ -87,6 +87,11 @@ class Timetbale(models.Model):
     def __str__(self):
         return f'Расписание для {self.subgroup} группы | {self.TYPE_OF_WEEK[self.type_of_week][1]}'
 
+    def get_classes(self):
+        return self.class_set.filter(timetable=self).\
+            values('title', 'type_of_class', 'classroom', 'weekday', 'class_time', 'lecturer').\
+            order_by('weekday', 'class_time')
+
 
 class ClassTime(models.Model):
     number = models.SmallIntegerField()
@@ -144,7 +149,7 @@ class Class(models.Model):
     title = models.CharField(max_length=150)
     type_of_class = models.SmallIntegerField(choices=TYPE_OF_CLASS)
     classroom = models.CharField(max_length=10)
-    time_class = models.ForeignKey(ClassTime, on_delete=models.PROTECT)
+    class_time = models.ForeignKey(ClassTime, on_delete=models.PROTECT)
     weekday = models.SmallIntegerField(choices=WEEKDAYS)
     lecturer = models.ForeignKey(Lecturer, on_delete=models.PROTECT)
     timetable = models.ForeignKey(Timetbale, on_delete=models.CASCADE)
@@ -152,6 +157,7 @@ class Class(models.Model):
     modified_timestamp = models.DateTimeField(auto_now=True)
 
     class Meta:
+        unique_together = ('class_time', 'weekday')
         verbose_name = 'Занятие'
         verbose_name_plural = 'Занятия'
 
