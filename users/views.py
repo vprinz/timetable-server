@@ -33,7 +33,8 @@ class UserAPIView(LoginNotRequiredMixin, GenericViewSet):
             if user != request.user:
                 logout(request)
             login(request, user)
-            return Response()
+            serializer = self.get_serializer(user)
+            return Response(serializer.data)
         else:
             return Response(form.errors, status=HTTP_400_BAD_REQUEST)
 

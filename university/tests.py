@@ -129,7 +129,7 @@ class RestAPISubscription(BaseAPITestCase):
                                                          subgroup=self.second_subgroup)
 
     def test_create_subscription(self):
-        url = self.reverse('subscription-list')
+        url = self.reverse('subscriptions-list')
         data = {'subgroup': self.third_subgroup.id, 'title': 'Test Subscription'}
         response = self.client.post(url, data=json.dumps(data), content_type=self.content_type)
 
@@ -141,7 +141,7 @@ class RestAPISubscription(BaseAPITestCase):
         self.assertFalse(subscription.is_main)
 
     def test_create_subscription_which_exists(self):
-        url = self.reverse('subscription-list')
+        url = self.reverse('subscriptions-list')
         data = {'subgroup': self.first_subgroup.id, 'title': 'User already has this subscription'}
         response = self.client.post(url, data=json.dumps(data), content_type=self.content_type)
 
@@ -149,7 +149,7 @@ class RestAPISubscription(BaseAPITestCase):
         self.assertEqual(len(Subscription.objects.filter(user=self.user)), 1)
 
     def test_create_subscription_with_not_existing_subgroup(self):
-        url = self.reverse('subscription-list')
+        url = self.reverse('subscriptions-list')
         data = {'subgroup': 101, 'title': 'This subgroup does not exist'}
         response = self.client.post(url, data=json.dumps(data), content_type=self.content_type)
 
@@ -157,7 +157,7 @@ class RestAPISubscription(BaseAPITestCase):
         self.assertEqual(len(Subscription.objects.filter(user=self.user)), 1)
 
     def test_get_all_subscriptions(self):
-        url = self.reverse('subscription-list')
+        url = self.reverse('subscriptions-list')
         data = {'subgroup': self.third_subgroup.id, 'title': 'Test Subscription'}
         self.client.post(url, data=json.dumps(data), content_type=self.content_type)
 
@@ -169,7 +169,7 @@ class RestAPISubscription(BaseAPITestCase):
         self.assertEqual(User.objects.get(id__in=users_id), self.user)
 
     def test_get_subscription_by_id(self):
-        url = self.reverse('subscription-detail', kwargs={'pk': self.subscription.id})
+        url = self.reverse('subscriptions-detail', kwargs={'pk': self.subscription.id})
 
         response = self.client.get(url)
 
@@ -181,7 +181,7 @@ class RestAPISubscription(BaseAPITestCase):
         self.assertTrue(subscription.is_main)
 
     def test_get_subscriptions_which_not_belong_to_user(self):
-        url = self.reverse('subscription-detail', kwargs={'pk': self.not_user_subscription.id})
+        url = self.reverse('subscriptions-detail', kwargs={'pk': self.not_user_subscription.id})
 
         response = self.client.get(url)
 
@@ -189,7 +189,7 @@ class RestAPISubscription(BaseAPITestCase):
         self.assertEqual(json.loads(response.content)['detail'], 'Не найдено.')
 
     def test_update_subscription(self):
-        url = self.reverse('subscription-detail', kwargs={'pk': self.subscription.id})
+        url = self.reverse('subscriptions-detail', kwargs={'pk': self.subscription.id})
         new_title = 'New title for the subscription'
         data = {'title': new_title, 'is_main': True}
         response = self.client.patch(url, data=json.dumps(data), content_type=self.content_type)
@@ -203,7 +203,7 @@ class RestAPISubscription(BaseAPITestCase):
         self.assertEqual(subscription.subgroup, self.first_subgroup)
 
     def test_update_subscription_which_not_belong_to_user(self):
-        url = self.reverse('subscription-detail', kwargs={'pk': self.not_user_subscription.id})
+        url = self.reverse('subscriptions-detail', kwargs={'pk': self.not_user_subscription.id})
         new_title = 'New title for the subscription'
         data = {'title': new_title}
         response = self.client.patch(url, data=json.dumps(data), content_type=self.content_type)
