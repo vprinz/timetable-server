@@ -5,7 +5,7 @@ from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_RE
 from common.tests import BaseAPITestCase
 from users.factories import UserFactory
 from users.models import User
-from .factories import FacultyFactory, OccupationFactory, GroupFactory, SubgroupFactory, SubscriptionFactory
+from .factories import (FacultyFactory, OccupationFactory, GroupFactory, SubgroupFactory, SubscriptionFactory)
 from .models import Faculty, Occupation, Group, Subscription
 
 
