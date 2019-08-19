@@ -4,7 +4,6 @@ from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_RE
 
 from common.tests import BaseAPITestCase
 from users.factories import UserFactory
-from users.models import User
 from .factories import (FacultyFactory, OccupationFactory, GroupFactory, SubgroupFactory, SubscriptionFactory)
 from .models import Faculty, Occupation, Group, Subscription
 
@@ -162,11 +161,9 @@ class RestAPISubscription(BaseAPITestCase):
         self.client.post(url, data=json.dumps(data), content_type=self.content_type)
 
         response = self.client.get(url)
-        users_id = list(map(lambda item: item['user'], response.data))
 
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(len(response.data), 2)
-        self.assertEqual(User.objects.get(id__in=users_id), self.user)
 
     def test_get_subscription_by_id(self):
         url = self.reverse('subscriptions-detail', kwargs={'pk': self.subscription.id})
