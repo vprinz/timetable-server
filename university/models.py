@@ -32,7 +32,7 @@ class Group(models.Model):
 
     class Meta:
         verbose_name = 'Группа студента'
-        verbose_name_plural = 'Групп студентов'
+        verbose_name_plural = 'Группы студентов'
 
     def __str__(self):
         return self.number
