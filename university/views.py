@@ -4,9 +4,9 @@ from rest_framework.status import HTTP_201_CREATED
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from common.decorators import required_params
-from .models import Faculty, Occupation, Group, Subscription, Timetbale
+from .models import Faculty, Occupation, Group, Subscription, Class
 from .serializers import (FacultySerializer, OccupationSerializer, GroupSerializer, SubscriptionSerializer,
-                          TimetableSerializer)
+                          ClassSerializer)
 
 
 class UniversityAPIView(GenericViewSet):
@@ -40,7 +40,6 @@ class SubscriptionAPIView(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         data = request.data
-        data['user'] = request.user.id
 
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
@@ -56,16 +55,13 @@ class SubscriptionAPIView(ModelViewSet):
         return Response(serializer.data)
 
 
-class TimetableAPIView(GenericViewSet):
-    queryset = Timetbale.objects.all()
-    serializer_class = TimetableSerializer
+class ClassAPIView(ModelViewSet):
+    queryset = Class.objects.all()
+    serializer_class = ClassSerializer
 
-    # def get_queryset(self):
-    #     return self.queryset.filter(user=self.request.user)
-
-    @action(methods=['post'], detail=False)
     @required_params
-    def classes(self, request, subgroup_id, *args, **kwargs):
-        queryset = self.get_queryset().filter(subgroup_id=subgroup_id)
+    def list(self, request, *args, **kwargs):
+        subgroup_id = request.query_params.get('subgroup_id')
+        queryset = self.get_queryset().filter(timetable__subgroup_id=subgroup_id)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)

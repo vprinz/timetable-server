@@ -8,7 +8,7 @@ V1 = {
     r'users': users.UserAPIView,
     r'university': university.UniversityAPIView,
     r'subscriptions': university.SubscriptionAPIView,
-    r'timetable': university.TimetableAPIView,
+    r'classes': university.ClassAPIView,
 }
 
 

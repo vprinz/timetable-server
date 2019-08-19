@@ -1,7 +1,7 @@
 from rest_framework.serializers import ModelSerializer, ReadOnlyField
 from rest_framework.validators import UniqueTogetherValidator
 
-from .models import Faculty, Occupation, Group, Subgroup, Subscription, Timetbale, Class
+from .models import Faculty, Occupation, Group, Subgroup, Subscription, Timetbale, Class, Lecturer
 
 
 class FacultySerializer(ModelSerializer):
@@ -42,7 +42,15 @@ class SubscriptionSerializer(ModelSerializer):
         ]
 
 
+class LecturerSerializer(ModelSerializer):
+    class Meta:
+        model = Lecturer
+        fields = ('name', 'patronymic', 'surname')
+
+
 class ClassSerializer(ModelSerializer):
+    lecturer = LecturerSerializer(required=False, read_only=True)
+
     class Meta:
         model = Class
         fields = ('title', 'type_of_class', 'classroom', 'class_time', 'weekday', 'lecturer')
