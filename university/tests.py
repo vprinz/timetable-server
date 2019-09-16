@@ -5,7 +5,7 @@ from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_RE
 from common.tests import BaseAPITestCase
 from users.factories import UserFactory
 from .factories import (FacultyFactory, OccupationFactory, GroupFactory, SubgroupFactory, SubscriptionFactory)
-from .models import Faculty, Occupation, Group, Subscription
+from .models import Faculty, Occupation, Group, Subgroup, Subscription
 
 
 def compare_faculties_with_response(response):
@@ -18,12 +18,12 @@ def compare_faculties_with_response(response):
             'title': faculty.title
         })
 
-    return result
+    return json.dumps(result)
 
 
 def compare_occupations_with_response(response):
     occupation_ids = [occupation['id'] for occupation in response]
-    occupations = Occupation.objects.filter(id__in=occupation_ids)
+    occupations = Occupation.objects.filter(id__in=occupation_ids).order_by('-id')
     result = []
     for occupation in occupations:
         result.append({
@@ -32,20 +32,33 @@ def compare_occupations_with_response(response):
             'code': occupation.code
         })
 
-    return result
+    return json.dumps(result)
 
 
 def compare_groups_with_response(response):
-    group_ids = [group['number'] for group in response]
-    groups = Group.objects.filter(number__in=group_ids)
+    group_ids = [group['id'] for group in response]
+    groups = Group.objects.filter(id__in=group_ids)
     result = []
     for group in groups:
         result.append({
-            'number': group.number,
-            'subgroups': [{'id': subgroup.id, 'number': subgroup.number} for subgroup in group.subgroups.all()]
+            'id': group.id,
+            'number': group.number
         })
 
-    return result
+    return json.dumps(result)
+
+
+def compare_subgroups_with_response(response):
+    subgroup_ids = [subgroup['id'] for subgroup in response]
+    subgroups = Subgroup.objects.filter(id__in=subgroup_ids)
+    result = []
+    for subgroup in subgroups:
+        result.append({
+            'id': subgroup.id,
+            'number': subgroup.number
+        })
+
+    return json.dumps(result)
 
 
 class RestAPIUniversity(BaseAPITestCase):
@@ -57,29 +70,38 @@ class RestAPIUniversity(BaseAPITestCase):
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, HTTP_200_OK)
-        self.assertEqual(response.data, compare_faculties_with_response(response.data))
+        self.assertJSONEqual(response.content.decode(), compare_faculties_with_response(response.data))
 
     def test_get_occupations_by_faculty_id(self):
         faculty = FacultyFactory()
         OccupationFactory.create_batch(3, faculty=faculty)
 
-        url = self.reverse('university-occupations')
-        response = self.client.post(url, {'faculty_id': faculty.id})
+        url = self.reverse('university-occupations') + f'?faculty_id={faculty.id}'
+        response = self.client.get(url)
 
         self.assertEqual(response.status_code, HTTP_200_OK)
-        # self.assertEqual(response.data, compare_occupations_with_response(response.data))
+        self.assertJSONEqual(response.content.decode(), compare_occupations_with_response(response.data))
         self.assertEqual(len(response.data), 3)
 
     def test_get_groups_by_occupation_id(self):
         occupation = OccupationFactory()
-        groups = GroupFactory.create_batch(2, occupation=occupation)
-        SubgroupFactory.create_batch(2, group=groups[0])
+        GroupFactory.create_batch(2, occupation=occupation)
 
-        url = self.reverse('university-groups')
-        response = self.client.post(url, {'occupation_id': occupation.id})
+        url = self.reverse('university-groups') + f'?occupation_id={occupation.id}'
+        response = self.client.get(url)
 
         self.assertEqual(response.status_code, HTTP_200_OK)
-        self.assertEqual(response.data, compare_groups_with_response(response.data))
+        self.assertJSONEqual(response.content.decode(), compare_groups_with_response(response.data))
+
+    def test_get_subgroups_by_group_id(self):
+        group = GroupFactory()
+        SubgroupFactory.create_batch(2, group=group)
+
+        url = self.reverse('university-subgroups') + f'?group_id={group.id}'
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertJSONEqual(response.content.decode(), compare_subgroups_with_response(response.data))
 
 
 class RestAPISubscription(BaseAPITestCase):

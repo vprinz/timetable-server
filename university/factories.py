@@ -25,7 +25,7 @@ class OccupationFactory(factory.DjangoModelFactory):
 
 
 class GroupFactory(factory.DjangoModelFactory):
-    number = factory.fuzzy.FuzzyText(length=2, chars=string.digits)
+    number = factory.fuzzy.FuzzyText(length=10, chars=string.digits)
     occupation = factory.SubFactory(OccupationFactory)
 
     class Meta:

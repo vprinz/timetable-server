@@ -4,30 +4,38 @@ from rest_framework.status import HTTP_201_CREATED
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from common.decorators import required_params
-from .models import Faculty, Occupation, Group, Subscription, Class
-from .serializers import (FacultySerializer, OccupationSerializer, GroupSerializer, SubscriptionSerializer,
-                          ClassSerializer)
+from common.mixins import LoginNotRequiredMixin
+from .models import Faculty, Occupation, Group, Subgroup, Subscription, Class
+from .serializers import (FacultySerializer, OccupationSerializer, GroupSerializer, SubgroupSerializer,
+                          SubscriptionSerializer, ClassSerializer)
 
 
-class UniversityAPIView(GenericViewSet):
+class UniversityAPIView(LoginNotRequiredMixin, GenericViewSet):
     @action(methods=['get'], detail=False)
     def faculties(self, request, *args, **kwargs):
         queryset = Faculty.objects.all()
         serializer = FacultySerializer(queryset, many=True)
         return Response(serializer.data)
 
-    @required_params
-    @action(methods=['post'], detail=False)
-    def occupations(self, request, faculty_id, *args, **kwargs):
-        instance = Occupation.objects.filter(faculty=Faculty.objects.get(id=faculty_id))
+    @action(methods=['get'], detail=False)
+    def occupations(self, request, *args, **kwargs):
+        faculty_id = request.GET.get('faculty_id')
+        instance = Occupation.objects.filter(faculty_id=faculty_id)
         serializer = OccupationSerializer(instance, many=True)
         return Response(serializer.data)
 
-    @required_params
-    @action(methods=['post'], detail=False)
-    def groups(self, request, occupation_id, *args, **kwargs):
-        instance = Group.objects.filter(occupation=Occupation.objects.get(id=occupation_id))
+    @action(methods=['get'], detail=False)
+    def groups(self, request, *args, **kwargs):
+        occupation_id = request.GET.get('occupation_id')
+        instance = Group.objects.filter(occupation_id=occupation_id)
         serializer = GroupSerializer(instance, many=True)
+        return Response(serializer.data)
+
+    @action(methods=['get'], detail=False)
+    def subgroups(self, request, *args, **kwargs):
+        group_id = request.GET.get('group_id')
+        instance = Subgroup.objects.filter(group_id=group_id)
+        serializer = SubgroupSerializer(instance, many=True)
         return Response(serializer.data)
 
 

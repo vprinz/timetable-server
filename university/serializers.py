@@ -23,11 +23,9 @@ class SubgroupSerializer(ModelSerializer):
 
 
 class GroupSerializer(ModelSerializer):
-    subgroups = SubgroupSerializer(many=True, read_only=True)
-
     class Meta:
         model = Group
-        fields = ('number', 'subgroups')
+        fields = ('id', 'number')
 
 
 class SubscriptionSerializer(ModelSerializer):
