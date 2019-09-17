@@ -1,7 +1,7 @@
-from rest_framework.serializers import ModelSerializer, ReadOnlyField
+from rest_framework.serializers import ModelSerializer
 from rest_framework.validators import UniqueTogetherValidator
 
-from .models import Faculty, Occupation, Group, Subgroup, Subscription, Timetbale, Class, Lecturer
+from .models import Faculty, Occupation, Group, Subgroup, Subscription, Timetbale, Class, Lecturer, ClassTime
 
 
 class FacultySerializer(ModelSerializer):
@@ -32,7 +32,7 @@ class SubscriptionSerializer(ModelSerializer):
     class Meta:
         model = Subscription
         extra_kwargs = {'user': {'write_only': True}}
-        fields = ('id', 'title', 'user', 'subgroup_id', 'is_main')
+        fields = ('id', 'title', 'user', 'subgroup_id', 'is_main', 'timetable')
         validators = [
             UniqueTogetherValidator(
                 queryset=Subscription.objects.all(),
@@ -41,24 +41,26 @@ class SubscriptionSerializer(ModelSerializer):
         ]
 
 
-class LecturerSerializer(ModelSerializer):
+class TimetableSerializer(ModelSerializer):
     class Meta:
-        model = Lecturer
-        fields = ('name', 'patronymic', 'surname')
+        model = Timetbale
+        fields = ('id', 'type_of_week')
+        read_only_fields = ('id', 'type_of_week')
 
 
 class ClassSerializer(ModelSerializer):
-    lecturer = LecturerSerializer(required=False, read_only=True)
-
     class Meta:
         model = Class
-        fields = ('title', 'type_of_class', 'classroom', 'class_time', 'weekday', 'lecturer')
+        fields = ('id', 'title', 'type_of_class', 'classroom', 'class_time_id', 'weekday', 'lecturer_id')
 
 
-class TimetableSerializer(ModelSerializer):
-    classes = ReadOnlyField(source='get_classes')
-
+class LecturerSerializer(ModelSerializer):
     class Meta:
-        model = Timetbale
-        fields = ('type_of_week', 'classes')
-        read_only_fields = ('type_of_week', 'classes')
+        model = Lecturer
+        fields = ('id', 'name', 'patronymic', 'surname')
+
+
+class ClassTimeSerializer(ModelSerializer):
+    class Meta:
+        model = ClassTime
+        fields = ('id', 'number', 'start', 'end')

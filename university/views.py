@@ -1,13 +1,14 @@
 from rest_framework.decorators import action
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from common.decorators import required_params
 from common.mixins import LoginNotRequiredMixin
-from .models import Faculty, Occupation, Group, Subgroup, Subscription, Class
+from .models import Faculty, Occupation, Group, Subgroup, Subscription, Timetbale, Class, Lecturer, ClassTime
 from .serializers import (FacultySerializer, OccupationSerializer, GroupSerializer, SubgroupSerializer,
-                          SubscriptionSerializer, ClassSerializer)
+                          SubscriptionSerializer, TimetableSerializer, ClassSerializer, LecturerSerializer,
+                          ClassTimeSerializer)
 
 
 class UniversityAPIView(LoginNotRequiredMixin, GenericViewSet):
@@ -64,13 +65,33 @@ class SubscriptionAPIView(ModelViewSet):
         return Response(serializer.data)
 
 
-class ClassAPIView(ModelViewSet):
+class TimetableAPIView(ListModelMixin, GenericViewSet):
+    queryset = Timetbale.objects.all()
+    serializer_class = TimetableSerializer
+
+    def list(self, request, *args, **kwargs):
+        subgroup_id = request.GET.get('subgroup_id')
+        instance = self.get_queryset().filter(subgroup_id=subgroup_id)
+        serializer = self.get_serializer(instance, many=True)
+        return Response(serializer.data)
+
+
+class ClassAPIView(ListModelMixin, GenericViewSet):
     queryset = Class.objects.all()
     serializer_class = ClassSerializer
 
-    @required_params
     def list(self, request, *args, **kwargs):
-        subgroup_id = request.query_params.get('subgroup_id')
-        queryset = self.get_queryset().filter(timetable__subgroup_id=subgroup_id)
+        timetable_id = request.query_params.get('timetable_id')
+        queryset = self.get_queryset().filter(timetable_id=timetable_id)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class LectureAPIView(RetrieveModelMixin, GenericViewSet):
+    queryset = Lecturer.objects.all()
+    serializer_class = LecturerSerializer
+
+
+class ClassTimeAPIView(RetrieveModelMixin, GenericViewSet):
+    queryset = ClassTime.objects.all()
+    serializer_class = ClassTimeSerializer

@@ -8,7 +8,10 @@ V1 = {
     r'users': users.UserAPIView,
     r'university': university.UniversityAPIView,
     r'subscriptions': university.SubscriptionAPIView,
+    r'timetables': university.TimetableAPIView,
     r'classes': university.ClassAPIView,
+    r'lecturers': university.LectureAPIView,
+    r'class-times': university.ClassTimeAPIView,
 }
 
 
@@ -21,5 +24,5 @@ def version_urls(version):
 
 
 urlpatterns = [
-    url(r'^(?P<version>[v1]+)/', include(version_urls(V1)))
+    url(r'^(?P<version>v1)/', include(version_urls(V1)))
 ]
