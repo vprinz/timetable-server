@@ -1,4 +1,5 @@
 from django.db import models
+from django_extensions.db.models import TimeStampedModel
 
 
 class Faculty(models.Model):
@@ -50,7 +51,7 @@ class Subgroup(models.Model):
         return f'{self.group.number}/{self.number}'
 
 
-class Subscription(models.Model):
+class Subscription(TimeStampedModel):
     title = models.CharField(max_length=150)
     user = models.ForeignKey('users.User', on_delete=models.CASCADE)
     subgroup = models.ForeignKey(Subgroup, on_delete=models.CASCADE)
@@ -65,7 +66,7 @@ class Subscription(models.Model):
         return self.title
 
 
-class Timetbale(models.Model):
+class Timetbale(TimeStampedModel):
     NUMERATOR = 0
     DENOMINATOR = 1
 
@@ -74,10 +75,8 @@ class Timetbale(models.Model):
         (DENOMINATOR, 'Знаменатель')
     )
 
-    type_of_week = models.SmallIntegerField(choices=TYPE_OF_WEEK)
+    type_of_week = models.SmallIntegerField(choices=TYPE_OF_WEEK, help_text='Тип недели')
     subgroup = models.ForeignKey(Subgroup, on_delete=models.CASCADE)
-    created_timestamp = models.DateTimeField(auto_now_add=True)
-    modified_timestamp = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = ('subgroup', 'type_of_week')
@@ -88,8 +87,8 @@ class Timetbale(models.Model):
         return f'Расписание для {self.subgroup} группы | {self.TYPE_OF_WEEK[self.type_of_week][1]}'
 
     def get_classes(self):
-        return self.class_set.filter(timetable=self).\
-            values('title', 'type_of_class', 'classroom', 'weekday', 'class_time', 'lecturer').\
+        return self.class_set.filter(timetable=self). \
+            values('title', 'type_of_class', 'classroom', 'weekday', 'class_time', 'lecturer'). \
             order_by('weekday', 'class_time')
 
 
@@ -119,7 +118,7 @@ class Lecturer(models.Model):
         return f'{self.name} {self.surname}'
 
 
-class Class(models.Model):
+class Class(TimeStampedModel):
     PRACTICE = 0
     LECTURE = 1
 
@@ -147,14 +146,12 @@ class Class(models.Model):
     )
 
     title = models.CharField(max_length=150)
-    type_of_class = models.SmallIntegerField(choices=TYPE_OF_CLASS)
+    type_of_class = models.SmallIntegerField(choices=TYPE_OF_CLASS, help_text='Тип занятия')
     classroom = models.CharField(max_length=10)
-    class_time = models.ForeignKey(ClassTime, on_delete=models.PROTECT)
+    class_time = models.ForeignKey(ClassTime, on_delete=models.PROTECT, help_text='Время начала занятия')
     weekday = models.SmallIntegerField(choices=WEEKDAYS)
     lecturer = models.ForeignKey(Lecturer, on_delete=models.PROTECT)
     timetable = models.ForeignKey(Timetbale, on_delete=models.CASCADE)
-    created_timestamp = models.DateTimeField(auto_now_add=True)
-    modified_timestamp = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = ('class_time', 'weekday')

@@ -9,6 +9,8 @@ from .models import User
 class SubscriptionInline(admin.TabularInline):
     model = Subscription
     extra = 0
+    fields = ('title', 'is_main', 'created', 'modified')
+    readonly_fields = ('created', 'modified')
 
 
 @admin.register(User)
