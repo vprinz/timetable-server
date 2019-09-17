@@ -1,5 +1,6 @@
 from django.db import models
-from django_extensions.db.models import TimeStampedModel
+
+from common.models import CommonModel
 
 
 class Faculty(models.Model):
@@ -51,7 +52,7 @@ class Subgroup(models.Model):
         return f'{self.group.number}/{self.number}'
 
 
-class Subscription(TimeStampedModel):
+class Subscription(CommonModel):
     title = models.CharField(max_length=150)
     user = models.ForeignKey('users.User', on_delete=models.CASCADE)
     subgroup = models.ForeignKey(Subgroup, on_delete=models.CASCADE)
@@ -66,7 +67,7 @@ class Subscription(TimeStampedModel):
         return self.title
 
 
-class Timetbale(TimeStampedModel):
+class Timetbale(CommonModel):
     NUMERATOR = 0
     DENOMINATOR = 1
 
@@ -105,7 +106,7 @@ class ClassTime(models.Model):
         return f'{self.number}-ая пара'
 
 
-class Lecturer(models.Model):
+class Lecturer(CommonModel):
     name = models.CharField(max_length=64)
     patronymic = models.CharField(max_length=64)
     surname = models.CharField(max_length=64)
@@ -118,7 +119,7 @@ class Lecturer(models.Model):
         return f'{self.name} {self.surname}'
 
 
-class Class(TimeStampedModel):
+class Class(CommonModel):
     PRACTICE = 0
     LECTURE = 1
 

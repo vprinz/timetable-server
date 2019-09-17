@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from common.mixins import LoginNotRequiredMixin
+from common.mixins import LoginNotRequiredMixin, SyncMixin
 from .models import Faculty, Occupation, Group, Subgroup, Subscription, Timetbale, Class, Lecturer, ClassTime
 from .serializers import (FacultySerializer, OccupationSerializer, GroupSerializer, SubgroupSerializer,
                           SubscriptionSerializer, TimetableSerializer, ClassSerializer, LecturerSerializer,
@@ -76,7 +76,7 @@ class TimetableAPIView(ListModelMixin, GenericViewSet):
         return Response(serializer.data)
 
 
-class ClassAPIView(ListModelMixin, GenericViewSet):
+class ClassAPIView(SyncMixin, ListModelMixin, GenericViewSet):
     queryset = Class.objects.all()
     serializer_class = ClassSerializer
 
