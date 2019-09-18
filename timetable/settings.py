@@ -19,6 +19,9 @@ REDIS_HOST = env['redis_host']
 SERVER_FULL_URL = env['server_full_url']
 DEPLOYMENT_NAME = env['deployment_name']
 
+# FIREBASE
+FIREBASE_API_KEY = 'AAAAwM-KH_A:APA91bFx9ME75i39O6Dv7pUxXNm4dx86PLgt7aZk3a_vcnoQ3YJTYATes9xF4JAs4XhILvc1pnarFis2vVPa9J7Q9WaPWFJZGpj9hInlzwMlU9Z9w30nPElq-ljRXrI-_lbEBHL_R0Gx'
+
 ALLOWED_HOSTS = ['*']
 
 # Application definition
