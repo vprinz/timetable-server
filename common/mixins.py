@@ -20,10 +20,10 @@ class SyncMixin:
 
     @required_params
     @action(methods=['post'], detail=False)
-    def sync(self, request, date_time, *args, **kwargs):
+    def sync(self, request, timestamp, *args, **kwargs):
         try:
-            dt = datetime.strptime(date_time, "%Y-%m-%d %H:%M:%S")
-            result = self.queryset.model.get_ids_for_sync(self.get_queryset(), dt)
+            date_time = datetime.fromtimestamp(timestamp)
+            result = self.queryset.model.get_ids_for_sync(self.get_queryset(), date_time)
             return Response(data=result)
         except Exception as e:
             return Response(data={'error': str(e)}, status=HTTP_400_BAD_REQUEST)
