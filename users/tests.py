@@ -49,12 +49,12 @@ class RestAPIUser(BaseAPITestCase):
         self.assertEqual(response.data['email'][0], 'Это поле обязательно.')
 
     def test_login(self):
-        response = self.client.post(self.user_login_url, data={'username': self.user.email, 'password': 'Timetable123'})
+        response = self.client.post(self.user_login_url, data={'email': self.user.email, 'password': 'Timetable123'})
 
         self.assertEqual(response.status_code, HTTP_200_OK)
 
     def test_login_with_wrong_data(self):
-        response = self.client.post(self.user_login_url, data={'username': self.user.email, 'password': 'Timetable'})
+        response = self.client.post(self.user_login_url, data={'email': self.user.email, 'password': 'Timetable'})
 
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
 
