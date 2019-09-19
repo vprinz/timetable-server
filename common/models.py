@@ -1,6 +1,7 @@
+from datetime import datetime
+
 from django.db.models import Case, When, Value, BooleanField
 from django.db.models.query import QuerySet as BaseQuerySet
-from django.utils import timezone
 from django_extensions.db.models import TimeStampedModel
 
 from university.signals import post_bulk_update
@@ -29,6 +30,6 @@ class CommonModel(TimeStampedModel):
 
         updated = set(row[0] for row in query if row[1])
         return {
-            'updated': updated,
-            'date_time': timezone.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'updated_ids': updated,
+            'timestamp': datetime.timestamp(datetime.now())
         }
