@@ -1,15 +1,14 @@
-from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.viewsets import GenericViewSet
-from rest_framework.response import Response
-from rest_framework.decorators import action
-
 from django.contrib.auth import login, logout
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED
+from rest_framework.viewsets import GenericViewSet
 
 from common.mixins import LoginNotRequiredMixin
-from .serializers import UserSerializer
 from .forms import AuthenticationForm
 from .models import User
+from .serializers import UserSerializer
 
 
 class UserAPIView(LoginNotRequiredMixin, GenericViewSet):
@@ -38,12 +37,9 @@ class UserAPIView(LoginNotRequiredMixin, GenericViewSet):
         else:
             return Response(form.errors, status=HTTP_400_BAD_REQUEST)
 
-    @action(methods=['get', 'patch'], detail=False, url_path='info', permission_classes=[IsAuthenticated])
+    @action(methods=['patch'], detail=False, url_path='info', permission_classes=[IsAuthenticated])
     def user_info(self, request, *args, **kwargs):
-        if request.method == 'PATCH':
-            serializer = self.get_serializer(instance=request.user, data=request.data, partial=True)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(self.get_serializer(request.user).data)
+        serializer = self.get_serializer(instance=request.user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response()
