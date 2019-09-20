@@ -25,11 +25,13 @@ class CommonModel(TimeStampedModel):
         query = queryset. \
             annotate(changed=Case(When(modified__gt=date_time, then=Value(True)),
                                   default=Value(False), output_field=BooleanField())). \
-            only('id', 'changed'). \
-            values_list('id', 'changed')
+            values('id', 'changed', 'created', 'modified')
 
-        updated = set(row[0] for row in query if row[1])
+        added = set(row['id'] for row in query if
+                    row['created'].replace(microsecond=0) == row['modified'].replace(microsecond=0))
+        updated = set(row['id'] for row in query if row['changed'])
         return {
-            'updated_ids': updated,
+            'added_ids': added,
+            'updated_ids': updated - added,
             'timestamp': datetime.timestamp(datetime.now())
         }
