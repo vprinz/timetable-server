@@ -1,23 +1,29 @@
-from django.contrib import admin
+from django.contrib.admin import TabularInline, register
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin, UserAdmin
 from django.utils.translation import ugettext_lazy as _
 
 from university.models import Subscription
-from .models import User
+from .models import User, Device
 
 
-class SubscriptionInline(admin.TabularInline):
+class SubscriptionInline(TabularInline):
     model = Subscription
     extra = 0
     fields = ('title', 'is_main', 'created', 'modified')
     readonly_fields = ('created', 'modified')
 
 
-@admin.register(User)
+class DeviceInline(TabularInline):
+    model = Device
+    extra = 0
+    fields = ('id', 'token', 'platform')
+
+
+@register(User)
 class UserAdmin(DjangoUserAdmin):
     list_display = ('id', 'first_name', 'last_name', 'email')
     ordering = ('-id',)
-    inlines = (SubscriptionInline,)
+    inlines = (SubscriptionInline, DeviceInline)
     readonly_fields = ('id',)
 
     fieldsets = (
