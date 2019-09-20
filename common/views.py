@@ -1,7 +1,13 @@
-from django.conf import settings
+from datetime import datetime
+
+from django.db.models import Case, When, Value, BooleanField
 from django.shortcuts import render
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from common.decorators import login_not_required
+from common.decorators import required_params
+from university.models import Subscription, Timetbale, Lecturer, Class
 
 
 @login_not_required
@@ -9,8 +15,24 @@ def home_page(request):
     return render(request, 'home.html')
 
 
-@login_not_required
-def ws_test(request):
-    host = settings.SERVER_FULL_URL.split(':')[0]
-    port = 8000 if settings.DEPLOYMENT_NAME == 'local' else 8001
-    return render(request, 'ws_test.html', {'ws_url': f'ws:{host}:{port}/notifications/'})
+class DiffBasename(APIView):
+
+    @required_params
+    def post(self, request, timestamp, *args, **kwargs):
+        result = list()
+        date_time = datetime.fromtimestamp(timestamp)
+        models = {
+            Subscription: 'subscriptions',
+            Timetbale: 'timetables',
+            Lecturer: 'lecturers',
+            Class: 'classes'
+        }
+        for model, basename in models.items():
+            changes = model.objects.all(). \
+                annotate(changed=Case(When(modified__gt=date_time, then=Value(True)), default=Value(False),
+                                      output_field=BooleanField())). \
+                values_list('changed', flat=True)
+            if True in changes:
+                result.append(basename)
+
+        return Response(result)

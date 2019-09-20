@@ -7,10 +7,10 @@ from common import views
 from common.decorators import login_not_required
 
 urlpatterns = [
+    url(r'^$', views.home_page),
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include('api.urls')),
-    url(r'^$', views.home_page),
-    url(r'ntf/test/', views.ws_test)
+    url(r'^diff/', views.DiffBasename.as_view(), name='diff-basename'),
 ]
 
 schema_view = get_swagger_view(title='Timetable API')
