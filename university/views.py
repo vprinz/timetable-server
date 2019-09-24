@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from django.db.models import Case, When, Value, BooleanField
+from django.db.models import F, Case, When, Value, BooleanField
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from rest_framework.response import Response
@@ -52,18 +52,33 @@ class UniversityAPIView(LoginNotRequiredMixin, GenericViewSet):
         result = list()
         date_time = datetime.fromtimestamp(timestamp)
         models = {
-            Subscription: 'subscriptions',
-            Timetbale: 'timetables',
-            Lecturer: 'lecturers',
-            Class: 'classes'
+            Subscription: {
+                'basename': 'subscriptions',
+                'related_user_path': 'user'
+            },
+            Timetbale: {
+                'basename': 'timetables',
+                'related_user_path': 'subgroup__subscription__user'
+            },
+            Class: {
+                'basename': 'classes',
+                'related_user_path': 'timetable__subgroup__subscription__user'
+            },
+            Lecturer: {
+                'basename': 'lecturers',
+                'related_user_path': 'class__timetable__subgroup__subscription__user'
+            },
         }
-        for model, basename in models.items():
-            changes = model.objects.all(). \
+
+        for model, data in models.items():
+            changes = model.objects. \
                 annotate(changed=Case(When(modified__gt=date_time, then=Value(True)), default=Value(False),
-                                      output_field=BooleanField())). \
+                                      output_field=BooleanField()), u_id=F(data['related_user_path'])). \
+                filter(u_id=self.request.user.id). \
                 values_list('changed', flat=True)
+
             if True in changes:
-                result.append(basename)
+                result.append(data['basename'])
 
         return Response(result, headers={'timestamp': int(datetime.timestamp(datetime.now()))})
 
@@ -97,6 +112,10 @@ class TimetableAPIView(ListModelMixin, GenericViewSet):
     queryset = Timetbale.objects.all()
     serializer_class = TimetableSerializer
 
+    def get_queryset(self):
+        subscriptions = Subscription.objects.filter(user=self.request.user)
+        return self.queryset.filter(subgroup__subscription__in=subscriptions)
+
     def list(self, request, *args, **kwargs):
         subgroup_id = request.GET.get('subgroup_id')
         instance = self.get_queryset().filter(subgroup_id=subgroup_id)
@@ -107,6 +126,10 @@ class TimetableAPIView(ListModelMixin, GenericViewSet):
 class ClassAPIView(SyncMixin, ListModelMixin, GenericViewSet):
     queryset = Class.objects.all()
     serializer_class = ClassSerializer
+
+    def get_queryset(self):
+        subscriptions = Subscription.objects.filter(user=self.request.user)
+        return self.queryset.filter(timetable__subgroup__subscription__in=subscriptions)
 
     def list(self, request, *args, **kwargs):
         timetable_id = request.query_params.get('timetable_id')

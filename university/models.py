@@ -155,7 +155,7 @@ class Class(CommonModel):
     timetable = models.ForeignKey(Timetbale, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ('class_time', 'weekday')
+        unique_together = ('timetable', 'class_time', 'weekday')
         verbose_name = 'Занятие'
         verbose_name_plural = 'Занятия'
 
