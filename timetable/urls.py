@@ -10,7 +10,6 @@ urlpatterns = [
     url(r'^$', views.home_page),
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include('api.urls')),
-    url(r'^diff/', views.DiffBasename.as_view(), name='diff-basename'),
 ]
 
 schema_view = get_swagger_view(title='Timetable API')

@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.db.models import Case, When, Value, BooleanField
 from django.db.models.query import QuerySet as BaseQuerySet
 from django_extensions.db.models import TimeStampedModel
@@ -21,17 +19,15 @@ class CommonModel(TimeStampedModel):
         abstract = True
 
     @classmethod
-    def get_ids_for_sync(cls, queryset, date_time):
+    def get_ids_for_sync(cls, queryset, existing_ids, date_time):
         query = queryset. \
             annotate(changed=Case(When(modified__gt=date_time, then=Value(True)),
                                   default=Value(False), output_field=BooleanField())). \
-            values('id', 'changed', 'created', 'modified')
+            values_list('id', 'changed')
 
-        added = set(row['id'] for row in query if
-                    row['created'].replace(microsecond=0) == row['modified'].replace(microsecond=0))
-        updated = set(row['id'] for row in query if row['changed'])
+        all_ids = set(row[0] for row in query)
+        updated = set(row[0] for row in query if row[1])
         return {
-            'added_ids': added,
-            'updated_ids': updated - added,
-            'timestamp': datetime.timestamp(datetime.now())
+            'updated_ids': updated,
+            'deleted_ids': set(existing_ids) - all_ids
         }

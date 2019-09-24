@@ -1,10 +1,13 @@
+from datetime import datetime
+
+from django.db.models import Case, When, Value, BooleanField
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from common.mixins import LoginNotRequiredMixin, SyncMixin
+from common.mixins import LoginNotRequiredMixin, SyncMixin, required_params
 from .models import Faculty, Occupation, Group, Subgroup, Subscription, Timetbale, Class, Lecturer, ClassTime
 from .serializers import (FacultySerializer, OccupationSerializer, GroupSerializer, SubgroupSerializer,
                           SubscriptionSerializer, TimetableSerializer, ClassSerializer, LecturerSerializer,
@@ -38,6 +41,31 @@ class UniversityAPIView(LoginNotRequiredMixin, GenericViewSet):
         instance = Subgroup.objects.filter(group_id=group_id)
         serializer = SubgroupSerializer(instance, many=True)
         return Response(serializer.data)
+
+    @required_params
+    @action(methods=['post'], detail=False, url_path='diff')
+    def diff_basename(self, request, timestamp, *args, **kwargs):
+        """
+        :param timestamp: the time at which the result is returned.
+        :return: list of base_names which were changed.
+        """
+        result = list()
+        date_time = datetime.fromtimestamp(timestamp)
+        models = {
+            Subscription: 'subscriptions',
+            Timetbale: 'timetables',
+            Lecturer: 'lecturers',
+            Class: 'classes'
+        }
+        for model, basename in models.items():
+            changes = model.objects.all(). \
+                annotate(changed=Case(When(modified__gt=date_time, then=Value(True)), default=Value(False),
+                                      output_field=BooleanField())). \
+                values_list('changed', flat=True)
+            if True in changes:
+                result.append(basename)
+
+        return Response(result, headers={'timestamp': int(datetime.timestamp(datetime.now()))})
 
 
 class SubscriptionAPIView(ModelViewSet):
