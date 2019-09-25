@@ -29,7 +29,7 @@ class Occupation(models.Model):
 
 
 class Group(models.Model):
-    number = models.CharField(max_length=10)
+    number = models.CharField(max_length=10, unique=True)
     occupation = models.ForeignKey(Occupation, related_name='groups', null=True, on_delete=models.CASCADE)
 
     class Meta:

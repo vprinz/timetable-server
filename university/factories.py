@@ -5,7 +5,7 @@ import factory.fuzzy
 import pytz
 
 from users.factories import UserFactory
-from .models import Faculty, Occupation, Group, Subgroup, Subscription, Timetbale, Lecturer, Class
+from .models import Faculty, Occupation, Group, Subgroup, Subscription, Timetbale, Lecturer, ClassTime, Class
 
 
 class FacultyFactory(factory.DjangoModelFactory):
@@ -13,6 +13,10 @@ class FacultyFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = Faculty
+
+    @classmethod
+    def create_default(cls):
+        return cls.create(title='Факультет Компьютерных Технологий и Прикладной Математики')
 
 
 class OccupationFactory(factory.DjangoModelFactory):
@@ -23,6 +27,25 @@ class OccupationFactory(factory.DjangoModelFactory):
     class Meta:
         model = Occupation
 
+    @classmethod
+    def create_math_occupation(cls):
+        title = 'Математическое обеспечение и администрирование информационных систем'
+        code = '02.03.03'
+        faculty = Faculty.objects.get(title='Факультет Компьютерных Технологий и Прикладной Математики')
+        return cls.create(title=title, code=code, faculty=faculty)
+
+    @classmethod
+    def create_fundamental_occupation(cls):
+        title = 'Фундаментальная информатика и информационные технологии'
+        code = '02.03.02'
+        faculty = Faculty.objects.get(title='Факультет Компьютерных Технологий и Прикладной Математики')
+        return cls.create(title=title, code=code, faculty=faculty)
+
+    @classmethod
+    def create_default(cls):
+        cls.create_math_occupation()
+        cls.create_fundamental_occupation()
+
 
 class GroupFactory(factory.DjangoModelFactory):
     number = factory.fuzzy.FuzzyText(length=10, chars=string.digits)
@@ -31,6 +54,21 @@ class GroupFactory(factory.DjangoModelFactory):
     class Meta:
         model = Group
 
+    @classmethod
+    def create_5_group(cls):
+        occupation = Occupation.objects.get(code='02.03.03')
+        return cls.create(number='35', occupation=occupation)
+
+    @classmethod
+    def create_6_group(cls):
+        occupation = Occupation.objects.get(code='02.03.02')
+        return cls.create(number='36', occupation=occupation)
+
+    @classmethod
+    def create_default(cls):
+        cls.create_5_group()
+        cls.create_6_group()
+
 
 class SubgroupFactory(factory.DjangoModelFactory):
     number = factory.fuzzy.FuzzyText(length=1, chars=string.digits)
@@ -38,6 +76,20 @@ class SubgroupFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = Subgroup
+
+    @classmethod
+    def create_subgroups(cls):
+        group_5 = Group.objects.get(number='35')
+        numbers = ['1', '2']
+        [cls.create(number=n, group=group_5) for n in numbers]
+
+        group_6 = Group.objects.get(number='36')
+        numbers = ['1', '2', '3']
+        [cls.create(number=n, group=group_6) for n in numbers]
+
+    @classmethod
+    def create_default(cls):
+        return cls.create_subgroups()
 
 
 class SubscriptionFactory(factory.DjangoModelFactory):
@@ -53,8 +105,8 @@ class SubscriptionFactory(factory.DjangoModelFactory):
 class TimetableFactory(factory.DjangoModelFactory):
     type_of_week = factory.fuzzy.FuzzyInteger(low=0, high=1)
     subgroup = factory.SubFactory(SubgroupFactory)
-    created_timestamp = factory.fuzzy.FuzzyDateTime(datetime(2019, 5, 31, tzinfo=pytz.UTC), datetime.now(pytz.UTC))
-    modified_timestamp = factory.fuzzy.FuzzyDateTime(datetime(2019, 5, 31, tzinfo=pytz.UTC), datetime.now(pytz.UTC))
+    created = factory.fuzzy.FuzzyDateTime(datetime(2019, 5, 31, tzinfo=pytz.UTC), datetime.now(pytz.UTC))
+    modified = factory.fuzzy.FuzzyDateTime(datetime(2019, 5, 31, tzinfo=pytz.UTC), datetime.now(pytz.UTC))
 
     class Meta:
         model = Timetbale
@@ -69,15 +121,26 @@ class LecturerFactory(factory.DjangoModelFactory):
         model = Lecturer
 
 
+class ClassTimeFactory(factory.DjangoModelFactory):
+    number = factory.fuzzy.FuzzyInteger(low=1, high=8)
+    # TODO: refactor to only time (without date)
+    start = factory.fuzzy.FuzzyDateTime(datetime(2019, 5, 31, tzinfo=pytz.UTC), datetime.now(pytz.UTC))
+    end = factory.fuzzy.FuzzyDateTime(datetime(2019, 5, 31, tzinfo=pytz.UTC), datetime.now(pytz.UTC))
+
+    class Meta:
+        model = ClassTime
+
+
 class ClassFactory(factory.DjangoModelFactory):
     title = factory.fuzzy.FuzzyText(length=150)
     type_of_class = factory.fuzzy.FuzzyInteger(low=0, high=1)
     classroom = factory.fuzzy.FuzzyText(length=10)
+    class_time = factory.SubFactory(ClassTimeFactory)
     weekday = factory.fuzzy.FuzzyInteger(low=1, high=7)
     lecturer = factory.SubFactory(LecturerFactory)
     timetable = factory.SubFactory(TimetableFactory)
-    created_timestamp = factory.fuzzy.FuzzyDateTime(datetime(2019, 5, 31, tzinfo=pytz.UTC), datetime.now(pytz.UTC))
-    modified_timestamp = factory.fuzzy.FuzzyDateTime(datetime(2019, 5, 31, tzinfo=pytz.UTC), datetime.now(pytz.UTC))
+    created = factory.fuzzy.FuzzyDateTime(datetime(2019, 5, 31, tzinfo=pytz.UTC), datetime.now(pytz.UTC))
+    modified = factory.fuzzy.FuzzyDateTime(datetime(2019, 5, 31, tzinfo=pytz.UTC), datetime.now(pytz.UTC))
 
     class Meta:
         model = Class

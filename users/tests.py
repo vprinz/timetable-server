@@ -58,11 +58,6 @@ class RestAPIUser(BaseAPITestCase):
 
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
 
-    def test_get_user_info(self):
-        response = self.client.get(self.user_info)
-
-        self.assertEqual(response.status_code, HTTP_200_OK)
-
     def test_change_user_info(self):
         response = self.client.patch(self.user_info, data={'first_name': 'Nicholas', 'last_name': 'Barnett'})
 
