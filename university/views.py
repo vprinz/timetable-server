@@ -116,12 +116,6 @@ class TimetableAPIView(ListModelMixin, GenericViewSet):
         subscriptions = Subscription.objects.filter(user=self.request.user)
         return self.queryset.filter(subgroup__subscription__in=subscriptions)
 
-    def list(self, request, *args, **kwargs):
-        subgroup_id = request.GET.get('subgroup_id')
-        instance = self.get_queryset().filter(subgroup_id=subgroup_id)
-        serializer = self.get_serializer(instance, many=True)
-        return Response(serializer.data)
-
 
 class ClassAPIView(SyncMixin, ListModelMixin, GenericViewSet):
     queryset = Class.objects.all()

@@ -4,9 +4,9 @@ from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_RE
 
 from common.tests import BaseAPITestCase
 from users.factories import UserFactory
-from ..factories import (SubscriptionFactory)
+from ..factories import SubscriptionFactory
 from ..models import Group, Subgroup, Subscription
-from ..serializers import (SubscriptionSerializer)
+from ..serializers import SubscriptionSerializer
 
 
 class RestAPISubscription(BaseAPITestCase):
