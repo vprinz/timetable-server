@@ -38,9 +38,9 @@ class BaseAPITestCase(APITestCase):
         kwargs.update({'version': self.version})
         return _reverse(view_name, args, kwargs, request, format, **extra)
 
-    def reverse_with_get(self, view_name, get_name, *args, **kwargs):
+    def reverse_with_query_params(self, view_name, query_name, *args, **kwargs):
         get = str(kwargs['kwargs'].pop('get', {}))
         url = self.reverse(view_name, *args, **kwargs)
         if get:
-            url += f'?{get_name}={get}'
+            url += f'?{query_name}={get}'
         return url

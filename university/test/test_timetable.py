@@ -16,10 +16,10 @@ class RestAPISubscription(BaseAPITestCase):
         new_user = UserFactory()
         cls.subgroup_35_2 = Subgroup.objects.get(group=cls.group_35, number='2')
         TimetableFactory(subgroup=cls.subgroup_35_2, type_of_week=Timetbale.NUMERATOR)
-        SubscriptionFactory(title='TEST', user=new_user, subgroup=cls.subgroup_35_2)
+        SubscriptionFactory(title='Подписка New User', user=new_user, subgroup=cls.subgroup_35_2)
 
     def test_list(self):
-        url = self.reverse_with_get('timetables-list', get_name='subgroup_id', kwargs={'get': self.subgroup_35_1.id})
+        url = self.reverse('timetables-list')
         response = self.client.get(url)
         subscriptions = Subscription.objects.filter(user=self.user)
         timetable = Timetbale.objects.filter(subgroup__subscription__in=subscriptions)

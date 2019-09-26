@@ -123,13 +123,8 @@ class ClassAPIView(SyncMixin, ListModelMixin, GenericViewSet):
 
     def get_queryset(self):
         subscriptions = Subscription.objects.filter(user=self.request.user)
-        return self.queryset.filter(timetable__subgroup__subscription__in=subscriptions)
-
-    def list(self, request, *args, **kwargs):
-        timetable_id = request.query_params.get('timetable_id')
-        queryset = self.get_queryset().filter(timetable_id=timetable_id)
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        timetable_id = self.request.query_params.get('timetable_id')
+        return self.queryset.filter(timetable__subgroup__subscription__in=subscriptions, timetable_id=timetable_id)
 
 
 class LectureAPIView(RetrieveModelMixin, GenericViewSet):

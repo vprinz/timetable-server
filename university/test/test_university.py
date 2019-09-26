@@ -29,7 +29,7 @@ class RestAPIUniversity(BaseAPITestCase):
         faculty = FacultyFactory()
         OccupationFactory.create_batch(3, faculty=faculty)
 
-        url = self.reverse_with_get('university-occupations', get_name='faculty_id', kwargs={'get': faculty.id})
+        url = self.reverse_with_query_params('university-occupations', query_name='faculty_id', kwargs={'get': faculty.id})
         response = self.client.get(url)
         occupations = Occupation.objects.filter(faculty_id=faculty.id)
 
@@ -41,7 +41,7 @@ class RestAPIUniversity(BaseAPITestCase):
         occupation = OccupationFactory()
         GroupFactory.create_batch(2, occupation=occupation)
 
-        url = self.reverse_with_get('university-groups', get_name='occupation_id', kwargs={'get': occupation.id})
+        url = self.reverse_with_query_params('university-groups', query_name='occupation_id', kwargs={'get': occupation.id})
         response = self.client.get(url)
         groups = Group.objects.filter(occupation_id=occupation.id)
 
@@ -52,7 +52,7 @@ class RestAPIUniversity(BaseAPITestCase):
         group = GroupFactory()
         SubgroupFactory.create_batch(2, group=group)
 
-        url = self.reverse_with_get('university-subgroups', get_name='group_id', kwargs={'get': group.id})
+        url = self.reverse_with_query_params('university-subgroups', query_name='group_id', kwargs={'get': group.id})
         response = self.client.get(url)
         subgroups = Subgroup.objects.filter(group_id=group.id)
 
