@@ -53,19 +53,19 @@ class UniversityAPIView(LoginNotRequiredMixin, GenericViewSet):
         date_time = datetime.fromtimestamp(timestamp)
         models = {
             Subscription: {
-                'basename': 'subscriptions',
+                'basename': Subscription.basename,
                 'related_user_path': 'user'
             },
             Timetbale: {
-                'basename': 'timetables',
+                'basename': Timetbale.basename,
                 'related_user_path': 'subgroup__subscription__user'
             },
             Class: {
-                'basename': 'classes',
+                'basename': Class.basename,
                 'related_user_path': 'timetable__subgroup__subscription__user'
             },
             Lecturer: {
-                'basename': 'lecturers',
+                'basename': Lecturer.basename,
                 'related_user_path': 'class__timetable__subgroup__subscription__user'
             },
         }

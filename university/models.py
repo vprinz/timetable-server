@@ -58,6 +58,8 @@ class Subscription(CommonModel):
     subgroup = models.ForeignKey(Subgroup, on_delete=models.CASCADE)
     is_main = models.BooleanField(default=False)
 
+    basename = 'subscriptions'
+
     class Meta:
         unique_together = ('user', 'subgroup')
         verbose_name = 'Подписка'
@@ -78,6 +80,8 @@ class Timetbale(CommonModel):
 
     type_of_week = models.SmallIntegerField(choices=TYPE_OF_WEEK, help_text='Тип недели')
     subgroup = models.ForeignKey(Subgroup, on_delete=models.CASCADE)
+
+    basename = 'timetables'
 
     class Meta:
         unique_together = ('subgroup', 'type_of_week')
@@ -110,6 +114,8 @@ class Lecturer(CommonModel):
     name = models.CharField(max_length=64)
     patronymic = models.CharField(max_length=64)
     surname = models.CharField(max_length=64)
+
+    basename = 'lecturers'
 
     class Meta:
         verbose_name = 'Преподаватель'
@@ -153,6 +159,8 @@ class Class(CommonModel):
     weekday = models.SmallIntegerField(choices=WEEKDAYS)
     lecturer = models.ForeignKey(Lecturer, on_delete=models.PROTECT)
     timetable = models.ForeignKey(Timetbale, on_delete=models.CASCADE)
+
+    basename = 'classes'
 
     class Meta:
         unique_together = ('timetable', 'class_time', 'weekday')

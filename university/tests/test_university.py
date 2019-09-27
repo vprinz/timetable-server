@@ -29,7 +29,8 @@ class RestAPIUniversity(BaseAPITestCase):
         faculty = FacultyFactory()
         OccupationFactory.create_batch(3, faculty=faculty)
 
-        url = self.reverse_with_query_params('university-occupations', query_name='faculty_id', kwargs={'get': faculty.id})
+        url = self.reverse_with_query_params('university-occupations', query_name='faculty_id',
+                                             kwargs={'get': faculty.id})
         response = self.client.get(url)
         occupations = Occupation.objects.filter(faculty_id=faculty.id)
 
@@ -41,7 +42,8 @@ class RestAPIUniversity(BaseAPITestCase):
         occupation = OccupationFactory()
         GroupFactory.create_batch(2, occupation=occupation)
 
-        url = self.reverse_with_query_params('university-groups', query_name='occupation_id', kwargs={'get': occupation.id})
+        url = self.reverse_with_query_params('university-groups', query_name='occupation_id',
+                                             kwargs={'get': occupation.id})
         response = self.client.get(url)
         groups = Group.objects.filter(occupation_id=occupation.id)
 
@@ -99,5 +101,5 @@ class RestAPIUniversity(BaseAPITestCase):
                                     content_type=self.content_type)
 
         self.assertEqual(response.status_code, HTTP_200_OK)
-        self.assertEqual(response.data, ['subscriptions', 'classes'])
+        self.assertEqual(response.data, [Subscription.basename, Class.basename])
         self.assertTrue(response.has_header('timestamp'))
