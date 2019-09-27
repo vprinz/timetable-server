@@ -83,7 +83,7 @@ class UniversityAPIView(LoginNotRequiredMixin, GenericViewSet):
         return Response(result, headers={'timestamp': int(datetime.timestamp(datetime.now()))})
 
 
-class SubscriptionAPIView(ModelViewSet):
+class SubscriptionAPIView(SyncMixin, ModelViewSet):
     queryset = Subscription.objects.all()
     serializer_class = SubscriptionSerializer
 
@@ -108,7 +108,7 @@ class SubscriptionAPIView(ModelViewSet):
         return Response(serializer.data)
 
 
-class TimetableAPIView(ListModelMixin, GenericViewSet):
+class TimetableAPIView(SyncMixin, ListModelMixin, GenericViewSet):
     queryset = Timetbale.objects.all()
     serializer_class = TimetableSerializer
 
@@ -127,7 +127,7 @@ class ClassAPIView(SyncMixin, ListModelMixin, GenericViewSet):
         return self.queryset.filter(timetable__subgroup__subscription__in=subscriptions, timetable_id=timetable_id)
 
 
-class LectureAPIView(RetrieveModelMixin, GenericViewSet):
+class LectureAPIView(SyncMixin, RetrieveModelMixin, GenericViewSet):
     queryset = Lecturer.objects.all()
     serializer_class = LecturerSerializer
 

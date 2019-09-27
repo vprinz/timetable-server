@@ -97,6 +97,8 @@ class SubscriptionFactory(factory.DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     subgroup = factory.SubFactory(Subgroup)
     is_main = False
+    created = factory.fuzzy.FuzzyDateTime(datetime(2019, 5, 31, tzinfo=pytz.UTC), datetime.now(pytz.UTC))
+    modified = factory.fuzzy.FuzzyDateTime(datetime(2019, 5, 31, tzinfo=pytz.UTC), datetime.now(pytz.UTC))
 
     class Meta:
         model = Subscription
