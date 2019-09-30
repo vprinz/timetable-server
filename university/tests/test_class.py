@@ -17,11 +17,11 @@ def compare_response_with_sync(updated_ids, deleted_ids):
     return json.dumps(result)
 
 
-class RestAPISubscription(BaseAPITestCase):
+class RestAPIClass(BaseAPITestCase):
 
     @classmethod
     def setUpClass(cls):
-        super(RestAPISubscription, cls).setUpClass()
+        super(RestAPIClass, cls).setUpClass()
         cls.subscriptions = Subscription.objects.filter(user=cls.user)
         timetable = TimetableFactory(subgroup=cls.subgroup_35_1, type_of_week=Timetbale.DENOMINATOR)
         ClassFactory(timetable=timetable)

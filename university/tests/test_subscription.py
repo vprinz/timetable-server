@@ -11,15 +11,6 @@ from ..models import Group, Subgroup, Subscription
 from ..serializers import SubscriptionSerializer
 
 
-def compare_response_with_sync(updated_ids, deleted_ids):
-    result = {
-        'updated_ids': updated_ids,
-        'deleted_ids': deleted_ids
-    }
-
-    return json.dumps(result)
-
-
 class RestAPISubscription(BaseAPITestCase):
 
     def setUp(self):
@@ -144,7 +135,7 @@ class RestAPISubscription(BaseAPITestCase):
         # If nothing changed
         response = self.client.post(url, json.dumps(data), content_type=self.content_type)
         self.assertEqual(response.status_code, HTTP_200_OK)
-        self.assertJSONEqual(response.content.decode(), compare_response_with_sync([], []))
+        self.assertJSONEqual(response.content.decode(), self.compare_response_with_sync([], []))
         time.sleep(1)
 
         # If something changed in subs
@@ -158,4 +149,5 @@ class RestAPISubscription(BaseAPITestCase):
         response = self.client.post(url, json.dumps(data), content_type=self.content_type)
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertJSONEqual(response.content.decode(),
-                             compare_response_with_sync(updated_ids=[subs_35_2.id], deleted_ids=[subs_factory_36_1.id]))
+                             self.compare_response_with_sync(updated_ids=[subs_35_2.id],
+                                                             deleted_ids=[subs_factory_36_1.id]))

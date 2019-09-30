@@ -1,3 +1,5 @@
+import json
+
 from rest_framework.reverse import reverse as _reverse
 from rest_framework.test import APITestCase
 
@@ -44,3 +46,14 @@ class BaseAPITestCase(APITestCase):
         if get:
             url += f'?{query_name}={get}'
         return url
+
+    def compare_response_with_sync(self, updated_ids, deleted_ids):
+        """
+        Compare response from the sync request.
+        """
+        result = {
+            'updated_ids': updated_ids,
+            'deleted_ids': deleted_ids
+        }
+
+        return json.dumps(result)
