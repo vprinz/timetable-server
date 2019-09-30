@@ -4,6 +4,7 @@ from datetime import datetime
 import factory.fuzzy
 import pytz
 
+from common.factories import CommonFactory
 from users.factories import UserFactory
 from .models import Faculty, Occupation, Group, Subgroup, Subscription, Timetbale, Lecturer, ClassTime, Class
 
@@ -92,29 +93,25 @@ class SubgroupFactory(factory.DjangoModelFactory):
         return cls.create_subgroups()
 
 
-class SubscriptionFactory(factory.DjangoModelFactory):
+class SubscriptionFactory(CommonFactory):
     title = factory.fuzzy.FuzzyText(length=20)
     user = factory.SubFactory(UserFactory)
     subgroup = factory.SubFactory(Subgroup)
     is_main = False
-    created = factory.fuzzy.FuzzyDateTime(datetime(2019, 5, 31, tzinfo=pytz.UTC), datetime.now(pytz.UTC))
-    modified = factory.fuzzy.FuzzyDateTime(datetime(2019, 5, 31, tzinfo=pytz.UTC), datetime.now(pytz.UTC))
 
     class Meta:
         model = Subscription
 
 
-class TimetableFactory(factory.DjangoModelFactory):
+class TimetableFactory(CommonFactory):
     type_of_week = factory.fuzzy.FuzzyInteger(low=0, high=1)
     subgroup = factory.SubFactory(SubgroupFactory)
-    created = factory.fuzzy.FuzzyDateTime(datetime(2019, 5, 31, tzinfo=pytz.UTC), datetime.now(pytz.UTC))
-    modified = factory.fuzzy.FuzzyDateTime(datetime(2019, 5, 31, tzinfo=pytz.UTC), datetime.now(pytz.UTC))
 
     class Meta:
         model = Timetbale
 
 
-class LecturerFactory(factory.DjangoModelFactory):
+class LecturerFactory(CommonFactory):
     name = factory.fuzzy.FuzzyText(length=64)
     patronymic = factory.fuzzy.FuzzyText(length=64)
     surname = factory.fuzzy.FuzzyText(length=64)
@@ -133,7 +130,7 @@ class ClassTimeFactory(factory.DjangoModelFactory):
         model = ClassTime
 
 
-class ClassFactory(factory.DjangoModelFactory):
+class ClassFactory(CommonFactory):
     title = factory.fuzzy.FuzzyText(length=150)
     type_of_class = factory.fuzzy.FuzzyInteger(low=0, high=1)
     classroom = factory.fuzzy.FuzzyText(length=10)
@@ -141,8 +138,6 @@ class ClassFactory(factory.DjangoModelFactory):
     weekday = factory.fuzzy.FuzzyInteger(low=1, high=7)
     lecturer = factory.SubFactory(LecturerFactory)
     timetable = factory.SubFactory(TimetableFactory)
-    created = factory.fuzzy.FuzzyDateTime(datetime(2019, 5, 31, tzinfo=pytz.UTC), datetime.now(pytz.UTC))
-    modified = factory.fuzzy.FuzzyDateTime(datetime(2019, 5, 31, tzinfo=pytz.UTC), datetime.now(pytz.UTC))
 
     class Meta:
         model = Class

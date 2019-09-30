@@ -26,7 +26,7 @@ class BaseAPITestCase(APITestCase):
         cls.group_35 = Group.objects.get(number='35')
         cls.subgroup_35_1 = Subgroup.objects.get(group=cls.group_35, number='1')
         cls.timetable = TimetableFactory(subgroup=cls.subgroup_35_1, type_of_week=Timetbale.NUMERATOR)
-        cls.class_ = ClassFactory(timetable=cls.timetable)
+        cls.class_delphi = ClassFactory(title='Программирование в Delphi (для self.user)', timetable=cls.timetable)
         cls.subscription = SubscriptionFactory(title='Расписание на 1 семестр.', user=cls.user,
                                                subgroup=cls.subgroup_35_1,
                                                is_main=True)

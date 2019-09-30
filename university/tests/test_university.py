@@ -83,7 +83,7 @@ class RestAPIUniversity(BaseAPITestCase):
         new_timestamp = int(datetime.timestamp(datetime.now()))
 
         # If there have been changes
-        c = Class.objects.get(id=self.class_.id)
+        c = Class.objects.get(id=self.class_delphi.id)
         c.classroom = '123'
         c.save()
 

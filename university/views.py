@@ -124,7 +124,10 @@ class ClassAPIView(SyncMixin, ListModelMixin, GenericViewSet):
     def get_queryset(self):
         subscriptions = Subscription.objects.filter(user=self.request.user)
         timetable_id = self.request.query_params.get('timetable_id')
-        return self.queryset.filter(timetable__subgroup__subscription__in=subscriptions, timetable_id=timetable_id)
+        if timetable_id:
+            return self.queryset.filter(timetable__subgroup__subscription__in=subscriptions, timetable_id=timetable_id)
+        else:
+            return self.queryset.filter(timetable__subgroup__subscription__in=subscriptions)
 
 
 class LectureAPIView(SyncMixin, RetrieveModelMixin, GenericViewSet):
