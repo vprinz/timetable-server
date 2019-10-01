@@ -27,7 +27,7 @@ class RestAPIClass(BaseAPITestCase):
         super(RestAPIClass, cls).setUpClass()
         cls.subscriptions = Subscription.objects.filter(user=cls.user)
         timetable = TimetableFactory(subgroup=cls.subgroup_35_1, type_of_week=Timetbale.DENOMINATOR)
-        class_theory_games = ClassFactory(title='Теория игр (для self.user)', timetable=timetable)
+        cls.class_theory_games_factory = ClassFactory(title='Теория игр (для self.user)', timetable=timetable)
 
     def test_list(self):
         url = self.reverse_with_query_params('classes-list', query_name='timetable_id',
@@ -56,7 +56,7 @@ class RestAPIClass(BaseAPITestCase):
         subgroup_35_2 = Subgroup.objects.get(group=self.group_35, number='2')
         SubscriptionFactory(subgroup=subgroup_35_2, user=new_user)
         timetable_factory_denominator = TimetableFactory(subgroup=subgroup_35_2, type_of_week=Timetbale.DENOMINATOR)
-        class_physics_factory = ClassFactory(title='Физика', timetable=timetable_factory_denominator)
+        ClassFactory(title='Физика', timetable=timetable_factory_denominator)
 
         # Class for self.user. This class_id should be in response.
         class_math_factory = ClassFactory(title='Мат. анализ (для self.user)', timetable=self.timetable)
@@ -69,19 +69,18 @@ class RestAPIClass(BaseAPITestCase):
         response = self.client.post(url, json.dumps(data), content_type=self.content_type)
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertJSONEqual(response.content.decode(), self.compare_response_with_sync([], []))
+        time.sleep(1)
 
         # If something changed
-        class_physics = Class.objects.get(id=class_physics_factory.id)
-        class_physics.classroom = '123'
-        class_physics.save()
-        print(class_physics.modified)
+        class_theory_games = Class.objects.get(id=self.class_theory_games_factory.id)
+        class_theory_games.classroom = '123'
+        class_theory_games.save()
 
         class_math = Class.objects.get(id=class_math_factory.id)
         class_math.delete()
 
         response = self.client.post(url, json.dumps(data), content_type=self.content_type)
-        print(response.content.decode())
-        # self.assertEqual(response.status_code, HTTP_200_OK)
-        # self.assertJSONEqual(response.content.decode(),
-        #                      self.compare_response_with_sync(updated_ids=[class_physics.id],
-        #                                                      deleted_ids=[class_math_factory.id]))
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertJSONEqual(response.content.decode(),
+                             self.compare_response_with_sync(updated_ids=[class_theory_games.id],
+                                                             deleted_ids=[class_math_factory.id]))
