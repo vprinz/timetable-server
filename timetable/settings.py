@@ -15,12 +15,8 @@ SECRET_KEY = 'lzqbf5&hc9r)pj8ge0-2a0spyefzy8(!-l7v#er168$9l4ij0d'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env['debug']
-REDIS_HOST = env['redis_host']
-SERVER_FULL_URL = env['server_full_url']
-DEPLOYMENT_NAME = env['deployment_name']
-
-# FIREBASE
-FIREBASE_API_KEY = 'AAAAwM-KH_A:APA91bFx9ME75i39O6Dv7pUxXNm4dx86PLgt7aZk3a_vcnoQ3YJTYATes9xF4JAs4XhILvc1pnarFis2vVPa9J7Q9WaPWFJZGpj9hInlzwMlU9Z9w30nPElq-ljRXrI-_lbEBHL_R0Gx'
+FIREBASE_API_KEY = env['firebase_api_key']
+LOG_DIR = os.path.join(BASE_DIR, '../logs/')
 
 ALLOWED_HOSTS = ['*']
 
@@ -53,6 +49,35 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'common.middleware.LoginRequiredMiddleware',
 ]
+
+# LOGGING
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+    },
+    'handlers': {
+        'file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOG_DIR, 'django.errors'),
+            'level': 'ERROR',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -129,7 +154,7 @@ USE_L10N = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_ROOT = os.path.join(BASE_DIR, '../static/')
 STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'users.User'
