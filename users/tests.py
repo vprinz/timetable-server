@@ -24,14 +24,14 @@ class RestAPIUser(BaseAPITestCase):
 
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         self.assertEqual(User.objects.count(), 1)
-        self.assertEqual(response.data['password'][0], 'This password is entirely numeric.')
+        self.assertEqual(response.data['password'], ['password_entirely_numeric'])
 
     def test_create_user_with_wrong_email(self):
         response = self.client.post(self.user_create_url, {'email': 'test-email', 'password': 'Timetable123'})
 
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         self.assertEqual(User.objects.count(), 1)
-        self.assertEqual(response.data['email'][0], 'Enter a valid email address.')
+        self.assertEqual(response.data['email'], ['invalid'])
 
     def test_create_user_with_exist_email(self):
         UserFactory(email='exist_email@mail.com')
@@ -39,14 +39,14 @@ class RestAPIUser(BaseAPITestCase):
 
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         self.assertEqual(User.objects.count(), 2)
-        self.assertEqual(response.data['email'][0], 'This field must be unique.')
+        self.assertEqual(response.data['email'], ['unique'])
 
     def test_create_user_with_no_data(self):
         response = self.client.post(self.user_create_url, {})
 
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         self.assertEqual(User.objects.count(), 1)
-        self.assertEqual(response.data['email'][0], 'This field is required.')
+        self.assertEqual(response.data['email'], ['required'])
 
     def test_login(self):
         response = self.client.post(self.user_login_url, data={'email': self.user.email, 'password': 'Timetable123'})

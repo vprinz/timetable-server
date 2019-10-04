@@ -47,7 +47,7 @@ class RestAPISubscription(BaseAPITestCase):
 
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         self.assertEqual(len(Subscription.objects.filter(user=self.user)), 1)
-        self.assertEqual(error, ['Поля user, subgroup должны производить массив с уникальными значениями.'])
+        self.assertEqual(error, ['unique'])
 
     def test_create_subscription_with_not_existing_subgroup(self):
         url = self.reverse('subscriptions-list')
@@ -57,7 +57,7 @@ class RestAPISubscription(BaseAPITestCase):
 
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
         self.assertEqual(len(Subscription.objects.filter(user=self.user)), 1)
-        self.assertEqual(error, ['Недопустимый первичный ключ "101" - объект не существует.'])
+        self.assertEqual(error, ['does_not_exist'])
 
     def test_get_all_subscriptions(self):
         url = self.reverse('subscriptions-list')
@@ -88,10 +88,8 @@ class RestAPISubscription(BaseAPITestCase):
         url = self.reverse('subscriptions-detail', kwargs={'pk': self.not_user_subscription.id})
 
         response = self.client.get(url)
-        error = json.loads(response.content)['detail']
 
         self.assertEqual(response.status_code, HTTP_404_NOT_FOUND)
-        self.assertEqual(error, 'Не найдено.')
 
     def test_update_subscription(self):
         url = self.reverse('subscriptions-detail', kwargs={'pk': self.subscription.id})
@@ -114,10 +112,8 @@ class RestAPISubscription(BaseAPITestCase):
         data = {'title': new_title}
 
         response = self.client.patch(url, data=json.dumps(data), content_type=self.content_type)
-        error = json.loads(response.content)['detail']
 
         self.assertEqual(response.status_code, HTTP_404_NOT_FOUND)
-        self.assertEqual(error, 'Не найдено.')
 
     def test_sync(self):
         group_36 = Group.objects.get(number='36')

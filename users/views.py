@@ -18,7 +18,7 @@ class UserAPIView(LoginNotRequiredMixin, GenericViewSet):
     @action(methods=['post'], detail=False)
     def registration(self, request, *args, **kwargs):
         serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(status=HTTP_201_CREATED)
 
