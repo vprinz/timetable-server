@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED
 from rest_framework.viewsets import GenericViewSet
 
+
 from common.mixins import LoginNotRequiredMixin
 from .forms import AuthenticationForm
 from .models import User
@@ -40,6 +41,8 @@ class UserAPIView(LoginNotRequiredMixin, GenericViewSet):
     @action(methods=['patch'], detail=False, url_path='info', permission_classes=[IsAuthenticated])
     def user_info(self, request, *args, **kwargs):
         serializer = self.get_serializer(instance=request.user, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response()
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response()
+        else:
+            return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
