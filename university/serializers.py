@@ -51,7 +51,8 @@ class TimetableSerializer(ModelSerializer):
 class ClassSerializer(ModelSerializer):
     class Meta:
         model = Class
-        fields = ('id', 'title', 'type_of_class', 'classroom', 'class_time_id', 'weekday', 'lecturer_id')
+        fields = ('id', 'title', 'type_of_class', 'classroom', 'class_time_id', 'weekday', 'lecturer_id',
+                  'timetable_id')
 
 
 class LecturerSerializer(ModelSerializer):
