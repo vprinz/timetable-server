@@ -44,8 +44,8 @@ class SubscriptionSerializer(ModelSerializer):
 class TimetableSerializer(ModelSerializer):
     class Meta:
         model = Timetbale
-        fields = ('id', 'type_of_week')
-        read_only_fields = ('id', 'type_of_week')
+        fields = ('id', 'type_of_week', 'subgroup_id')
+        read_only_fields = ('id', 'type_of_week', 'subgroup_id')
 
 
 class ClassSerializer(ModelSerializer):
