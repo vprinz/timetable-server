@@ -80,7 +80,8 @@ class UniversityAPIView(LoginNotRequiredMixin, GenericViewSet):
             if True in changes:
                 result.append(data['basename'])
 
-        return Response(result, headers={'timestamp': int(datetime.timestamp(datetime.now()))})
+        result.append({'timestamp': int(datetime.timestamp(datetime.now()))})
+        return Response(result)
 
 
 class SubscriptionAPIView(SyncMixin, ModelViewSet):
