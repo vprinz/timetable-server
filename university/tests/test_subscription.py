@@ -97,14 +97,13 @@ class RestAPISubscription(BaseAPITestCase):
         data = {'title': new_title, 'is_main': True}
         response = self.client.patch(url, data=json.dumps(data), content_type=self.content_type)
 
-        subscription = Subscription.objects.get(id=response.data['id'])
+        subscription = Subscription.objects.get(id=self.subscription.id)
 
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(subscription.user, self.user)
         self.assertEqual(subscription.title, new_title)
         self.assertTrue(subscription.is_main)
         self.assertEqual(subscription.subgroup, self.subgroup_35_1)
-        self.assertEqual(response.data, SubscriptionSerializer(subscription).data)
 
     def test_update_subscription_which_not_belong_to_user(self):
         url = self.reverse('subscriptions-detail', kwargs={'pk': self.not_user_subscription.id})
