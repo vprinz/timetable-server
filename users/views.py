@@ -1,10 +1,11 @@
+import json
+
 from django.contrib.auth import login, logout
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED
 from rest_framework.viewsets import GenericViewSet
-
 
 from common.mixins import LoginNotRequiredMixin
 from .forms import AuthenticationForm
@@ -36,7 +37,9 @@ class UserAPIView(LoginNotRequiredMixin, GenericViewSet):
             serializer = self.get_serializer(user)
             return Response(serializer.data)
         else:
-            return Response(form.errors, status=HTTP_400_BAD_REQUEST)
+            errors = json.loads(form.errors.as_json())
+            error_data = {e: [code.get('code')] for e, codes in errors.items() for code in codes}
+            return Response(error_data, status=HTTP_400_BAD_REQUEST)
 
     @action(methods=['patch'], detail=False, url_path='info', permission_classes=[IsAuthenticated])
     def user_info(self, request, *args, **kwargs):

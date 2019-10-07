@@ -32,7 +32,7 @@ class RegistrationForm(forms.Form):
 
 class AuthenticationForm(BaseAuthenticationForm):
     email = forms.EmailField(label=_("Email"), max_length=75)
-    message_incorrect_password = _("Адрес электронной почты или пароль введен неверно.")
+    message_incorrect_email_or_password = _("Адрес электронной почты или пароль введен неверно.")
     message_inactive = _("Этот аккаунт неактивен.")
 
     def __init__(self, request=None, *args, **kwargs):
@@ -50,7 +50,8 @@ class AuthenticationForm(BaseAuthenticationForm):
         if email and password:
             self.user_cache = authenticate(email=email, password=password)
             if (self.user_cache is None):
-                raise forms.ValidationError(self.message_incorrect_password)
+                raise forms.ValidationError(self.message_incorrect_email_or_password,
+                                            code='incorrect_email_or_password')
             if not self.user_cache.is_active:
-                raise forms.ValidationError(self.message_inactive)
+                raise forms.ValidationError(self.message_inactive, code='inactive')
         return self.cleaned_data
