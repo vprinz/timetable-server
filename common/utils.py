@@ -10,7 +10,10 @@ def custom_exception_handler(exc, context):
     response = exception_handler(exc, context)
 
     if isinstance(exc, APIException):
-        response.data = exc.get_full_details()
+        if isinstance(exc.detail, (list, dict)):
+            response.data = exc.get_codes()
+        else:
+            response.data['detail'] = exc.get_codes()
 
     return response
 
