@@ -49,7 +49,7 @@ class UniversityAPIView(LoginNotRequiredMixin, GenericViewSet):
         :param timestamp: the time at which the result is returned.
         :return: list of base_names which were changed.
         """
-        result = list()
+        result = {'base_names': list()}
         date_time = datetime.fromtimestamp(timestamp)
         models = {
             Subscription: {
@@ -78,9 +78,9 @@ class UniversityAPIView(LoginNotRequiredMixin, GenericViewSet):
                 values_list('changed', flat=True)
 
             if True in changes:
-                result.append(data['basename'])
+                result['base_names'].append(data['basename'])
 
-        result.append({'timestamp': int(datetime.timestamp(datetime.now()))})
+        result['timestamp'] = int(datetime.timestamp(datetime.now()))
         return Response(result)
 
 
