@@ -57,6 +57,7 @@ class RestAPIUser(BaseAPITestCase):
         response = self.client.post(self.user_login_url, data={'email': self.user.email, 'password': 'Timetable'})
 
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data['__all__'], ['incorrect_email_or_password'])
 
     def test_change_user_info(self):
         response = self.client.patch(self.user_info, data={'first_name': 'Nicholas', 'last_name': 'Barnett'})
