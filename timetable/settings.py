@@ -18,6 +18,7 @@ DEBUG = env['debug']
 FIREBASE_API_KEY = env['firebase_api_key']
 LOG_DIR = os.path.join(BASE_DIR, '../logs/')
 
+ADMINS = [('Valera Pavlikov', 'vokler98@gmail.com')]
 ALLOWED_HOSTS = ['*']
 
 # Application definition
