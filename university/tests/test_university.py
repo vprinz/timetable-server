@@ -77,7 +77,7 @@ class RestAPIUniversity(BaseAPITestCase):
         response = self.client.post(url, json.dumps({'timestamp': timestamp}), content_type=self.content_type)
 
         self.assertEqual(response.status_code, HTTP_200_OK)
-        self.assertEqual(response.data, list())
+        self.assertEqual(response.data, [{'timestamp': int(datetime.timestamp(datetime.now()))}])
 
         time.sleep(1)
         new_timestamp = int(datetime.timestamp(datetime.now()))
@@ -101,5 +101,5 @@ class RestAPIUniversity(BaseAPITestCase):
                                     content_type=self.content_type)
 
         self.assertEqual(response.status_code, HTTP_200_OK)
-        self.assertEqual(response.data, [Subscription.basename, Class.basename])
-        self.assertTrue(response.has_header('timestamp'))
+        self.assertEqual(response.data, [Subscription.basename, Class.basename,
+                                         {'timestamp': int(datetime.timestamp(datetime.now()))}])
