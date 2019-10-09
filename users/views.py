@@ -38,7 +38,9 @@ class UserAPIView(GenericViewSet):
                 logout(request)
             login(request, user)
             serializer = self.get_serializer(user)
-            return Response(serializer.data)
+            data = serializer.data
+            data['session_key'] = request.session.session_key
+            return Response(data)
         else:
             errors = json.loads(form.errors.as_json())
             error_data = {e: [code.get('code')] for e, codes in errors.items() for code in codes}
