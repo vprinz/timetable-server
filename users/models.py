@@ -63,6 +63,10 @@ class User(PermissionsMixin, AbstractBaseUser):
     def get_full_name(self):
         return self.first_name + ' ' + self.last_name
 
+    def set_device(self, params):
+        self.device_set.update_or_create(device_identifier=params.get('params'),
+                                         defaults={'token': params.get('token'), 'platform': params.get('platform')})
+
 
 class Device(models.Model):
     iOS = 'iOS'
@@ -74,6 +78,7 @@ class Device(models.Model):
     )
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    device_identifier = models.CharField(max_length=32)
     token = models.CharField(max_length=255)
     platform = models.CharField(max_length=20, choices=PLATFORMS)
 

@@ -34,6 +34,7 @@ class UserAPIView(LoginNotRequiredMixin, GenericViewSet):
             if user != request.user:
                 logout(request)
             login(request, user)
+            request.user.set_device(request.data)
             serializer = self.get_serializer(user)
             return Response(serializer.data)
         else:
