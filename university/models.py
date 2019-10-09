@@ -91,10 +91,8 @@ class Timetbale(CommonModel):
     def __str__(self):
         return f'Расписание для {self.subgroup} группы | {self.TYPE_OF_WEEK[self.type_of_week][1]}'
 
-    def get_classes(self):
-        return self.class_set.filter(timetable=self). \
-            values('title', 'type_of_class', 'classroom', 'weekday', 'class_time', 'lecturer'). \
-            order_by('weekday', 'class_time')
+    def get_faculty(self):
+        return self.subgroup.group.occupation.faculty.id
 
 
 class ClassTime(models.Model):

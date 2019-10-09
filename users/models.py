@@ -81,6 +81,5 @@ class Device(models.Model):
         verbose_name = 'Устройство'
         verbose_name_plural = 'Устройства'
 
-
     def __str__(self):
         return f'{self.user} | {self.platform}'

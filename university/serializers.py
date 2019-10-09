@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, ReadOnlyField
 from rest_framework.validators import UniqueTogetherValidator
 
 from .models import Faculty, Occupation, Group, Subgroup, Subscription, Timetbale, Class, Lecturer, ClassTime
@@ -42,9 +42,11 @@ class SubscriptionSerializer(ModelSerializer):
 
 
 class TimetableSerializer(ModelSerializer):
+    faculty_id = ReadOnlyField(source='get_faculty')
+
     class Meta:
         model = Timetbale
-        fields = ('id', 'type_of_week', 'subgroup_id')
+        fields = ('id', 'type_of_week', 'subgroup_id', 'faculty_id')
         read_only_fields = ('id', 'type_of_week', 'subgroup_id')
 
 
