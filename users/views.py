@@ -49,3 +49,8 @@ class UserAPIView(LoginNotRequiredMixin, GenericViewSet):
             return Response()
         else:
             return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+    @action(methods=['get'], detail=False)
+    def logout(self, request, *args, **kwargs):
+        logout(request)
+        return Response()

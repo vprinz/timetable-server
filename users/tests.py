@@ -12,6 +12,7 @@ class RestAPIUser(BaseAPITestCase):
         self.user_create_url = self.reverse('users-registration')
         self.user_login_url = self.reverse('users-login')
         self.user_info = self.reverse('users-user-info')
+        self.user_logout = self.reverse('users-logout')
 
     def test_create_user_with_correct_data(self):
         response = self.client.post(self.user_create_url, {'email': 'test-email@mail.com', 'password': 'Timetable123'})
@@ -63,4 +64,9 @@ class RestAPIUser(BaseAPITestCase):
         response = self.client.patch(self.user_info, data={'first_name': 'Nicholas', 'last_name': 'Barnett'})
 
         self.assertEqual(User.objects.get(email=self.user.email).get_full_name(), 'Nicholas Barnett')
+        self.assertEqual(response.status_code, HTTP_200_OK)
+
+    def test_user_logout(self):
+        response = self.client.get(self.user_logout)
+
         self.assertEqual(response.status_code, HTTP_200_OK)
