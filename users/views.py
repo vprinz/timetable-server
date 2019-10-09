@@ -46,7 +46,11 @@ class UserAPIView(LoginNotRequiredMixin, GenericViewSet):
 
     @action(methods=['patch'], detail=False, url_path='info', permission_classes=[IsAuthenticated])
     def user_info(self, request, *args, **kwargs):
-        log.info(f'SESSION KEY OF {request.user}: {request.session.session_key}')
+        log.info('=================================')
+        log.info(f'{request.user}')
+        log.info(f'{request.user.is_authenticated}')
+        log.info(f'{request.session.session_key}')
+        log.info('=================================')
         serializer = self.get_serializer(instance=request.user, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
