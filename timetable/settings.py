@@ -70,8 +70,18 @@ LOGGING = {
             'level': 'ERROR',
             'formatter': 'verbose',
         },
+        'infofile': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'formatter': 'verbose',
+            'filename': os.path.join(LOG_DIR, 'django.information'),
+        },
     },
     'loggers': {
+        'informator': {
+            'handlers': ['infofile'],
+            'level': 'DEBUG',
+        },
         'django': {
             'handlers': ['file'],
             'level': 'DEBUG',
