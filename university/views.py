@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 
 from django.db.models import F, Case, When, Value, BooleanField
@@ -12,6 +13,8 @@ from .models import Faculty, Occupation, Group, Subgroup, Subscription, Timetbal
 from .serializers import (FacultySerializer, OccupationSerializer, GroupSerializer, SubgroupSerializer,
                           SubscriptionSerializer, TimetableSerializer, ClassSerializer, LecturerSerializer,
                           ClassTimeSerializer)
+
+log = logging.getLogger('informator')
 
 
 class UniversityAPIView(LoginNotRequiredMixin, GenericViewSet):
@@ -92,8 +95,13 @@ class SubscriptionAPIView(SyncMixin, ModelViewSet):
         return self.queryset.filter(user=self.request.user)
 
     def create(self, request, *args, **kwargs):
+        log.info('=============================')
+        log.info(f'REQUEST DATA: {request.data}')
         data = request.data
+        log.info(f'DATA: {request.data}')
         data['user'] = request.user.id
+        log.info(f'DATA WITH USER: {request.data}')
+        log.info('=============================')
 
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
