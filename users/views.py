@@ -1,5 +1,4 @@
 import json
-import logging
 
 from django.contrib.auth import login, logout
 from rest_framework.decorators import action
@@ -8,12 +7,9 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED
 from rest_framework.viewsets import GenericViewSet
 
-from common.mixins import LoginNotRequiredMixin
 from .forms import AuthenticationForm
 from .models import User
 from .serializers import UserSerializer
-
-log = logging.getLogger('informator')
 
 
 class UserAPIView(GenericViewSet):
@@ -52,11 +48,6 @@ class UserAPIView(GenericViewSet):
 
     @action(methods=['patch'], detail=False, url_path='info', permission_classes=[IsAuthenticated])
     def user_info(self, request, *args, **kwargs):
-        log.info('=================================')
-        log.info(f'{request.user}')
-        log.info(f'{request.user.is_authenticated}')
-        log.info(f'{request.session.session_key}')
-        log.info('=================================')
         serializer = self.get_serializer(instance=request.user, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
