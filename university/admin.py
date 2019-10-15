@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Faculty, Occupation, Group, Subgroup, Timetbale, ClassTime, Lecturer, Class
+from .models import Faculty, Occupation, Group, Subgroup, Timetbale, ClassTime, Lecturer, Class, UniversityInfo
 
 
 class SubgroupInline(admin.TabularInline):
@@ -24,7 +24,7 @@ class ClassInline(admin.TabularInline):
 @admin.register(Faculty)
 class FacultyAdmin(admin.ModelAdmin):
     list_display = ('id', 'title')
-    fields = ('title',)
+    fields = ('title', 'current_type_of_week')
     inlines = (OccupationInline,)
 
 
@@ -47,4 +47,9 @@ class ClassTimeAdmin(admin.ModelAdmin):
 
 @admin.register(Lecturer)
 class LecturerAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(UniversityInfo)
+class UniversityInfoAdmin(admin.ModelAdmin):
     pass

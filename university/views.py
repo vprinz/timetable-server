@@ -8,10 +8,11 @@ from rest_framework.status import HTTP_201_CREATED
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from common.mixins import LoginNotRequiredMixin, SyncMixin, required_params
-from .models import Faculty, Occupation, Group, Subgroup, Subscription, Timetbale, Class, Lecturer, ClassTime
+from .models import (Faculty, Occupation, Group, Subgroup, Subscription, Timetbale, Class, Lecturer, ClassTime,
+                     UniversityInfo)
 from .serializers import (FacultySerializer, OccupationSerializer, GroupSerializer, SubgroupSerializer,
                           SubscriptionSerializer, TimetableSerializer, ClassSerializer, LecturerSerializer,
-                          ClassTimeSerializer)
+                          ClassTimeSerializer, UniversityInfoSerializer)
 
 
 class UniversityAPIView(LoginNotRequiredMixin, GenericViewSet):
@@ -139,3 +140,8 @@ class LectureAPIView(SyncMixin, RetrieveModelMixin, GenericViewSet):
 class ClassTimeAPIView(RetrieveModelMixin, GenericViewSet):
     queryset = ClassTime.objects.all()
     serializer_class = ClassTimeSerializer
+
+
+class UniversityInfoAPIView(ListModelMixin, GenericViewSet):
+    queryset = UniversityInfo.objects.all()
+    serializer_class = UniversityInfoSerializer

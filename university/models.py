@@ -1,10 +1,15 @@
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.utils import timezone
 
 from common.models import CommonModel
+from common.utils import TypeWeek
 
 
 class Faculty(models.Model):
     title = models.CharField(max_length=256, unique=True)
+    current_type_of_week = models.SmallIntegerField(choices=TypeWeek.all())
 
     class Meta:
         verbose_name = 'Факультет'
@@ -12,6 +17,16 @@ class Faculty(models.Model):
 
     def __str__(self):
         return self.title
+
+    @classmethod
+    def content_type(cls):
+        return ContentType.objects.get_for_model(cls)
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        # "modified" field should be updated for sync() method
+        super(Faculty, self).save()
+        UniversityInfo.objects.filter(content_type=self.content_type(), object_id=self.id). \
+            update(modified=timezone.now())
 
 
 class Occupation(models.Model):
@@ -70,15 +85,7 @@ class Subscription(CommonModel):
 
 
 class Timetbale(CommonModel):
-    NUMERATOR = 0
-    DENOMINATOR = 1
-
-    TYPE_OF_WEEK = (
-        (NUMERATOR, 'Числитель'),
-        (DENOMINATOR, 'Знаменатель')
-    )
-
-    type_of_week = models.SmallIntegerField(choices=TYPE_OF_WEEK, help_text='Тип недели')
+    type_of_week = models.SmallIntegerField(choices=TypeWeek.all(), help_text='Тип недели')
     subgroup = models.ForeignKey(Subgroup, on_delete=models.CASCADE)
 
     basename = 'timetables'
@@ -89,7 +96,7 @@ class Timetbale(CommonModel):
         verbose_name_plural = 'Расписания'
 
     def __str__(self):
-        return f'Расписание для {self.subgroup} группы | {self.TYPE_OF_WEEK[self.type_of_week][1]}'
+        return f'Расписание для {self.subgroup} группы | {TypeWeek.get_by_value(self.type_of_week)}'
 
     def get_faculty(self):
         return self.subgroup.group.occupation.faculty.id
@@ -167,3 +174,19 @@ class Class(CommonModel):
 
     def __str__(self):
         return f'{self.title} | {self.timetable.subgroup}'
+
+
+class UniversityInfo(CommonModel):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey()
+
+    @classmethod
+    def get_info(self):
+        """
+        :return: list of faculty_id and their current_type_of_week
+        """
+        faculties_ids = self.objects.filter(content_type=Faculty.content_type()).values_list('object_id', flat=True)
+        faculties = Faculty.objects.filter(id__in=faculties_ids)
+        result = [{'faculty_id': f.id, 'current_type_of_week': f.current_type_of_week} for f in faculties]
+        return result

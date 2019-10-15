@@ -3,9 +3,10 @@ import json
 from rest_framework.reverse import reverse as _reverse
 from rest_framework.test import APITestCase
 
+from common.utils import TypeWeek
 from university.factories import (FacultyFactory, OccupationFactory, GroupFactory, SubgroupFactory, SubscriptionFactory,
                                   TimetableFactory, ClassFactory)
-from university.models import Group, Subgroup, Timetbale
+from university.models import Group, Subgroup
 from users.factories import UserFactory
 
 
@@ -25,7 +26,7 @@ class BaseAPITestCase(APITestCase):
 
         cls.group_35 = Group.objects.get(number='35')
         cls.subgroup_35_1 = Subgroup.objects.get(group=cls.group_35, number='1')
-        cls.timetable = TimetableFactory(subgroup=cls.subgroup_35_1, type_of_week=Timetbale.NUMERATOR)
+        cls.timetable = TimetableFactory(subgroup=cls.subgroup_35_1, type_of_week=TypeWeek.numerator.value)
         cls.class_delphi = ClassFactory(title='Программирование в Delphi (для self.user)', timetable=cls.timetable)
         cls.subscription = SubscriptionFactory(title='Расписание на 1 семестр.', user=cls.user,
                                                subgroup=cls.subgroup_35_1,

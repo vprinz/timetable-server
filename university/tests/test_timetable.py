@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from rest_framework.status import HTTP_200_OK
 
 from common.tests import BaseAPITestCase
+from common.utils import TypeWeek
 from users.factories import UserFactory
 from ..factories import SubscriptionFactory, TimetableFactory
 from ..models import Timetbale, Subgroup, Subscription
@@ -19,7 +20,8 @@ class RestAPITimetable(BaseAPITestCase):
 
         new_user = UserFactory()
         cls.subgroup_35_2 = Subgroup.objects.get(group=cls.group_35, number='2')
-        cls.timetable_factory_numerator = TimetableFactory(subgroup=cls.subgroup_35_2, type_of_week=Timetbale.NUMERATOR)
+        cls.timetable_factory_numerator = TimetableFactory(subgroup=cls.subgroup_35_2,
+                                                           type_of_week=TypeWeek.numerator.value)
         SubscriptionFactory(title='Подписка New User', user=new_user, subgroup=cls.subgroup_35_2)
 
     def test_list(self):
@@ -34,7 +36,7 @@ class RestAPITimetable(BaseAPITestCase):
     def test_sync(self):
         SubscriptionFactory(title='Подписка на 2 подгруппу', user=self.user, subgroup=self.subgroup_35_2)
         timetable_factory_denominator = TimetableFactory(subgroup=self.subgroup_35_2,
-                                                         type_of_week=Timetbale.DENOMINATOR)
+                                                         type_of_week=TypeWeek.denominator.value)
 
         existing_ids = [t.id for t in Timetbale.objects.filter(subgroup__subscription__user=self.user)]
         timestamp = int(datetime.timestamp(datetime.now() + timedelta(seconds=1)))

@@ -1,3 +1,4 @@
+from enum import IntEnum
 from itertools import chain
 
 from rest_framework.exceptions import APIException
@@ -30,3 +31,18 @@ def get_model_field_names(model):
         for field in model._meta.get_fields()
         if not (field.many_to_one and field.related_model is None)
     )))
+
+
+class TypeWeek(IntEnum):
+    numerator = 0
+    denominator = 1
+
+    @classmethod
+    def all(cls):
+        return tuple((i.value, i.name.capitalize()) for i in cls)
+
+    @classmethod
+    def get_by_value(cls, value):
+        if value > 1:
+            return
+        return cls.numerator.name.capitalize() if value == cls.numerator.value else cls.denominator.name.capitalize()

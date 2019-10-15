@@ -12,6 +12,7 @@ V1 = {
     r'classes': university.ClassAPIView,
     r'lecturers': university.LectureAPIView,
     r'class-times': university.ClassTimeAPIView,
+    r'university-info': university.UniversityInfoAPIView,
 }
 
 
