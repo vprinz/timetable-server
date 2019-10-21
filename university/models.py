@@ -185,5 +185,7 @@ class UniversityInfo(CommonModel):
     content_object = GenericForeignKey()
     data = JSONField(default=dict)
 
+    basename = 'university-info'
+
     class Meta:
         verbose_name_plural = 'University Info'

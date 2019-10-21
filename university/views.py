@@ -78,7 +78,7 @@ class UniversityAPIView(LoginNotRequiredMixin, GenericViewSet):
             Lecturer: {
                 'basename': Lecturer.basename,
                 'related_user_path': 'class__timetable__subgroup__subscription__user'
-            },
+            }
         }
 
         for model, data in models.items():
@@ -90,6 +90,13 @@ class UniversityAPIView(LoginNotRequiredMixin, GenericViewSet):
 
             if True in changes:
                 result['base_names'].append(data['basename'])
+
+        university_info_changes = UniversityInfo.objects. \
+            annotate(changed=Case(When(modified__gt=date_time, then=Value(True)), default=Value(False),
+                                  output_field=BooleanField())).values_list('changed', flat=True)
+
+        if True in university_info_changes:
+            result['base_names'].append(UniversityInfo.basename)
 
         result['timestamp'] = int(datetime.timestamp(datetime.now()))
         return Response(result)
@@ -152,6 +159,6 @@ class ClassTimeAPIView(RetrieveModelMixin, GenericViewSet):
     serializer_class = ClassTimeSerializer
 
 
-class UniversityInfoAPIView(ListModelMixin, GenericViewSet):
+class UniversityInfoAPIView(SyncMixin, ListModelMixin, GenericViewSet):
     queryset = UniversityInfo.objects.all()
     serializer_class = UniversityInfoSerializer
