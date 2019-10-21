@@ -12,6 +12,8 @@ V1 = {
     r'groups': university.GroupAPIView,
     r'subgroups': university.SubgroupAPIView,
 
+    r'university': university.UniversityAPIView,
+
     r'subscriptions': university.SubscriptionAPIView,
     r'timetables': university.TimetableAPIView,
     r'classes': university.ClassAPIView,

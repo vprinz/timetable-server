@@ -11,7 +11,6 @@ from .models import Faculty, Occupation, Group, Subgroup, Subscription, Timetbal
 
 class FacultyFactory(factory.DjangoModelFactory):
     title = factory.Sequence(lambda n: 'Faculty {0}'.format(n))
-    current_type_of_week = factory.fuzzy.FuzzyInteger(low=0, high=1)
 
     class Meta:
         model = Faculty
