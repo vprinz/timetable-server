@@ -7,12 +7,13 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED
 from rest_framework.viewsets import GenericViewSet
 
+from common.mixins import LoginNotRequiredMixin
 from .forms import AuthenticationForm
 from .models import User
 from .serializers import UserSerializer
 
 
-class UserAPIView(GenericViewSet):
+class UserAPIView(LoginNotRequiredMixin, GenericViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
@@ -41,10 +42,6 @@ class UserAPIView(GenericViewSet):
             errors = json.loads(form.errors.as_json())
             error_data = {e: [code.get('code')] for e, codes in errors.items() for code in codes}
             return Response(error_data, status=HTTP_400_BAD_REQUEST)
-
-    @action(methods=['get'], detail=False)
-    def test(self, request, *args, **kwargs):
-        return Response(request.user.is_authenticated)
 
     @action(methods=['patch'], detail=False, url_path='info', permission_classes=[IsAuthenticated])
     def user_info(self, request, *args, **kwargs):

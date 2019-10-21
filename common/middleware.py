@@ -32,7 +32,7 @@ class HeaderSessionMiddleware(SessionMiddleware):
             pass
         else:
             # First check if we need to delete this cookie.
-            # The session should be deleted only if the session is entirely empty
+            # The session should be deleted only if the session is entirely empty.
             if self.cookie_name in request.META and empty:
                 pass
             else:

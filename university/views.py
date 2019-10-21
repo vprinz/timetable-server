@@ -16,7 +16,7 @@ from .serializers import (FacultySerializer, OccupationSerializer, GroupSerializ
                           ClassTimeSerializer, UniversityInfoSerializer)
 
 
-class FantasticFourAPIView(UniversityInfoMixin, ListModelMixin, GenericViewSet):
+class FantasticFourAPIView(UniversityInfoMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):
     pass
 
 
@@ -52,7 +52,7 @@ class SubgroupAPIView(FantasticFourAPIView):
         return self.queryset.filter(group_id=group_id)
 
 
-class UniversityAPIView(LoginNotRequiredMixin, GenericViewSet):
+class UniversityAPIView(GenericViewSet):
     @required_params
     @action(methods=['post'], detail=False, url_path='diff')
     def diff_basename(self, request, timestamp, *args, **kwargs):
@@ -149,16 +149,16 @@ class ClassAPIView(SyncMixin, ListModelMixin, GenericViewSet):
             return self.queryset.filter(timetable__subgroup__subscription__in=subscriptions)
 
 
-class LectureAPIView(SyncMixin, RetrieveModelMixin, GenericViewSet):
+class LectureAPIView(SyncMixin, LoginNotRequiredMixin, RetrieveModelMixin, GenericViewSet):
     queryset = Lecturer.objects.all()
     serializer_class = LecturerSerializer
 
 
-class ClassTimeAPIView(RetrieveModelMixin, GenericViewSet):
+class ClassTimeAPIView(LoginNotRequiredMixin, RetrieveModelMixin, GenericViewSet):
     queryset = ClassTime.objects.all()
     serializer_class = ClassTimeSerializer
 
 
-class UniversityInfoAPIView(SyncMixin, ListModelMixin, GenericViewSet):
+class UniversityInfoAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):
     queryset = UniversityInfo.objects.all()
     serializer_class = UniversityInfoSerializer
