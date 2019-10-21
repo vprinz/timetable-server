@@ -5,9 +5,10 @@ from datetime import datetime, timedelta
 from rest_framework.status import HTTP_200_OK
 
 from common.tests import BaseAPITestCase
+from common.utils import TypeWeek
 from users.factories import UserFactory
 from ..factories import TimetableFactory, ClassFactory, SubscriptionFactory
-from ..models import Timetbale, Class, Subscription, Subgroup
+from ..models import Class, Subscription, Subgroup
 from ..serializers import ClassSerializer
 
 
@@ -26,7 +27,7 @@ class RestAPIClass(BaseAPITestCase):
     def setUpClass(cls):
         super(RestAPIClass, cls).setUpClass()
         cls.subscriptions = Subscription.objects.filter(user=cls.user)
-        timetable = TimetableFactory(subgroup=cls.subgroup_35_1, type_of_week=Timetbale.DENOMINATOR)
+        timetable = TimetableFactory(subgroup=cls.subgroup_35_1, type_of_week=TypeWeek.denominator.value)
         cls.class_theory_games_factory = ClassFactory(title='Теория игр (для self.user)', timetable=timetable)
 
     def test_list(self):
@@ -41,7 +42,7 @@ class RestAPIClass(BaseAPITestCase):
 
     def test_list_without_subscription(self):
         subgroup_35_2 = Subgroup.objects.get(group=self.group_35, number='2')
-        timetable = TimetableFactory(subgroup=subgroup_35_2, type_of_week=Timetbale.NUMERATOR)
+        timetable = TimetableFactory(subgroup=subgroup_35_2, type_of_week=TypeWeek.numerator.value)
         ClassFactory.create_batch(3, timetable=timetable)
         url = self.reverse_with_query_params('classes-list', query_name='timetable_id',
                                              kwargs={'get': timetable.id})
@@ -55,7 +56,8 @@ class RestAPIClass(BaseAPITestCase):
         new_user = UserFactory()
         subgroup_35_2 = Subgroup.objects.get(group=self.group_35, number='2')
         SubscriptionFactory(subgroup=subgroup_35_2, user=new_user)
-        timetable_factory_denominator = TimetableFactory(subgroup=subgroup_35_2, type_of_week=Timetbale.DENOMINATOR)
+        timetable_factory_denominator = TimetableFactory(subgroup=subgroup_35_2,
+                                                         type_of_week=TypeWeek.denominator.value)
         ClassFactory(title='Физика', timetable=timetable_factory_denominator)
 
         # Class for self.user. This class_id should be in response.

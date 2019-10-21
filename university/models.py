@@ -1,9 +1,27 @@
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 
 from common.models import CommonModel
+from common.utils import TypeWeek
 
 
-class Faculty(models.Model):
+class FantasticFourModel(models.Model):
+    """
+    Main model for four classes which appear during start app.
+    (Faculty, Occupation, Group, Subgroup).
+    """
+
+    @classmethod
+    def content_type(cls):
+        return ContentType.objects.get_for_model(cls)
+
+    class Meta:
+        abstract = True
+
+
+class Faculty(FantasticFourModel):
     title = models.CharField(max_length=256, unique=True)
 
     class Meta:
@@ -14,7 +32,7 @@ class Faculty(models.Model):
         return self.title
 
 
-class Occupation(models.Model):
+class Occupation(FantasticFourModel):
     title = models.CharField(max_length=256, unique=True)
     code = models.CharField(max_length=10, unique=True)
     faculty = models.ForeignKey(Faculty, related_name='occupations', null=True, on_delete=models.CASCADE)
@@ -28,7 +46,7 @@ class Occupation(models.Model):
         return f'{self.title}'
 
 
-class Group(models.Model):
+class Group(FantasticFourModel):
     number = models.CharField(max_length=10, unique=True)
     occupation = models.ForeignKey(Occupation, related_name='groups', null=True, on_delete=models.CASCADE)
 
@@ -40,7 +58,7 @@ class Group(models.Model):
         return self.number
 
 
-class Subgroup(models.Model):
+class Subgroup(FantasticFourModel):
     number = models.CharField(max_length=1)
     group = models.ForeignKey(Group, related_name='subgroups', null=True, on_delete=models.CASCADE)
 
@@ -70,15 +88,7 @@ class Subscription(CommonModel):
 
 
 class Timetbale(CommonModel):
-    NUMERATOR = 0
-    DENOMINATOR = 1
-
-    TYPE_OF_WEEK = (
-        (NUMERATOR, 'Числитель'),
-        (DENOMINATOR, 'Знаменатель')
-    )
-
-    type_of_week = models.SmallIntegerField(choices=TYPE_OF_WEEK, help_text='Тип недели')
+    type_of_week = models.SmallIntegerField(choices=TypeWeek.all(), help_text='Тип недели')
     subgroup = models.ForeignKey(Subgroup, on_delete=models.CASCADE)
 
     basename = 'timetables'
@@ -89,7 +99,7 @@ class Timetbale(CommonModel):
         verbose_name_plural = 'Расписания'
 
     def __str__(self):
-        return f'Расписание для {self.subgroup} группы | {self.TYPE_OF_WEEK[self.type_of_week][1]}'
+        return f'Расписание для {self.subgroup} группы | {TypeWeek.get_by_value(self.type_of_week)}'
 
     def get_faculty(self):
         return self.subgroup.group.occupation.faculty.id
@@ -167,3 +177,15 @@ class Class(CommonModel):
 
     def __str__(self):
         return f'{self.title} | {self.timetable.subgroup}'
+
+
+class UniversityInfo(CommonModel):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey()
+    data = JSONField(default=dict)
+
+    basename = 'university-info'
+
+    class Meta:
+        verbose_name_plural = 'University Info'
