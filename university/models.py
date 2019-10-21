@@ -25,8 +25,7 @@ class Faculty(FantasticFourModel):
     title = models.CharField(max_length=256, unique=True)
 
     class Meta:
-        verbose_name = 'Факультет'
-        verbose_name_plural = 'Факультеты'
+        verbose_name_plural = 'Faculties'
 
     def __str__(self):
         return self.title
@@ -39,8 +38,6 @@ class Occupation(FantasticFourModel):
 
     class Meta:
         unique_together = ('title', 'code')
-        verbose_name = 'Направление'
-        verbose_name_plural = 'Направления'
 
     def __str__(self):
         return f'{self.title}'
@@ -51,8 +48,8 @@ class Group(FantasticFourModel):
     occupation = models.ForeignKey(Occupation, related_name='groups', null=True, on_delete=models.CASCADE)
 
     class Meta:
-        verbose_name = 'Группа студента'
-        verbose_name_plural = 'Группы студентов'
+        verbose_name = 'Group of student'
+        verbose_name_plural = 'Groups of students'
 
     def __str__(self):
         return self.number
@@ -63,8 +60,8 @@ class Subgroup(FantasticFourModel):
     group = models.ForeignKey(Group, related_name='subgroups', null=True, on_delete=models.CASCADE)
 
     class Meta:
-        verbose_name = 'Подгруппа студента'
-        verbose_name_plural = 'Подгруппы студентов'
+        verbose_name = 'Subgroup of student'
+        verbose_name_plural = 'Subgroups of students'
 
     def __str__(self):
         return f'{self.group.number}/{self.number}'
@@ -80,8 +77,6 @@ class Subscription(CommonModel):
 
     class Meta:
         unique_together = ('user', 'subgroup')
-        verbose_name = 'Подписка'
-        verbose_name_plural = 'Подписки'
 
     def __str__(self):
         return self.title
@@ -95,8 +90,6 @@ class Timetbale(CommonModel):
 
     class Meta:
         unique_together = ('subgroup', 'type_of_week')
-        verbose_name = 'Расписание'
-        verbose_name_plural = 'Расписания'
 
     def __str__(self):
         return f'Расписание для {self.subgroup} группы | {TypeWeek.get_by_value(self.type_of_week)}'
@@ -111,8 +104,8 @@ class ClassTime(models.Model):
     end = models.TimeField()
 
     class Meta:
-        verbose_name = 'Номер пары'
-        verbose_name_plural = 'Номера пар'
+        verbose_name = 'Number of class'
+        verbose_name_plural = 'Numbers of classes'
 
     def __str__(self):
         return f'{self.number}-ая пара'
@@ -124,10 +117,6 @@ class Lecturer(CommonModel):
     surname = models.CharField(max_length=64)
 
     basename = 'lecturers'
-
-    class Meta:
-        verbose_name = 'Преподаватель'
-        verbose_name_plural = 'Преподаватели'
 
     def __str__(self):
         return f'{self.name} {self.surname}'
@@ -172,8 +161,7 @@ class Class(CommonModel):
 
     class Meta:
         unique_together = ('timetable', 'class_time', 'weekday')
-        verbose_name = 'Занятие'
-        verbose_name_plural = 'Занятия'
+        verbose_name_plural = 'Classes'
 
     def __str__(self):
         return f'{self.title} | {self.timetable.subgroup}'

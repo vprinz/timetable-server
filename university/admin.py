@@ -24,7 +24,7 @@ class ClassInline(admin.TabularInline):
 @admin.register(Faculty)
 class FacultyAdmin(admin.ModelAdmin):
     list_display = ('id', 'title')
-    fields = ('title', 'current_type_of_week')
+    fields = ('title',)
     inlines = (OccupationInline,)
 
 

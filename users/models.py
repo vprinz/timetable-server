@@ -56,12 +56,8 @@ class User(PermissionsMixin, AbstractBaseUser):
                   'учетных записей.'
     )
 
-    class Meta:
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'
-
     def get_full_name(self):
-        return self.first_name + ' ' + self.last_name
+        return f'{self.first_name} {self.last_name}'
 
 
 class Device(models.Model):
@@ -76,10 +72,6 @@ class Device(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     token = models.CharField(max_length=255)
     platform = models.CharField(max_length=20, choices=PLATFORMS)
-
-    class Meta:
-        verbose_name = 'Устройство'
-        verbose_name_plural = 'Устройства'
 
     def __str__(self):
         return f'{self.user} | {self.platform}'
