@@ -1,15 +1,28 @@
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.postgres.fields import JSONField
 from django.db import models
-from django.utils import timezone
 
 from common.models import CommonModel
 from common.utils import TypeWeek
 
 
-class Faculty(models.Model):
+class FantasticFourModel(models.Model):
+    """
+    Main model for four classes which appear during start app.
+    (Faculty, Occupation, Group, Subgroup).
+    """
+
+    @classmethod
+    def content_type(cls):
+        return ContentType.objects.get_for_model(cls)
+
+    class Meta:
+        abstract = True
+
+
+class Faculty(FantasticFourModel):
     title = models.CharField(max_length=256, unique=True)
-    current_type_of_week = models.SmallIntegerField(choices=TypeWeek.all())
 
     class Meta:
         verbose_name = 'Факультет'
@@ -18,18 +31,8 @@ class Faculty(models.Model):
     def __str__(self):
         return self.title
 
-    @classmethod
-    def content_type(cls):
-        return ContentType.objects.get_for_model(cls)
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        # "modified" field should be updated for sync() method
-        super(Faculty, self).save()
-        UniversityInfo.objects.filter(content_type=self.content_type(), object_id=self.id). \
-            update(modified=timezone.now())
-
-
-class Occupation(models.Model):
+class Occupation(FantasticFourModel):
     title = models.CharField(max_length=256, unique=True)
     code = models.CharField(max_length=10, unique=True)
     faculty = models.ForeignKey(Faculty, related_name='occupations', null=True, on_delete=models.CASCADE)
@@ -43,7 +46,7 @@ class Occupation(models.Model):
         return f'{self.title}'
 
 
-class Group(models.Model):
+class Group(FantasticFourModel):
     number = models.CharField(max_length=10, unique=True)
     occupation = models.ForeignKey(Occupation, related_name='groups', null=True, on_delete=models.CASCADE)
 
@@ -55,7 +58,7 @@ class Group(models.Model):
         return self.number
 
 
-class Subgroup(models.Model):
+class Subgroup(FantasticFourModel):
     number = models.CharField(max_length=1)
     group = models.ForeignKey(Group, related_name='subgroups', null=True, on_delete=models.CASCADE)
 
@@ -180,13 +183,7 @@ class UniversityInfo(CommonModel):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey()
+    data = JSONField(default=dict)
 
-    @classmethod
-    def get_info(self):
-        """
-        :return: list of faculty_id and their current_type_of_week
-        """
-        faculties_ids = self.objects.filter(content_type=Faculty.content_type()).values_list('object_id', flat=True)
-        faculties = Faculty.objects.filter(id__in=faculties_ids)
-        result = [{'faculty_id': f.id, 'current_type_of_week': f.current_type_of_week} for f in faculties]
-        return result
+    class Meta:
+        verbose_name_plural = 'University Info'

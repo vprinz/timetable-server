@@ -8,6 +8,7 @@ from rest_framework.status import HTTP_201_CREATED
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from common.mixins import LoginNotRequiredMixin, SyncMixin, required_params
+from .mixins import UniversityInfoMixin
 from .models import (Faculty, Occupation, Group, Subgroup, Subscription, Timetbale, Class, Lecturer, ClassTime,
                      UniversityInfo)
 from .serializers import (FacultySerializer, OccupationSerializer, GroupSerializer, SubgroupSerializer,
@@ -15,34 +16,43 @@ from .serializers import (FacultySerializer, OccupationSerializer, GroupSerializ
                           ClassTimeSerializer, UniversityInfoSerializer)
 
 
+class FantasticFourAPIView(UniversityInfoMixin, ListModelMixin, GenericViewSet):
+    pass
+
+
+class FacultyAPIView(FantasticFourAPIView):
+    queryset = Faculty.objects.all()
+    serializer_class = FacultySerializer
+
+
+class OccupationAPIView(FantasticFourAPIView):
+    queryset = Occupation.objects.all()
+    serializer_class = OccupationSerializer
+
+    def get_queryset(self):
+        faculty_id = self.request.GET.get('faculty_id')
+        return self.queryset.filter(faculty_id=faculty_id)
+
+
+class GroupAPIView(FantasticFourAPIView):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+
+    def get_queryset(self):
+        occupation_id = self.request.GET.get('occupation_id')
+        return self.queryset.filter(occupation_id=occupation_id)
+
+
+class SubgroupAPIView(FantasticFourAPIView):
+    queryset = Subgroup.objects.all()
+    serializer_class = SubgroupSerializer
+
+    def get_queryset(self):
+        group_id = self.request.GET.get('group_id')
+        return self.queryset.filter(group_id=group_id)
+
+
 class UniversityAPIView(LoginNotRequiredMixin, GenericViewSet):
-    @action(methods=['get'], detail=False)
-    def faculties(self, request, *args, **kwargs):
-        queryset = Faculty.objects.all()
-        serializer = FacultySerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    @action(methods=['get'], detail=False)
-    def occupations(self, request, *args, **kwargs):
-        faculty_id = request.GET.get('faculty_id')
-        instance = Occupation.objects.filter(faculty_id=faculty_id)
-        serializer = OccupationSerializer(instance, many=True)
-        return Response(serializer.data)
-
-    @action(methods=['get'], detail=False)
-    def groups(self, request, *args, **kwargs):
-        occupation_id = request.GET.get('occupation_id')
-        instance = Group.objects.filter(occupation_id=occupation_id)
-        serializer = GroupSerializer(instance, many=True)
-        return Response(serializer.data)
-
-    @action(methods=['get'], detail=False)
-    def subgroups(self, request, *args, **kwargs):
-        group_id = request.GET.get('group_id')
-        instance = Subgroup.objects.filter(group_id=group_id)
-        serializer = SubgroupSerializer(instance, many=True)
-        return Response(serializer.data)
-
     @required_params
     @action(methods=['post'], detail=False, url_path='diff')
     def diff_basename(self, request, timestamp, *args, **kwargs):

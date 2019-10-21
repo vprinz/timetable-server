@@ -52,4 +52,4 @@ class LecturerAdmin(admin.ModelAdmin):
 
 @admin.register(UniversityInfo)
 class UniversityInfoAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('id', 'content_type', 'object_id')

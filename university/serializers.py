@@ -71,8 +71,6 @@ class ClassTimeSerializer(ModelSerializer):
 
 
 class UniversityInfoSerializer(ModelSerializer):
-    info = ReadOnlyField(source='get_info')
-
     class Meta:
         model = UniversityInfo
-        fields = ('info',)
+        fields = ('id', 'object_id', 'data')

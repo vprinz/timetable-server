@@ -6,13 +6,17 @@ from users import views as users
 
 V1 = {
     r'users': users.UserAPIView,
-    r'university': university.UniversityAPIView,
+
+    r'faculties': university.FacultyAPIView,
+    r'occupations': university.OccupationAPIView,
+    r'groups': university.GroupAPIView,
+    r'subgroups': university.SubgroupAPIView,
+
     r'subscriptions': university.SubscriptionAPIView,
     r'timetables': university.TimetableAPIView,
     r'classes': university.ClassAPIView,
     r'lecturers': university.LectureAPIView,
     r'class-times': university.ClassTimeAPIView,
-    r'university-info': university.UniversityInfoAPIView,
 }
 
 
