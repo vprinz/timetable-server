@@ -73,7 +73,7 @@ class UniversityAPIView(GenericViewSet):
             },
             Class: {
                 'basename': Class.basename,
-                'related_user_path': 'timetable__subgroup__subscription__user'
+                'related_user_path': Class.related_user_path
             },
             Lecturer: {
                 'basename': Lecturer.basename,

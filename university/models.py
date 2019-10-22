@@ -158,6 +158,7 @@ class Class(CommonModel):
     timetable = models.ForeignKey(Timetbale, on_delete=models.CASCADE)
 
     basename = 'classes'
+    related_user_path = 'timetable__subgroup__subscription__user'
 
     class Meta:
         unique_together = ('timetable', 'class_time', 'weekday')
