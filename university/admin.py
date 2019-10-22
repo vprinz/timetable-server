@@ -35,8 +35,8 @@ class GroupAdmin(admin.ModelAdmin):
 
 @admin.register(Timetbale)
 class TimetableAdmin(admin.ModelAdmin):
-    fields = ('type_of_week', 'subgroup', ('created', 'modified'))
-    readonly_fields = ('created', 'modified')
+    fields = ('id', 'type_of_week', 'subgroup', ('created', 'modified'))
+    readonly_fields = ('id', 'created', 'modified')
     inlines = (ClassInline,)
 
 
