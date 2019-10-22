@@ -69,6 +69,14 @@ class ClassTimeSerializer(ModelSerializer):
         model = ClassTime
         fields = ('id', 'number', 'start', 'end')
 
+    def to_representation(self, instance):
+        response = super(ClassTimeSerializer, self).to_representation(instance)
+        response.update({
+            'start': instance.start.strftime('%H:%M'),
+            'end': instance.end.strftime('%H:%M')
+        })
+        return response
+
 
 class UniversityInfoSerializer(ModelSerializer):
     class Meta:
