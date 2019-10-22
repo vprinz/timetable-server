@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 
@@ -19,7 +20,7 @@ class LoginNotRequiredMixin:
 class SyncMixin:
 
     @required_params
-    @action(methods=['post'], detail=False)
+    @action(methods=['post'], detail=False, permission_classes=[IsAuthenticated])
     def sync(self, request, existing_ids, timestamp, *args, **kwargs):
         """
         :param existing_ids: all ids which exist on client.
@@ -39,7 +40,7 @@ class SyncMixin:
         result = serializer.data
         return result
 
-    @action(methods=['post'], detail=False)
+    @action(methods=['post'], detail=False, permission_classes=[IsAuthenticated])
     def meta(self, request, *args, **kwargs):
         """
         :return: a list with an information of all instances that belongs to certain model.

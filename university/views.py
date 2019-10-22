@@ -132,8 +132,14 @@ class TimetableAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, Generic
     serializer_class = TimetableSerializer
 
     def get_queryset(self):
+        # if subgroup_id is used - get timetables (GET url - /.../timetables/?subgroup_id=<subgroup_id>)
+        # if subgroup_id isn't used - for sync/meta methods (POST url - /.../timetables/sync/)
         subgroup_id = self.request.query_params.get('subgroup_id')
-        return self.queryset.filter(subgroup_id=subgroup_id)
+        if subgroup_id:
+            return self.queryset.filter(subgroup_id=subgroup_id)
+        else:
+            subscriptions = Subscription.objects.filter(user=self.request.user)
+            return self.queryset.filter(subgroup__subscription__in=subscriptions)
 
 
 class ClassAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):
@@ -141,8 +147,14 @@ class ClassAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericView
     serializer_class = ClassSerializer
 
     def get_queryset(self):
+        # if timetable_id is used - get classes (GET url - /.../classes/?timetable_id=<timetable_id>)
+        # if timetable_id isn't used - for sync/meta methods (POST url - /.../classes/sync/)
         timetable_id = self.request.query_params.get('timetable_id')
-        return self.queryset.filter(timetable_id=timetable_id)
+        if timetable_id:
+            return self.queryset.filter(timetable_id=timetable_id)
+        else:
+            subscriptions = Subscription.objects.filter(user=self.request.user)
+            return self.queryset.filter(timetable__subgroup__subscription__in=subscriptions)
 
 
 class LectureAPIView(SyncMixin, LoginNotRequiredMixin, RetrieveModelMixin, GenericViewSet):

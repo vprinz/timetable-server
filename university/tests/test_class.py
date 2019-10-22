@@ -34,8 +34,7 @@ class RestAPIClass(BaseAPITestCase):
         url = self.reverse_with_query_params('classes-list', query_name='timetable_id',
                                              kwargs={'get': self.timetable.id})
         response = self.client.get(url)
-        classes = Class.objects.filter(timetable__subgroup__subscription__in=self.subscriptions,
-                                       timetable_id=self.timetable.id)
+        classes = Class.objects.filter(timetable_id=self.timetable.id)
 
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(response.data, ClassSerializer(classes, many=True).data)
@@ -43,13 +42,14 @@ class RestAPIClass(BaseAPITestCase):
     def test_list_without_subscription(self):
         subgroup_35_2 = Subgroup.objects.get(group=self.group_35, number='2')
         timetable = TimetableFactory(subgroup=subgroup_35_2, type_of_week=TypeWeek.numerator.value)
-        ClassFactory.create_batch(3, timetable=timetable)
+        classes = ClassFactory.create_batch(3, timetable=timetable)
         url = self.reverse_with_query_params('classes-list', query_name='timetable_id',
                                              kwargs={'get': timetable.id})
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, HTTP_200_OK)
-        self.assertEqual(response.data, list())
+        self.assertEqual(response.data, ClassSerializer(classes, many=True).data)
+        self.assertEqual(set(data['timetable_id'] for data in response.data), {timetable.id})
 
     def test_sync(self):
         # Class for other user. This class_id shouldn't be in response.

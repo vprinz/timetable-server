@@ -29,8 +29,7 @@ class BaseAPITestCase(APITestCase):
         cls.timetable = TimetableFactory(subgroup=cls.subgroup_35_1, type_of_week=TypeWeek.numerator.value)
         cls.class_delphi = ClassFactory(title='Программирование в Delphi (для self.user)', timetable=cls.timetable)
         cls.subscription = SubscriptionFactory(title='Расписание на 1 семестр.', user=cls.user,
-                                               subgroup=cls.subgroup_35_1,
-                                               is_main=True)
+                                               subgroup=cls.subgroup_35_1, is_main=True)
 
     def setUp(self):
         self.client.force_login(user=self.user)
