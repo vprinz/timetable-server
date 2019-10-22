@@ -9,15 +9,14 @@ class Pusher:
         push_service = FCMNotification(api_key=settings.FIREBASE_API_KEY)
         return push_service
 
-    def send_notification(self, users, updated_ids):
-        message_title = 'updating'
-        data_message = {'ids': updated_ids}
-        registration_ids = list()
-        for user in users:
-            user_tokens = user.device_set.all().values_list('token', flat=True)
-            for token in user_tokens:
-                registration_ids.append(token)
-
+    def send_notification(self, users, updated_ids, basename):
+        data_message = {
+            'message_title': 'updating',
+            'basename': basename,
+            'ids': updated_ids
+        }
+        print(data_message)
+        registration_ids = list(users.exclude(device=None).values_list('device__token', flat=True))
         result = self.fcm.multiple_devices_data_message(registration_ids=registration_ids, data_message=data_message)
         print(result)
         return result

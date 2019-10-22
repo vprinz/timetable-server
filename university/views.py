@@ -65,11 +65,11 @@ class UniversityAPIView(GenericViewSet):
         models = {
             Subscription: {
                 'basename': Subscription.basename,
-                'related_user_path': 'user'
+                'related_user_path': Subscription.related_user_path
             },
             Timetbale: {
                 'basename': Timetbale.basename,
-                'related_user_path': 'subgroup__subscription__user'
+                'related_user_path': Timetbale.related_user_path
             },
             Class: {
                 'basename': Class.basename,
@@ -77,7 +77,7 @@ class UniversityAPIView(GenericViewSet):
             },
             Lecturer: {
                 'basename': Lecturer.basename,
-                'related_user_path': 'class__timetable__subgroup__subscription__user'
+                'related_user_path': Lecturer.related_user_path
             }
         }
 

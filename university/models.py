@@ -74,6 +74,7 @@ class Subscription(CommonModel):
     is_main = models.BooleanField(default=False)
 
     basename = 'subscriptions'
+    related_user_path = 'user'
 
     class Meta:
         unique_together = ('user', 'subgroup')
@@ -87,6 +88,7 @@ class Timetbale(CommonModel):
     subgroup = models.ForeignKey(Subgroup, on_delete=models.CASCADE)
 
     basename = 'timetables'
+    related_user_path = 'subgroup__subscription__user'
 
     class Meta:
         unique_together = ('subgroup', 'type_of_week')
@@ -117,6 +119,7 @@ class Lecturer(CommonModel):
     surname = models.CharField(max_length=64)
 
     basename = 'lecturers'
+    related_user_path = 'class__timetable__subgroup__subscription__user'
 
     def __str__(self):
         return f'{self.name} {self.surname}'
