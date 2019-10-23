@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Faculty, Occupation, Group, Subgroup, Timetbale, ClassTime, Lecturer, Class
+from .models import Faculty, Occupation, Group, Subgroup, Timetbale, ClassTime, Lecturer, Class, UniversityInfo
 
 
 class SubgroupInline(admin.TabularInline):
@@ -35,8 +35,8 @@ class GroupAdmin(admin.ModelAdmin):
 
 @admin.register(Timetbale)
 class TimetableAdmin(admin.ModelAdmin):
-    fields = ('type_of_week', 'subgroup', ('created', 'modified'))
-    readonly_fields = ('created', 'modified')
+    fields = ('id', 'type_of_week', 'subgroup', ('created', 'modified'))
+    readonly_fields = ('id', 'created', 'modified')
     inlines = (ClassInline,)
 
 
@@ -48,3 +48,8 @@ class ClassTimeAdmin(admin.ModelAdmin):
 @admin.register(Lecturer)
 class LecturerAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(UniversityInfo)
+class UniversityInfoAdmin(admin.ModelAdmin):
+    list_display = ('id', 'content_type', 'object_id')

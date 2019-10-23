@@ -1,52 +1,67 @@
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 
 from common.models import CommonModel
+from common.utils import TypeWeek
 
 
-class Faculty(models.Model):
+class FantasticFourModel(models.Model):
+    """
+    Main model for four classes which appear during start app.
+    (Faculty, Occupation, Group, Subgroup).
+    """
+
+    @classmethod
+    def content_type(cls):
+        return ContentType.objects.get_for_model(cls)
+
+    class Meta:
+        abstract = True
+
+
+class Faculty(FantasticFourModel):
     title = models.CharField(max_length=256, unique=True)
 
     class Meta:
-        verbose_name = 'Факультет'
-        verbose_name_plural = 'Факультеты'
+        verbose_name_plural = 'Faculties'
 
     def __str__(self):
         return self.title
 
 
-class Occupation(models.Model):
+class Occupation(FantasticFourModel):
     title = models.CharField(max_length=256, unique=True)
     code = models.CharField(max_length=10, unique=True)
     faculty = models.ForeignKey(Faculty, related_name='occupations', null=True, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ('title', 'code')
-        verbose_name = 'Направление'
-        verbose_name_plural = 'Направления'
 
     def __str__(self):
         return f'{self.title}'
 
 
-class Group(models.Model):
+class Group(FantasticFourModel):
     number = models.CharField(max_length=10, unique=True)
     occupation = models.ForeignKey(Occupation, related_name='groups', null=True, on_delete=models.CASCADE)
 
     class Meta:
-        verbose_name = 'Группа студента'
-        verbose_name_plural = 'Группы студентов'
+        verbose_name = 'Group of student'
+        verbose_name_plural = 'Groups of students'
 
     def __str__(self):
         return self.number
 
 
-class Subgroup(models.Model):
+class Subgroup(FantasticFourModel):
     number = models.CharField(max_length=1)
     group = models.ForeignKey(Group, related_name='subgroups', null=True, on_delete=models.CASCADE)
 
     class Meta:
-        verbose_name = 'Подгруппа студента'
-        verbose_name_plural = 'Подгруппы студентов'
+        verbose_name = 'Subgroup of student'
+        verbose_name_plural = 'Subgroups of students'
 
     def __str__(self):
         return f'{self.group.number}/{self.number}'
@@ -59,37 +74,27 @@ class Subscription(CommonModel):
     is_main = models.BooleanField(default=False)
 
     basename = 'subscriptions'
+    related_user_path = 'user'
 
     class Meta:
         unique_together = ('user', 'subgroup')
-        verbose_name = 'Подписка'
-        verbose_name_plural = 'Подписки'
 
     def __str__(self):
         return self.title
 
 
 class Timetbale(CommonModel):
-    NUMERATOR = 0
-    DENOMINATOR = 1
-
-    TYPE_OF_WEEK = (
-        (NUMERATOR, 'Числитель'),
-        (DENOMINATOR, 'Знаменатель')
-    )
-
-    type_of_week = models.SmallIntegerField(choices=TYPE_OF_WEEK, help_text='Тип недели')
+    type_of_week = models.SmallIntegerField(choices=TypeWeek.all(), help_text='Тип недели')
     subgroup = models.ForeignKey(Subgroup, on_delete=models.CASCADE)
 
     basename = 'timetables'
+    related_user_path = 'subgroup__subscription__user'
 
     class Meta:
         unique_together = ('subgroup', 'type_of_week')
-        verbose_name = 'Расписание'
-        verbose_name_plural = 'Расписания'
 
     def __str__(self):
-        return f'Расписание для {self.subgroup} группы | {self.TYPE_OF_WEEK[self.type_of_week][1]}'
+        return f'Расписание для {self.subgroup} группы | {TypeWeek.get_by_value(self.type_of_week)}'
 
     def get_faculty(self):
         return self.subgroup.group.occupation.faculty.id
@@ -101,8 +106,8 @@ class ClassTime(models.Model):
     end = models.TimeField()
 
     class Meta:
-        verbose_name = 'Номер пары'
-        verbose_name_plural = 'Номера пар'
+        verbose_name = 'Number of class'
+        verbose_name_plural = 'Numbers of classes'
 
     def __str__(self):
         return f'{self.number}-ая пара'
@@ -114,10 +119,7 @@ class Lecturer(CommonModel):
     surname = models.CharField(max_length=64)
 
     basename = 'lecturers'
-
-    class Meta:
-        verbose_name = 'Преподаватель'
-        verbose_name_plural = 'Преподаватели'
+    related_user_path = 'class__timetable__subgroup__subscription__user'
 
     def __str__(self):
         return f'{self.name} {self.surname}'
@@ -159,11 +161,23 @@ class Class(CommonModel):
     timetable = models.ForeignKey(Timetbale, on_delete=models.CASCADE)
 
     basename = 'classes'
+    related_user_path = 'timetable__subgroup__subscription__user'
 
     class Meta:
         unique_together = ('timetable', 'class_time', 'weekday')
-        verbose_name = 'Занятие'
-        verbose_name_plural = 'Занятия'
+        verbose_name_plural = 'Classes'
 
     def __str__(self):
         return f'{self.title} | {self.timetable.subgroup}'
+
+
+class UniversityInfo(CommonModel):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey()
+    data = JSONField(default=dict)
+
+    basename = 'university-info'
+
+    class Meta:
+        verbose_name_plural = 'University Info'

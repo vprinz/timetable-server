@@ -56,12 +56,8 @@ class User(PermissionsMixin, AbstractBaseUser):
                   'учетных записей.'
     )
 
-    class Meta:
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'
-
     def get_full_name(self):
-        return self.first_name + ' ' + self.last_name
+        return f'{self.first_name} {self.last_name}'
 
     def set_device(self, params):
         token = params.get('token')

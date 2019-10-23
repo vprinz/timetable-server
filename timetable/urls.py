@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^$', views.home_page),
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include('api.urls')),
+    url(r'^university-info/', views.UniversityInfo.as_view(), name='university-info'),
 ]
 
 schema_view = get_swagger_view(title='Timetable API')

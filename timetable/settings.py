@@ -21,6 +21,28 @@ LOG_DIR = os.path.join(BASE_DIR, '../logs/')
 ADMINS = [('Valera Pavlikov', 'vokler98@gmail.com')]
 ALLOWED_HOSTS = ['*']
 
+# CORS
+CORS_ORIGIN_ALLOW_ALL = True  # redefined for iframe in XFrameMiddleware
+CORS_ALLOW_CREDENTIALS = True
+CORS_EXPOSE_HEADERS = ['sessionid']
+CORS_ALLOW_HEADERS = default_headers = (
+    'X-Requested-With',
+    'Content-Type',
+    'Cache-Control',
+    'Accept',
+    'Origin',
+    'Authorization',
+    'X-CSRFToken',
+    'User-Agent',
+    'Accept-Encoding',
+    'sessionid',
+    'If-Modified-Since',
+    'Content-Length',
+    'Keep-Alive',
+    'Range',
+    'X-Frame-Options',
+)
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -31,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'corsheaders',
 
     'rest_framework',
     'rest_framework_swagger',
@@ -41,9 +64,11 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'common.middleware.HeaderSessionMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -70,8 +95,18 @@ LOGGING = {
             'level': 'ERROR',
             'formatter': 'verbose',
         },
+        'infofile': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'formatter': 'verbose',
+            'filename': os.path.join(LOG_DIR, 'django.information'),
+        },
     },
     'loggers': {
+        'informator': {
+            'handlers': ['infofile'],
+            'level': 'DEBUG',
+        },
         'django': {
             'handlers': ['file'],
             'level': 'DEBUG',
@@ -156,7 +191,7 @@ USE_L10N = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, '../static/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'users.User'

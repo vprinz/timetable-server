@@ -1,7 +1,8 @@
 from rest_framework.serializers import ModelSerializer, ReadOnlyField
 from rest_framework.validators import UniqueTogetherValidator
 
-from .models import Faculty, Occupation, Group, Subgroup, Subscription, Timetbale, Class, Lecturer, ClassTime
+from .models import (Faculty, Occupation, Group, Subgroup, Subscription, Timetbale, Class, Lecturer, ClassTime,
+                     UniversityInfo)
 
 
 class FacultySerializer(ModelSerializer):
@@ -31,8 +32,8 @@ class GroupSerializer(ModelSerializer):
 class SubscriptionSerializer(ModelSerializer):
     class Meta:
         model = Subscription
-        extra_kwargs = {'user': {'write_only': True}}
-        fields = ('id', 'title', 'user', 'subgroup', 'is_main')
+        fields = ('id', 'user', 'title', 'subgroup', 'is_main')
+        extra_kwargs = {'user': {'required': False}}
         validators = [
             UniqueTogetherValidator(
                 queryset=Subscription.objects.all(),
@@ -47,7 +48,7 @@ class TimetableSerializer(ModelSerializer):
     class Meta:
         model = Timetbale
         fields = ('id', 'type_of_week', 'subgroup_id', 'faculty_id')
-        read_only_fields = ('id', 'type_of_week', 'subgroup_id')
+        read_only_fields = ('id', 'type_of_week', 'subgroup_id', 'faculty_id')
 
 
 class ClassSerializer(ModelSerializer):
@@ -67,3 +68,17 @@ class ClassTimeSerializer(ModelSerializer):
     class Meta:
         model = ClassTime
         fields = ('id', 'number', 'start', 'end')
+
+    def to_representation(self, instance):
+        response = super(ClassTimeSerializer, self).to_representation(instance)
+        response.update({
+            'start': instance.start.strftime('%H:%M'),
+            'end': instance.end.strftime('%H:%M')
+        })
+        return response
+
+
+class UniversityInfoSerializer(ModelSerializer):
+    class Meta:
+        model = UniversityInfo
+        fields = ('id', 'object_id', 'data')

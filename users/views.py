@@ -36,7 +36,8 @@ class UserAPIView(LoginNotRequiredMixin, GenericViewSet):
             login(request, user)
             request.user.set_device(request.data)
             serializer = self.get_serializer(user)
-            return Response(serializer.data)
+            data = serializer.data
+            return Response(data, headers={'sessionid': request.session.session_key})
         else:
             errors = json.loads(form.errors.as_json())
             error_data = {e: [code.get('code')] for e, codes in errors.items() for code in codes}
@@ -50,6 +51,11 @@ class UserAPIView(LoginNotRequiredMixin, GenericViewSet):
             return Response()
         else:
             return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+    @action(methods=['get'], detail=False)
+    def logout(self, request, *args, **kwargs):
+        logout(request)
+        return Response()
 
     @action(methods=['patch'], detail=False, permission_classes=[IsAuthenticated])
     def device(self, request, *args, **kwargs):
