@@ -32,8 +32,8 @@ class GroupSerializer(ModelSerializer):
 class SubscriptionSerializer(ModelSerializer):
     class Meta:
         model = Subscription
-        extra_kwargs = {'user': {'write_only': True}}
-        fields = ('id', 'title', 'user', 'subgroup', 'is_main')
+        fields = ('id', 'user', 'title', 'subgroup', 'is_main')
+        extra_kwargs = {'user': {'required': False}}
         validators = [
             UniqueTogetherValidator(
                 queryset=Subscription.objects.all(),

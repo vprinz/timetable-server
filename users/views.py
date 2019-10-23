@@ -36,8 +36,7 @@ class UserAPIView(LoginNotRequiredMixin, GenericViewSet):
             login(request, user)
             serializer = self.get_serializer(user)
             data = serializer.data
-            data['sessionid'] = request.session.session_key
-            return Response(data)
+            return Response(data, headers={'sessionid': request.session.session_key})
         else:
             errors = json.loads(form.errors.as_json())
             error_data = {e: [code.get('code')] for e, codes in errors.items() for code in codes}
