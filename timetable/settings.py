@@ -101,10 +101,15 @@ LOGGING = {
             'formatter': 'verbose',
             'filename': os.path.join(LOG_DIR, 'django.information'),
         },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
     },
     'loggers': {
         'informator': {
-            'handlers': ['infofile'],
+            'handlers': ['infofile', 'console'],
             'level': 'DEBUG',
         },
         'django': {
