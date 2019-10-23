@@ -64,8 +64,19 @@ class User(PermissionsMixin, AbstractBaseUser):
         return self.first_name + ' ' + self.last_name
 
     def set_device(self, params):
-        self.device_set.update_or_create(device_identifier=params.get('params'),
-                                         defaults={'token': params.get('token'), 'platform': params.get('platform')})
+        token = params.get('token')
+        platform = params.get('platform')
+        if token and platform:
+            device, created = self.device_set.get_or_create(token=token, defaults={'platform': platform,
+                                                                                   'last_update': timezone.now()})
+
+            if not created:
+                device.token = token
+                device.platform = platform
+                device.last_update = timezone.now()
+                device.save()
+
+            return device
 
 
 class Device(models.Model):
@@ -78,13 +89,9 @@ class Device(models.Model):
     )
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    device_identifier = models.CharField(max_length=32)
     token = models.CharField(max_length=255)
     platform = models.CharField(max_length=20, choices=PLATFORMS)
-
-    class Meta:
-        verbose_name = 'Устройство'
-        verbose_name_plural = 'Устройства'
+    last_update = models.DateTimeField()
 
     def __str__(self):
         return f'{self.user} | {self.platform}'

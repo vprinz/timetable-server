@@ -10,7 +10,7 @@ from rest_framework.viewsets import GenericViewSet
 from common.mixins import LoginNotRequiredMixin
 from .forms import AuthenticationForm
 from .models import User
-from .serializers import UserSerializer
+from .serializers import UserSerializer, DeviceSerializer
 
 
 class UserAPIView(LoginNotRequiredMixin, GenericViewSet):
@@ -50,3 +50,9 @@ class UserAPIView(LoginNotRequiredMixin, GenericViewSet):
             return Response()
         else:
             return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+    @action(methods=['patch'], detail=False, permission_classes=[IsAuthenticated])
+    def device(self, request, *args, **kwargs):
+        device = request.user.set_device(request.data)
+        serializer = DeviceSerializer(device)
+        return Response(serializer.data)
