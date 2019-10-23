@@ -42,7 +42,22 @@ class TypeWeek(IntEnum):
         return tuple((i.value, i.name.capitalize()) for i in cls)
 
     @classmethod
+    def data(cls):
+        return {i.value for i in cls}
+
+    @classmethod
     def get_by_value(cls, value):
         if value > 1:
             return
         return cls.numerator.name.capitalize() if value == cls.numerator.value else cls.denominator.name.capitalize()
+
+    @classmethod
+    def get_reversed(cls, value):
+        """
+        Changing current_type_of_week for faculty to opposite.
+        :param value: current type of week value.
+        :return: reversed type of week.
+        """
+        all = cls.data()
+        value = {value}
+        return all.difference(value).pop()

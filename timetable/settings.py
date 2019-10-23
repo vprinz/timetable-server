@@ -1,5 +1,7 @@
 import os
 
+from celery.schedules import crontab
+
 from .jsonenv import JsonEnv
 
 env = JsonEnv('config.json')
@@ -16,6 +18,7 @@ SECRET_KEY = 'lzqbf5&hc9r)pj8ge0-2a0spyefzy8(!-l7v#er168$9l4ij0d'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env['debug']
 FIREBASE_API_KEY = env['firebase_api_key']
+REDIS_HOST = env['redis_host']
 LOG_DIR = os.path.join(BASE_DIR, '../logs/')
 
 ADMINS = [('Valera Pavlikov', 'vokler98@gmail.com')]
@@ -129,6 +132,19 @@ REST_FRAMEWORK = {
     ),
     'EXCEPTION_HANDLER': 'common.utils.custom_exception_handler',
 }
+
+# =============================== CELERY =========================================
+
+CELERY_BROKER_URL = f'redis://{REDIS_HOST}:6379'
+CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:6379'
+CELERY_BEAT_SCHEDULE = {
+    'task-number-one': {
+        'task': 'university.tasks.change_current_type_of_week',
+        'schedule': crontab(minute=0, hour=18, day_of_week='sun'),
+    },
+}
+
+# =============================== END CELERY =====================================
 
 ROOT_URLCONF = 'timetable.urls'
 
