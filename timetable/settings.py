@@ -21,29 +21,17 @@ LOG_DIR = os.path.join(BASE_DIR, '../logs/')
 ADMINS = [('Valera Pavlikov', 'vokler98@gmail.com')]
 ALLOWED_HOSTS = ['*']
 
-# CORS
-CORS_ORIGIN_ALLOW_ALL = True  # redefined for iframe in XFrameMiddleware
+# =============================== CORS =========================================
+
 CORS_ALLOW_CREDENTIALS = True
 CORS_EXPOSE_HEADERS = ['sessionid']
 CORS_ALLOW_HEADERS = default_headers = (
-    'X-Requested-With',
-    'Content-Type',
-    'Cache-Control',
-    'Accept',
-    'Origin',
-    'Authorization',
-    'X-CSRFToken',
-    'User-Agent',
-    'Accept-Encoding',
     'sessionid',
-    'If-Modified-Since',
-    'Content-Length',
-    'Keep-Alive',
-    'Range',
-    'X-Frame-Options',
 )
 
-# Application definition
+# =============================== END CORS =====================================
+
+# =============================== APPLICATION DEFINITION =======================
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -63,6 +51,10 @@ INSTALLED_APPS = [
     'university',
 ]
 
+# =============================== END APPLICATION DEFINITION ===================
+
+# =============================== MIDDLEWARE ===================================
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -76,7 +68,10 @@ MIDDLEWARE = [
     'common.middleware.LoginRequiredMiddleware',
 ]
 
-# LOGGING
+# =============================== END MIDDLEWARE ===============================
+
+# =============================== LOGGING ======================================
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
@@ -115,6 +110,10 @@ LOGGING = {
     },
 }
 
+# =============================== END LOGGING ==================================
+
+# =============================== REST FRAMEWORK ===============================
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'common.permissions.CsrfExemptSessionAuthentication',
@@ -124,6 +123,10 @@ REST_FRAMEWORK = {
     ),
     'EXCEPTION_HANDLER': 'common.utils.custom_exception_handler',
 }
+
+# =============================== END REST FRAMEWORK ===========================
+
+# =============================== DEFAULT SETTINGS =============================
 
 ROOT_URLCONF = 'timetable.urls'
 
@@ -145,8 +148,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'timetable.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
+AUTH_USER_MODEL = 'users.User'
+
+# =============================== END DEFAULT SETTINGS =========================
+
+# =============================== DATABASES ====================================
 
 DATABASES = {
     'default': {
@@ -159,8 +165,9 @@ DATABASES = {
     }
 }
 
-# Password validation
-# https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
+# =============================== END DATABASES ================================
+
+# =============================== PASSWORD VALIDATION ==========================
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -177,8 +184,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
-# https://docs.djangoproject.com/en/1.11/topics/i18n/
+# =============================== END PASSWORD VALIDATION ======================
+
+# =============================== INTERNATIONALIZATION =========================
 
 LANGUAGE_CODE = 'en-us'
 
@@ -188,10 +196,11 @@ USE_I18N = True
 
 USE_L10N = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
+# =============================== END INTERNATIONALIZATION =====================
+
+# =============================== STATIC FILES =================================
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
-AUTH_USER_MODEL = 'users.User'
+# =============================== END STATIC FILES =============================
