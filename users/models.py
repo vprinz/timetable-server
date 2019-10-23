@@ -59,6 +59,21 @@ class User(PermissionsMixin, AbstractBaseUser):
     def get_full_name(self):
         return f'{self.first_name} {self.last_name}'
 
+    def set_device(self, params):
+        token = params.get('token')
+        platform = params.get('platform')
+        if token and platform:
+            device, created = self.device_set.get_or_create(token=token, defaults={'platform': platform,
+                                                                                   'last_update': timezone.now()})
+
+            if not created:
+                device.token = token
+                device.platform = platform
+                device.last_update = timezone.now()
+                device.save()
+
+            return device
+
 
 class Device(models.Model):
     iOS = 'iOS'
@@ -72,6 +87,7 @@ class Device(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     token = models.CharField(max_length=255)
     platform = models.CharField(max_length=20, choices=PLATFORMS)
+    last_update = models.DateTimeField()
 
     def __str__(self):
         return f'{self.user} | {self.platform}'

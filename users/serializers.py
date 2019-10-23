@@ -20,3 +20,16 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = User.objects.create_user(validated_data['email'], validated_data['password'])
         return user
+
+
+class DeviceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Device
+        fields = ('id', 'token', 'platform', 'last_update')
+
+    def to_representation(self, instance):
+        response = super(DeviceSerializer, self).to_representation(instance)
+        response.update({
+            'last_update': instance.last_update.strftime('%d-%m-%Y %H:%M:%S')
+        })
+        return response
