@@ -18,7 +18,7 @@ def required_params(func):
         for name in names:
             value = request.data.get(name, None)
             if value is None:
-                return Response({name: "Это поле обязательно."}, status=HTTP_400_BAD_REQUEST)
+                return Response({name: ['required']}, status=HTTP_400_BAD_REQUEST)
             else:
                 args.append(value)
         return func(*args, **kwargs)

@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED
 from rest_framework.viewsets import GenericViewSet
 
+from common.decorators import required_params
 from common.mixins import LoginNotRequiredMixin
 from .forms import AuthenticationForm
 from .models import User
@@ -57,8 +58,9 @@ class UserAPIView(LoginNotRequiredMixin, GenericViewSet):
         logout(request)
         return Response()
 
+    @required_params
     @action(methods=['patch'], detail=False, permission_classes=[IsAuthenticated])
-    def device(self, request, *args, **kwargs):
+    def device(self, request, token, platform, *args, **kwargs):
         device = request.user.set_device(request.data)
         serializer = DeviceSerializer(device)
         return Response(serializer.data)
