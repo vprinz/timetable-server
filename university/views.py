@@ -103,7 +103,7 @@ class UniversityAPIView(GenericViewSet):
 
 
 class SubscriptionAPIView(SyncMixin, ModelViewSet):
-    queryset = Subscription.objects.all()
+    queryset = Subscription.objects.filter(state=Subscription.ACTIVE)
     serializer_class = SubscriptionSerializer
 
     def get_queryset(self):
@@ -136,7 +136,7 @@ class TimetableAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, Generic
         # if subgroup_id isn't used - for sync/meta methods (POST url - /.../timetables/sync/)
         subgroup_id = self.request.query_params.get('subgroup_id')
         if subgroup_id:
-            return self.queryset.filter(subgroup_id=subgroup_id)
+            return self.queryset.filter(state=Timetbale.ACTIVE, subgroup_id=subgroup_id)
         else:
             subscriptions = Subscription.objects.filter(user=self.request.user)
             return self.queryset.filter(subgroup__subscription__in=subscriptions)
@@ -151,14 +151,14 @@ class ClassAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericView
         # if timetable_id isn't used - for sync/meta methods (POST url - /.../classes/sync/)
         timetable_id = self.request.query_params.get('timetable_id')
         if timetable_id:
-            return self.queryset.filter(timetable_id=timetable_id)
+            return self.queryset.filter(state=Class.ACTIVE, timetable_id=timetable_id)
         else:
             subscriptions = Subscription.objects.filter(user=self.request.user)
             return self.queryset.filter(timetable__subgroup__subscription__in=subscriptions)
 
 
 class LectureAPIView(SyncMixin, LoginNotRequiredMixin, RetrieveModelMixin, GenericViewSet):
-    queryset = Lecturer.objects.all()
+    queryset = Lecturer.objects.filter(state=Lecturer.ACTIVE)
     serializer_class = LecturerSerializer
 
 
@@ -168,5 +168,5 @@ class ClassTimeAPIView(LoginNotRequiredMixin, RetrieveModelMixin, GenericViewSet
 
 
 class UniversityInfoAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):
-    queryset = UniversityInfo.objects.all()
+    queryset = UniversityInfo.objects.filter(state=UniversityInfo.ACTIVE)
     serializer_class = UniversityInfoSerializer
