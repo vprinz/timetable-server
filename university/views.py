@@ -128,7 +128,7 @@ class SubscriptionAPIView(SyncMixin, ModelViewSet):
 
 
 class TimetableAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):
-    queryset = Timetbale.objects.filter(state=Timetbale.ACTIVE)
+    queryset = Timetbale.objects.all()
     serializer_class = TimetableSerializer
 
     def get_queryset(self):
@@ -136,14 +136,14 @@ class TimetableAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, Generic
         # if subgroup_id isn't used - for sync/meta methods (POST url - /.../timetables/sync/)
         subgroup_id = self.request.query_params.get('subgroup_id')
         if subgroup_id:
-            return self.queryset.filter(subgroup_id=subgroup_id)
+            return self.queryset.filter(state=Timetbale.ACTIVE, subgroup_id=subgroup_id)
         else:
             subscriptions = Subscription.objects.filter(user=self.request.user)
             return self.queryset.filter(subgroup__subscription__in=subscriptions)
 
 
 class ClassAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):
-    queryset = Class.objects.filter(state=Class.ACTIVE)
+    queryset = Class.objects.all()
     serializer_class = ClassSerializer
 
     def get_queryset(self):
@@ -151,7 +151,7 @@ class ClassAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericView
         # if timetable_id isn't used - for sync/meta methods (POST url - /.../classes/sync/)
         timetable_id = self.request.query_params.get('timetable_id')
         if timetable_id:
-            return self.queryset.filter(timetable_id=timetable_id)
+            return self.queryset.filter(state=Class.ACTIVE, timetable_id=timetable_id)
         else:
             subscriptions = Subscription.objects.filter(user=self.request.user)
             return self.queryset.filter(timetable__subgroup__subscription__in=subscriptions)

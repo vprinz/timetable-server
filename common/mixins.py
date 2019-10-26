@@ -21,15 +21,14 @@ class SyncMixin:
 
     @required_params
     @action(methods=['post'], detail=False, permission_classes=[IsAuthenticated])
-    def sync(self, request, existing_ids, timestamp, *args, **kwargs):
+    def sync(self, request, timestamp, *args, **kwargs):
         """
-        :param existing_ids: all ids which exist on client.
         :param timestamp: the time at which the result is returned.
         :return: list of ids which were updated or deleted.
         """
         try:
             date_time = datetime.fromtimestamp(timestamp)
-            result = self.queryset.model.get_ids_for_sync(self.get_queryset(), existing_ids, date_time)
+            result = self.queryset.model.get_ids_for_sync(self.get_queryset(), date_time)
             return Response(data=result)
         except Exception as e:
             return Response(data={'error': str(e)}, status=HTTP_400_BAD_REQUEST)
