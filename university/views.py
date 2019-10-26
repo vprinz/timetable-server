@@ -103,7 +103,7 @@ class UniversityAPIView(GenericViewSet):
 
 
 class SubscriptionAPIView(SyncMixin, ModelViewSet):
-    queryset = Subscription.objects.all()
+    queryset = Subscription.objects.filter(state=Subscription.ACTIVE)
     serializer_class = SubscriptionSerializer
 
     def get_queryset(self):
@@ -128,7 +128,7 @@ class SubscriptionAPIView(SyncMixin, ModelViewSet):
 
 
 class TimetableAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):
-    queryset = Timetbale.objects.all()
+    queryset = Timetbale.objects.filter(state=Timetbale.ACTIVE)
     serializer_class = TimetableSerializer
 
     def get_queryset(self):
@@ -143,7 +143,7 @@ class TimetableAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, Generic
 
 
 class ClassAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):
-    queryset = Class.objects.all()
+    queryset = Class.objects.filter(state=Class.ACTIVE)
     serializer_class = ClassSerializer
 
     def get_queryset(self):
@@ -158,7 +158,7 @@ class ClassAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericView
 
 
 class LectureAPIView(SyncMixin, LoginNotRequiredMixin, RetrieveModelMixin, GenericViewSet):
-    queryset = Lecturer.objects.all()
+    queryset = Lecturer.objects.filter(state=Lecturer.ACTIVE)
     serializer_class = LecturerSerializer
 
 
@@ -168,5 +168,5 @@ class ClassTimeAPIView(LoginNotRequiredMixin, RetrieveModelMixin, GenericViewSet
 
 
 class UniversityInfoAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):
-    queryset = UniversityInfo.objects.all()
+    queryset = UniversityInfo.objects.filter(state=UniversityInfo.ACTIVE)
     serializer_class = UniversityInfoSerializer
