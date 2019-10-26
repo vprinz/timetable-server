@@ -1,4 +1,4 @@
-from django.db.models import Case, When, Value, BooleanField
+from django.db.models import Case, When, Value, BooleanField, SmallIntegerField
 from django.db.models.query import QuerySet as BaseQuerySet
 from django_extensions.db.models import TimeStampedModel
 
@@ -13,6 +13,15 @@ class QuerySet(BaseQuerySet):
 
 
 class CommonModel(TimeStampedModel):
+    ACTIVE = 0
+    DELETED = 1
+    STATES = (
+        (ACTIVE, 'Active'),
+        (DELETED, 'Deleted'),
+    )
+
+    state = SmallIntegerField(default=ACTIVE, choices=STATES)
+
     objects = QuerySet.as_manager()
     basename = None
     related_user_path = None

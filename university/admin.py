@@ -16,7 +16,9 @@ class OccupationInline(admin.TabularInline):
 class ClassInline(admin.TabularInline):
     model = Class
     extra = 0
-    fields = ('title', 'type_of_class', 'classroom', 'class_time', 'weekday', 'lecturer', 'created', 'modified')
+    fields = (
+        'title', 'type_of_class', 'classroom', 'class_time', 'weekday', 'lecturer', 'state', 'created', 'modified'
+    )
     readonly_fields = ('created', 'modified')
     ordering = ('weekday', 'class_time')
 
@@ -35,7 +37,7 @@ class GroupAdmin(admin.ModelAdmin):
 
 @admin.register(Timetbale)
 class TimetableAdmin(admin.ModelAdmin):
-    fields = ('id', 'type_of_week', 'subgroup', ('created', 'modified'))
+    fields = ('id', ('type_of_week', 'state'), 'subgroup', ('created', 'modified'))
     readonly_fields = ('id', 'created', 'modified')
     inlines = (ClassInline,)
 
