@@ -43,3 +43,7 @@ class CommonModel(TimeStampedModel):
             'updated_ids': updated_ids,
             'deleted_ids': deleted_ids
         }
+
+    def safe_delete(self):
+        self.state = self.DELETED
+        self.save()

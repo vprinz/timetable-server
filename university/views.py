@@ -126,6 +126,9 @@ class SubscriptionAPIView(SyncMixin, ModelViewSet):
 
         return Response()
 
+    def perform_destroy(self, instance):
+        instance.safe_delete()
+
 
 class TimetableAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):
     queryset = Timetbale.objects.all()
