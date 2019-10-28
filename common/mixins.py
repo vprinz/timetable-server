@@ -18,6 +18,12 @@ class LoginNotRequiredMixin:
 
 
 class SyncMixin:
+    """
+        Mixin for synchronization server's data with client.
+        Fields:
+            - sync_queryset: queryset without filter() or exclude(). Just virgin queryset for working with all data.
+    """
+    sync_queryset = None
 
     @required_params
     @action(methods=['post'], detail=False, permission_classes=[IsAuthenticated])
@@ -28,7 +34,7 @@ class SyncMixin:
         """
         try:
             date_time = datetime.fromtimestamp(timestamp)
-            result = self.queryset.model.get_ids_for_sync(self.get_queryset(), date_time)
+            result = self.queryset.model.get_ids_for_sync(self.sync_queryset, date_time)
             return Response(data=result)
         except Exception as e:
             return Response(data={'error': str(e)}, status=HTTP_400_BAD_REQUEST)
