@@ -32,7 +32,7 @@ class GroupSerializer(ModelSerializer):
 class SubscriptionSerializer(ModelSerializer):
     class Meta:
         model = Subscription
-        fields = ('id', 'user', 'title', 'subgroup', 'is_main', 'state')
+        fields = ('id', 'user', 'title', 'subgroup', 'is_main')
         extra_kwargs = {'user': {'required': False}}
         validators = [
             UniqueTogetherValidator(
@@ -47,21 +47,21 @@ class TimetableSerializer(ModelSerializer):
 
     class Meta:
         model = Timetbale
-        fields = ('id', 'type_of_week', 'subgroup_id', 'faculty_id', 'state')
-        read_only_fields = ('id', 'type_of_week', 'subgroup_id', 'faculty_id', 'state')
+        fields = ('id', 'type_of_week', 'subgroup_id', 'faculty_id')
+        read_only_fields = ('id', 'type_of_week', 'subgroup_id', 'faculty_id')
 
 
 class ClassSerializer(ModelSerializer):
     class Meta:
         model = Class
         fields = ('id', 'title', 'type_of_class', 'classroom', 'class_time_id', 'weekday', 'lecturer_id',
-                  'timetable_id', 'state')
+                  'timetable_id')
 
 
 class LecturerSerializer(ModelSerializer):
     class Meta:
         model = Lecturer
-        fields = ('id', 'name', 'patronymic', 'surname', 'state')
+        fields = ('id', 'name', 'patronymic', 'surname')
 
 
 class ClassTimeSerializer(ModelSerializer):
