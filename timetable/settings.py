@@ -33,16 +33,13 @@ CORS_ALLOW_HEADERS = default_headers = (
 
 # =============================== EMAIL =====================================
 
-if DEVELOPMENT:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-else:
-    EMAIL_HOST = 'smtp.yandex.ru'
-    EMAIL_PORT = 587
-    EMAIL_HOST_USER = env['email_host_user']
-    EMAIL_HOST_PASSWORD = env['email_host_password']
-    DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-    EMAIL_USE_TLS = True
-    SERVER_EMAIL = EMAIL_HOST_USER # for logging
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = env['email_host_user']
+EMAIL_HOST_PASSWORD = env['email_host_password']
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_USE_TLS = True
+SERVER_EMAIL = EMAIL_HOST_USER  # for logging
 
 # =============================== END EMAIL =================================
 
