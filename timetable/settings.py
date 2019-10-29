@@ -14,11 +14,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'lzqbf5&hc9r)pj8ge0-2a0spyefzy8(!-l7v#er168$9l4ij0d'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env['debug']
+DEBUG = DEVELOPMENT = env['debug']
 FIREBASE_API_KEY = env['firebase_api_key']
 LOG_DIR = os.path.join(BASE_DIR, '../logs/')
 
-ADMINS = [('Valera Pavlikov', 'vokler98@gmail.com')]
+ADMINS = [('Valery Pavlikov', 'valerypavlikov@yandex.ru')]
 ALLOWED_HOSTS = ['*']
 
 # =============================== CORS =========================================
@@ -30,6 +30,21 @@ CORS_ALLOW_HEADERS = default_headers = (
 )
 
 # =============================== END CORS =====================================
+
+# =============================== EMAIL =====================================
+
+if DEVELOPMENT:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_HOST = 'smtp.yandex.ru'
+    EMAIL_PORT = 587
+    EMAIL_HOST_USER = env['email_host_user']
+    EMAIL_HOST_PASSWORD = env['email_host_password']
+    DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+    EMAIL_USE_TLS = True
+    SERVER_EMAIL = EMAIL_HOST_USER # for logging
+
+# =============================== END EMAIL =================================
 
 # =============================== APPLICATION DEFINITION =======================
 
@@ -101,6 +116,11 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'simple'
         },
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': [],
+            'class': 'django.utils.log.AdminEmailHandler',
+        },
     },
     'loggers': {
         'informator': {
@@ -108,9 +128,13 @@ LOGGING = {
             'level': 'DEBUG',
         },
         'django': {
-            'handlers': ['file'],
+            'handlers': ['file', 'mail_admins'],
             'level': 'DEBUG',
-            'propagate': True,
+            'propagate': True
+        },
+        'django.request': {
+            'handlers': ['file', 'mail_admins'],
+            'level': 'ERROR',
         },
     },
 }
@@ -205,7 +229,7 @@ USE_L10N = True
 
 # =============================== STATIC FILES =================================
 
-STATIC_ROOT = os.path.join(BASE_DIR, '../static/') # for Nginx
+STATIC_ROOT = os.path.join(BASE_DIR, '../static/')  # for Nginx
 STATIC_URL = '/static/'
 
 # =============================== END STATIC FILES =============================
