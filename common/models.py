@@ -25,6 +25,7 @@ class CommonModel(TimeStampedModel):
     objects = QuerySet.as_manager()
     basename = None
     related_user_path = None
+    related_subscription_path = None
 
     class Meta:
         abstract = True

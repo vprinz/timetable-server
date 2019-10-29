@@ -69,7 +69,7 @@ class Subgroup(FantasticFourModel):
 
 class Subscription(CommonModel):
     title = models.CharField(max_length=150)
-    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
+    user = models.ForeignKey('users.User', related_name='subscriptions', on_delete=models.CASCADE)
     subgroup = models.ForeignKey(Subgroup, on_delete=models.CASCADE)
     is_main = models.BooleanField(default=False)
 
@@ -162,6 +162,7 @@ class Class(CommonModel):
 
     basename = 'classes'
     related_user_path = 'timetable__subgroup__subscription__user'
+    related_subscription_path = 'timetable__subgroup__subscription'
 
     class Meta:
         unique_together = ('timetable', 'class_time', 'weekday')
