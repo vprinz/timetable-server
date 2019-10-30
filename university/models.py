@@ -89,6 +89,7 @@ class Timetbale(CommonModel):
 
     basename = 'timetables'
     related_user_path = 'subgroup__subscription__user'
+    related_subscription_path = 'subgroup__subscription__'
 
     class Meta:
         unique_together = ('subgroup', 'type_of_week')
@@ -120,6 +121,7 @@ class Lecturer(CommonModel):
 
     basename = 'lecturers'
     related_user_path = 'class__timetable__subgroup__subscription__user'
+    related_subscription_path = 'class__timetable__subgroup__subscription__'
 
     def __str__(self):
         return f'{self.name} {self.surname}'
@@ -162,7 +164,7 @@ class Class(CommonModel):
 
     basename = 'classes'
     related_user_path = 'timetable__subgroup__subscription__user'
-    related_subscription_path = 'timetable__subgroup__subscription'
+    related_subscription_path = 'timetable__subgroup__subscription__'
 
     class Meta:
         unique_together = ('timetable', 'class_time', 'weekday')

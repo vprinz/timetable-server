@@ -24,8 +24,10 @@ class CommonModel(TimeStampedModel):
 
     objects = QuerySet.as_manager()
     basename = None
+
+    # TODO: refactor
     related_user_path = None
-    related_subscription_path = None
+    related_subscription_path = str()
 
     class Meta:
         abstract = True
