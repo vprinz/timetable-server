@@ -22,10 +22,10 @@ def on_single_changes(sender, instance, **kwargs):
     if sender in models:
         updated_ids = [instance.id]
         users = get_users_for_notification(sender, updated_ids)
-        Pusher().send_notification(users, updated_ids, sender.basename)
+        Pusher().send_notification(sender, users, updated_ids)
 
 
 @receiver(post_bulk_update)
 def on_bulk_changes(sender, updated_ids, **kwargs):
     users = get_users_for_notification(sender, updated_ids)
-    Pusher().send_notification(users, updated_ids, sender.basename)
+    Pusher().send_notification(sender, users, updated_ids)
