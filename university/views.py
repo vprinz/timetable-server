@@ -62,22 +62,23 @@ class UniversityAPIView(GenericViewSet):
         """
         result = {'base_names': list()}
         date_time = datetime.fromtimestamp(timestamp)
+        prefix_user_path = request.user._meta.model_name
         models = {
             Subscription: {
                 'basename': Subscription.basename,
-                'related_user_path': Subscription.related_user_path
+                'related_user_path': f'{Subscription.related_subscription_path}{prefix_user_path}'
             },
             Timetbale: {
                 'basename': Timetbale.basename,
-                'related_user_path': Timetbale.related_user_path
+                'related_user_path': f'{Timetbale.related_subscription_path}{prefix_user_path}'
             },
             Class: {
                 'basename': Class.basename,
-                'related_user_path': Class.related_user_path
+                'related_user_path': f'{Class.related_subscription_path}{prefix_user_path}'
             },
             Lecturer: {
                 'basename': Lecturer.basename,
-                'related_user_path': Lecturer.related_user_path
+                'related_user_path': f'{Lecturer.related_subscription_path}{prefix_user_path}'
             }
         }
 

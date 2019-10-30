@@ -21,16 +21,19 @@ class Pusher:
         }
         users_data = list(users.exclude(device=None).values('id', 'device__token'))
         subscription_is_main_path = f'{model.related_subscription_path}is_main'
+        prefix_user_path = 'user'
         for item in users_data:
             user_id = item['id']
 
             noisy_ids = model.objects. \
-                annotate(u_id=F(model.related_user_path), subscription_is_main=F(subscription_is_main_path)). \
+                annotate(u_id=F(f'{model.related_subscription_path}{prefix_user_path}'),
+                         subscription_is_main=F(subscription_is_main_path)). \
                 filter(id__in=updated_ids, u_id__in=[user_id], subscription_is_main=True). \
                 values_list('id', flat=True)
 
             silent_ids = model.objects. \
-                annotate(u_id=F(model.related_user_path), subscription_is_main=F(subscription_is_main_path)). \
+                annotate(u_id=F(f'{model.related_subscription_path}{prefix_user_path}'),
+                         subscription_is_main=F(subscription_is_main_path)). \
                 filter(id__in=updated_ids, u_id__in=[user_id], subscription_is_main=False). \
                 values_list('id', flat=True)
 
