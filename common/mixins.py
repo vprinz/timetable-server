@@ -9,6 +9,8 @@ from common.decorators import login_not_required
 from common.decorators import required_params
 import logging
 
+log = logging.getLogger('informator')
+
 
 class LoginNotRequiredMixin:
 
@@ -53,7 +55,7 @@ class SyncMixin:
         :return: a list with an information of all instances that belongs to certain model.
         """
         ids = set(request.data.get('ids', []))
-        logging.debug('META IDS:', ids)
+        log.debug(f'META IDS: {ids}')
         result = self._get_meta_result(ids)
-        logging.debug('META RESULT:', ids)
+        log.debug(f'META RESULT: {result}')
         return Response(result, status=HTTP_200_OK)
