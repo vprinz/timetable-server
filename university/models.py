@@ -179,4 +179,4 @@ class UniversityInfo(CommonModel):
     basename = 'university-info'
 
     class Meta:
-        verbose_name_plural = 'University Info'
+        verbose_name_plural = 'University Info VOKLER'
