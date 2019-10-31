@@ -19,7 +19,7 @@ class Pusher:
             'message_title': 'updating',
             'basename': model.basename
         }
-        registration_ids = list(users.values_list('device__token', flat=True))
+        registration_ids = list(users.exclude(device=None).values_list('device__token', flat=True))
         valid_registration_ids = self.fcm.clean_registration_ids(registration_ids)
 
         users_data = users.exclude(device=None). \
