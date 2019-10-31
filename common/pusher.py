@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db.models import F
 from pyfcm import FCMNotification
 
-log = logging.getLogger('informator')
+log = logging.getLogger('errors')
 
 
 class Pusher:
