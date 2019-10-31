@@ -116,29 +116,33 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'simple'
-        },
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': [],
-            'class': 'django.utils.log.AdminEmailHandler',
-        },
+        }
     },
     'loggers': {
-        'informator': {
-            'handlers': ['infofile', 'console'],
-            'level': 'DEBUG',
-        },
-        'django': {
-            'handlers': ['file', 'mail_admins'],
-            'level': 'DEBUG',
-            'propagate': True
-        },
-        'django.request': {
-            'handlers': ['file', 'mail_admins'],
+        'errors': {
+            'handlers': ['console'],
             'level': 'ERROR',
         },
+        'informator': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        }
     },
 }
+
+if not DEVELOPMENT:
+    LOGGING['handlers']['mail_admins'] = {
+        'level': 'ERROR',
+        'filters': [],
+        'class': 'django.utils.log.AdminEmailHandler',
+    }
+    LOGGING['loggers']['errors'].update({'handlers': ['file', 'mail_admins']})
+    LOGGING['loggers']['informator'].update({'handlers': ['infofile']})
+    LOGGING['loggers']['django'] = {
+        'handlers': ['file', 'mail_admins'],
+        'level': 'DEBUG',
+        'propagate': True
+    }
 
 # =============================== END LOGGING ==================================
 

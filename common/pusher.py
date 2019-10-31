@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db.models import F
 from pyfcm import FCMNotification
 
-log = logging.getLogger('informator')
+log = logging.getLogger('errors')
 
 
 class Pusher:
@@ -19,7 +19,11 @@ class Pusher:
             'message_title': 'updating',
             'basename': model.basename
         }
-        users_data = list(users.exclude(device=None).values('id', 'device__token'))
+        registration_ids = list(users.exclude(device=None).values_list('device__token', flat=True))
+        valid_registration_ids = self.fcm.clean_registration_ids(registration_ids)
+
+        users_data = users.exclude(device=None). \
+            filter(device__token__in=valid_registration_ids).values('id', 'device__token')
         subscription_is_main_path = f'{model.related_subscription_path}is_main'
         prefix_user_path = 'user'
         for item in users_data:
@@ -45,4 +49,4 @@ class Pusher:
             if result['failure'] > 0:
                 push_error = dict()
                 push_error.update({'token': registration_id, 'errors': result['results'], 'data_message': data_message})
-                log.debug(f'Push error: {push_error}')
+                log.error(f'Push error: {push_error}')
