@@ -85,14 +85,16 @@ class Subscription(CommonModel):
     def exists_and_deleted(cls, user, subgroup):
         return Subscription.objects.filter(user_id=user.id, subgroup=subgroup, state=Subscription.DELETED).exists()
 
-    def restore_and_update(self, data):
+    def restore_and_update(self, data=None):
         # restore to default settings
         self.state = self.ACTIVE
         self.is_main = False
         # updating information
-        self.title = data['title']
-        self.subgroup = Subgroup.objects.get(id=data['subgroup'])
-        self.is_main = data.get('is_main', False)
+        if data:
+            subgroup_id = data.get('subgroup')
+            self.title = data.get('title', self.title)
+            self.subgroup = Subgroup.objects.get(id=subgroup_id) if subgroup_id else self.subgroup
+            self.is_main = data.get('is_main', self.is_main)
         self.save()
         return self
 
