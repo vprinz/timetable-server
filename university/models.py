@@ -83,7 +83,7 @@ class Subscription(CommonModel):
 
     @classmethod
     def exists_and_deleted(cls, user, subgroup):
-        return Subscription.objects.filter(user_id=user.id, subgroup=subgroup, state=Subscription.DELETED).exists()
+        return Subscription.objects.filter(user_id=user, subgroup_id=subgroup, state=Subscription.DELETED).exists()
 
     def restore_and_update(self, data=None):
         # restore to default settings
