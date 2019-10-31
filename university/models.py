@@ -81,6 +81,21 @@ class Subscription(CommonModel):
     def __str__(self):
         return self.title
 
+    @classmethod
+    def exists_and_deleted(cls, user, subgroup):
+        return Subscription.objects.filter(user_id=user.id, subgroup=subgroup, state=Subscription.DELETED).exists()
+
+    def restore_and_update(self, data):
+        # restore to default settings
+        self.state = self.ACTIVE
+        self.is_main = False
+        # updating information
+        self.title = data['title']
+        self.subgroup = Subgroup.objects.get(id=data['subgroup'])
+        self.is_main = data.get('is_main', False)
+        self.save()
+        return self
+
 
 class Timetbale(CommonModel):
     type_of_week = models.SmallIntegerField(choices=TypeWeek.all(), help_text='Тип недели')

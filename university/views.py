@@ -111,15 +111,25 @@ class SubscriptionAPIView(SyncMixin, ModelViewSet):
     def get_queryset(self):
         return self.queryset.filter(user=self.request.user)
 
+    def get_serializer(self, *args, **kwargs):
+        kwargs['data'].update({'user': self.request.user.id})
+        return super(SubscriptionAPIView, self).get_serializer(*args, **kwargs)
+
     def create(self, request, *args, **kwargs):
+        user = self.request.user
+        subgroup = self.request.data['subgroup']
         data = request.data
-        data['user'] = request.user.id
 
-        serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return Response(serializer.data, status=HTTP_201_CREATED)
+        if Subscription.exists_and_deleted(user=user, subgroup=subgroup):
+            subscription = Subscription.objects.get(user=user, subgroup=subgroup)
+            restored_subscription = subscription.restore_and_update(data)
+            serializer = self.serializer_class(restored_subscription)
+            return Response(serializer.data, status=HTTP_201_CREATED)
+        else:
+            serializer = self.get_serializer(data=data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=HTTP_201_CREATED)
 
     def update(self, request, *args, **kwargs):
         serializer = self.serializer_class(self.get_object(), request.data, partial=True)

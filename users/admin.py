@@ -9,8 +9,8 @@ from .models import User, Device
 class SubscriptionInline(TabularInline):
     model = Subscription
     extra = 0
-    fields = ('title', 'subgroup', 'is_main', 'state', 'created', 'modified')
-    readonly_fields = ('created', 'modified')
+    fields = ('id', 'title', 'subgroup', 'is_main', 'state', 'created', 'modified')
+    readonly_fields = ('id', 'created', 'modified')
 
 
 class DeviceInline(TabularInline):
