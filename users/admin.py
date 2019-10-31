@@ -31,7 +31,7 @@ class UserAdmin(DjangoUserAdmin):
             'id',
             ('first_name', 'last_name'),
             ('email', 'password'),
-            ('last_login', 'date_joined')
+            ('last_login', 'date_joined', 'last_activity')
         )}),
     )
 

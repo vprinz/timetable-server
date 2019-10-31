@@ -43,6 +43,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     last_name = models.CharField(max_length=60, blank=True)
     email = models.CharField(max_length=120, unique=True)
     date_joined = models.DateTimeField(default=timezone.now)
+    last_activity = models.DateTimeField(blank=True, null=True)
 
     is_staff = models.BooleanField(
         'staff status',

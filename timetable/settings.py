@@ -81,6 +81,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'common.middleware.LoginRequiredMiddleware',
+    'common.middleware.UpdateLastActivityMiddleware',
 ]
 
 # =============================== END MIDDLEWARE ===============================
