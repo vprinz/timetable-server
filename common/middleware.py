@@ -1,7 +1,10 @@
 from django.conf import settings
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.http import HttpResponse
+from django.utils import timezone
 from django.utils.deprecation import MiddlewareMixin
+
+from users.models import User
 
 
 class LoginRequiredMiddleware(MiddlewareMixin):
@@ -41,3 +44,13 @@ class HeaderSessionMiddleware(SessionMiddleware):
                         request.session.save()
                         response[settings.SESSION_COOKIE_NAME] = request.session.session_key
         return response
+
+
+class UpdateLastActivityMiddleware(MiddlewareMixin):
+
+    def process_request(self, request):
+        assert hasattr(request, 'user'), ('The UpdateLastActivityMiddleware requires '
+                                          'authentication middleware to be installed.')
+
+        if request.user.is_authenticated:
+            User.objects.filter(id=request.user.id).update(last_activity=timezone.now())
