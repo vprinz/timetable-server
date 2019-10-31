@@ -1,6 +1,7 @@
 import json
 
 from django.contrib.auth import login, logout
+from django.contrib.auth import update_session_auth_hash
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -64,3 +65,10 @@ class UserAPIView(LoginNotRequiredMixin, GenericViewSet):
         device = request.user.set_device(request.data)
         serializer = DeviceSerializer(device)
         return Response(serializer.data)
+
+    @required_params
+    @action(methods=['post'], url_path='session-update', detail=False)
+    def session(self, request, user_id, *args, **kwargs):
+        user = User.objects.get(id=user_id)
+        update_session_auth_hash(request, user)
+        return Response()
