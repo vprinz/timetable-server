@@ -142,11 +142,6 @@ if not DEVELOPMENT:
         'level': 'DEBUG',
         'propagate': True
     }
-    LOGGING['loggers']['django.request'] = {
-        'handlers': ['file', 'mail_admins'],
-        'level': 'ERROR',
-        'propagate': True
-    }
 
 # =============================== END LOGGING ==================================
 
