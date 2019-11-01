@@ -49,3 +49,10 @@ class CommonModel(TimeStampedModel):
     def safe_delete(self):
         self.state = self.DELETED
         self.save()
+
+    def silent_save(self, data):
+        """
+        Method for saving instance without sending pushes.
+        :param data: dictionary of changed parameters.
+        """
+        self.__class__.objects.filter(id=self.id).update(**data)

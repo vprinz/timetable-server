@@ -13,5 +13,4 @@ def change_current_type_of_week():
         current_type_of_week = university_info.data.get('current_type_of_week')
         if current_type_of_week in TypeWeek.data():
             reversed_type_of_week = TypeWeek.get_reversed(current_type_of_week)
-            university_info.data.update({'current_type_of_week': reversed_type_of_week})
-            university_info.save()
+            university_info.silent_save({'data': {'current_type_of_week': reversed_type_of_week}})

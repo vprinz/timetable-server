@@ -171,6 +171,7 @@ CELERY_BEAT_SCHEDULE = {
     'task-number-one': {
         'task': 'university.tasks.change_current_type_of_week',
         'schedule': crontab(minute=0, hour=18, day_of_week='sun'),
+        # 'schedule': crontab(), # for every minute
     },
 }
 
