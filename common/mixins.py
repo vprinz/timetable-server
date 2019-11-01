@@ -8,10 +8,6 @@ from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from common.decorators import login_not_required
 from common.decorators import required_params
 
-import logging
-
-log = logging.getLogger('informator')
-
 
 class LoginNotRequiredMixin:
 
@@ -56,8 +52,5 @@ class SyncMixin:
         :return: a list with an information of all instances that belongs to certain model.
         """
         ids = set(request.data.get('ids', []))
-        log.debug(f'IDS: {ids} ||| SESSION: {request.session.session_key} ||| {request.user}')
         result = self._get_meta_result(ids)
-        log.debug((f'RESULT: {result}'))
-        log.debug('=======================================')
         return Response(result, status=HTTP_200_OK)
