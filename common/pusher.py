@@ -5,7 +5,7 @@ from django.db.models import F
 from pyfcm import FCMNotification
 
 log = logging.getLogger('errors')
-log_t = logging.getLogger('infofile')
+log_t = logging.getLogger('informator')
 
 
 class Pusher:

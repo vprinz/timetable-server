@@ -10,7 +10,7 @@ from common.decorators import required_params
 
 import logging
 
-log = logging.getLogger('infofile')
+log = logging.getLogger('informator')
 
 
 class LoginNotRequiredMixin:
