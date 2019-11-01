@@ -41,6 +41,10 @@ class TimetableAdmin(admin.ModelAdmin):
     readonly_fields = ('id', 'created', 'modified')
     inlines = (ClassInline,)
 
+@admin.register(Class)
+class ClassAdmin(admin.ModelAdmin):
+    pass
+
 
 @admin.register(ClassTime)
 class ClassTimeAdmin(admin.ModelAdmin):

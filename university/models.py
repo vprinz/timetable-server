@@ -167,7 +167,7 @@ class Class(CommonModel):
         verbose_name_plural = 'Classes'
 
     def __str__(self):
-        return f'{self.title} | {self.timetable.subgroup}'
+        return f'{self.title} | {self.timetable.subgroup} | Timetable ID: {self.timetable.id}'
 
 
 class UniversityInfo(CommonModel):
