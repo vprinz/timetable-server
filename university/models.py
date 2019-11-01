@@ -1,14 +1,11 @@
-from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import JSONField
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 from common.models import CommonModel
-from common.pusher import Pusher
 from common.utils import TypeWeek
+from university.signals import my_post_save
 
 
 class FantasticFourModel(models.Model):
@@ -173,6 +170,10 @@ class Class(CommonModel):
     def __str__(self):
         return f'{self.title} | {self.timetable.subgroup} | Timetable ID: {self.timetable.id}'
 
+    def save(self, **kwargs):
+        my_post_save.send(sender=self.__class__, instance=self)
+        super(Class, self).save(**kwargs)
+
 
 class UniversityInfo(CommonModel):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
@@ -184,18 +185,3 @@ class UniversityInfo(CommonModel):
 
     class Meta:
         verbose_name_plural = 'University Info'
-
-
-def get_users_for_notification(model, ids):
-    User = get_user_model()
-    users_ids = model.objects.filter(id__in=ids). \
-        values_list(f'{model.related_subscription_path}{User._meta.model_name}', flat=True)
-    users = User.objects.filter(id__in=users_ids)
-    return users
-
-
-@receiver(post_save, sender=Class)
-def on_single_changes(sender, instance, **kwargs):
-    updated_ids = [instance.id]
-    users = get_users_for_notification(sender, updated_ids)
-    Pusher().send_notification(sender, users, updated_ids)
