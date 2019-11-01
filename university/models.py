@@ -5,7 +5,6 @@ from django.db import models
 
 from common.models import CommonModel
 from common.utils import TypeWeek
-from university.signals import my_post_save
 
 
 class FantasticFourModel(models.Model):
@@ -169,10 +168,6 @@ class Class(CommonModel):
 
     def __str__(self):
         return f'{self.title} | {self.timetable.subgroup} | Timetable ID: {self.timetable.id}'
-
-    def save(self, **kwargs):
-        my_post_save.send(sender=self.__class__, instance=self)
-        super(Class, self).save(**kwargs)
 
 
 class UniversityInfo(CommonModel):
