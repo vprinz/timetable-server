@@ -180,3 +180,6 @@ class UniversityInfo(CommonModel):
 
     class Meta:
         verbose_name_plural = 'University Info'
+
+    def __str__(self):
+        return f'University info for {self.content_type.name.capitalize()}'
