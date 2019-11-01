@@ -1,5 +1,4 @@
 from rest_framework.serializers import ModelSerializer, ReadOnlyField
-from rest_framework.validators import UniqueTogetherValidator
 
 from .models import (Faculty, Occupation, Group, Subgroup, Subscription, Timetbale, Class, Lecturer, ClassTime,
                      UniversityInfo)
@@ -32,14 +31,26 @@ class GroupSerializer(ModelSerializer):
 class SubscriptionSerializer(ModelSerializer):
     class Meta:
         model = Subscription
-        fields = ('id', 'user', 'title', 'subgroup', 'is_main')
-        extra_kwargs = {'user': {'required': False}}
-        validators = [
-            UniqueTogetherValidator(
-                queryset=Subscription.objects.all(),
-                fields=('user', 'subgroup'),
-            )
-        ]
+        fields = ('id', 'title', 'subgroup', 'is_main')
+
+    def to_representation(self, instance):
+        response = super(SubscriptionSerializer, self).to_representation(instance)
+        response.update({
+            'user': self.context['request'].user.id,
+        })
+        return response
+
+    def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
+        defaults = {
+            'title': validated_data.get('title', str()),
+            'is_main': validated_data.get('is_main', False),
+            'state': Subscription.ACTIVE
+        }
+        subscription, created = Subscription.objects.update_or_create(user=validated_data['user'],
+                                                                      subgroup=validated_data['subgroup'],
+                                                                      defaults=defaults)
+        return subscription
 
 
 class TimetableSerializer(ModelSerializer):

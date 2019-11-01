@@ -4,7 +4,6 @@ from django.db.models import F, Case, When, Value, BooleanField
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from rest_framework.response import Response
-from rest_framework.status import HTTP_201_CREATED
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from common.mixins import LoginNotRequiredMixin, SyncMixin, required_params
@@ -110,30 +109,6 @@ class SubscriptionAPIView(SyncMixin, ModelViewSet):
 
     def get_queryset(self):
         return self.queryset.filter(user=self.request.user)
-
-    def create(self, request, *args, **kwargs):
-        data = request.data
-        user = request.user.id
-        subgroup = data['subgroup']
-        data['user'] = user
-
-        if Subscription.exists_and_deleted(user=user, subgroup=subgroup):
-            subscription = Subscription.objects.get(user=user, subgroup=subgroup)
-            restored_subscription = subscription.restore_and_update(data)
-            serializer = self.serializer_class(restored_subscription)
-            return Response(serializer.data, status=HTTP_201_CREATED)
-        else:
-            serializer = self.get_serializer(data=data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            return Response(serializer.data, status=HTTP_201_CREATED)
-
-    def update(self, request, *args, **kwargs):
-        serializer = self.serializer_class(self.get_object(), request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return Response()
 
     def perform_destroy(self, instance):
         instance.safe_delete()
