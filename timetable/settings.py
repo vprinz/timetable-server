@@ -21,6 +21,8 @@ LOG_DIR = os.path.join(BASE_DIR, '../logs/')
 ADMINS = [('Valery Pavlikov', 'valerypavlikov@yandex.ru')]
 ALLOWED_HOSTS = ['*']
 
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 365 * 5
+
 # =============================== CORS =========================================
 
 CORS_ALLOW_CREDENTIALS = True
