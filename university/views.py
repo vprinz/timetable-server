@@ -4,6 +4,7 @@ from django.db.models import F, Case, When, Value, BooleanField
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from rest_framework.response import Response
+from rest_framework.status import HTTP_405_METHOD_NOT_ALLOWED
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from common.mixins import LoginNotRequiredMixin, SyncMixin, required_params
@@ -110,6 +111,10 @@ class SubscriptionAPIView(SyncMixin, ModelViewSet):
 
     def perform_destroy(self, instance):
         instance.safe_delete()
+
+    def update(self, request, *args, **kwargs):
+        # The subscription update is performed in the method POST.
+        return Response(status=HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class TimetableAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):
