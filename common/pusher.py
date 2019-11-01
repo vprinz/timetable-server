@@ -5,6 +5,7 @@ from django.db.models import F
 from pyfcm import FCMNotification
 
 log = logging.getLogger('errors')
+log_t = logging.getLogger('infofile')
 
 
 class Pusher:
@@ -43,6 +44,8 @@ class Pusher:
 
             registration_id = item['device__token']
             data_message.update({'user_id': user_id, 'noisy_ids': list(noisy_ids), 'silent_ids': list(silent_ids)})
+            log_t.debug(f'USER ID: {user_id} ||| TOKEN: {registration_id}')
+            log_t.debug('------------------------------------------------')
 
             result = self.fcm.single_device_data_message(registration_id=registration_id, data_message=data_message)
 
