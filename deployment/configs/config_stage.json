@@ -3,5 +3,8 @@
   "database_host": "localhost",
   "deployment_name": "stage",
 
+  "email_host_user": "kubsu-timetable@yandex.ru",
+  "email_host_password": "82911493pP",
+
   "firebase_api_key": "AAAAwM-KH_A:APA91bFx9ME75i39O6Dv7pUxXNm4dx86PLgt7aZk3a_vcnoQ3YJTYATes9xF4JAs4XhILvc1pnarFis2vVPa9J7Q9WaPWFJZGpj9hInlzwMlU9Z9w30nPElq-ljRXrI-_lbEBHL_R0Gx"
 }

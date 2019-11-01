@@ -62,22 +62,23 @@ class UniversityAPIView(GenericViewSet):
         """
         result = {'base_names': list()}
         date_time = datetime.fromtimestamp(timestamp)
+        prefix_user_path = request.user._meta.model_name
         models = {
             Subscription: {
                 'basename': Subscription.basename,
-                'related_user_path': Subscription.related_user_path
+                'related_user_path': f'{Subscription.related_subscription_path}{prefix_user_path}'
             },
             Timetbale: {
                 'basename': Timetbale.basename,
-                'related_user_path': Timetbale.related_user_path
+                'related_user_path': f'{Timetbale.related_subscription_path}{prefix_user_path}'
             },
             Class: {
                 'basename': Class.basename,
-                'related_user_path': Class.related_user_path
+                'related_user_path': f'{Class.related_subscription_path}{prefix_user_path}'
             },
             Lecturer: {
                 'basename': Lecturer.basename,
-                'related_user_path': Lecturer.related_user_path
+                'related_user_path': f'{Lecturer.related_subscription_path}{prefix_user_path}'
             }
         }
 
@@ -103,21 +104,29 @@ class UniversityAPIView(GenericViewSet):
 
 
 class SubscriptionAPIView(SyncMixin, ModelViewSet):
-    queryset = Subscription.objects.all()
+    queryset = Subscription.objects.filter(state=Subscription.ACTIVE)
     serializer_class = SubscriptionSerializer
+    sync_queryset = Subscription.objects.all()
 
     def get_queryset(self):
         return self.queryset.filter(user=self.request.user)
 
     def create(self, request, *args, **kwargs):
         data = request.data
-        data['user'] = request.user.id
+        user = request.user.id
+        subgroup = data['subgroup']
+        data['user'] = user
 
-        serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return Response(serializer.data, status=HTTP_201_CREATED)
+        if Subscription.exists_and_deleted(user=user, subgroup=subgroup):
+            subscription = Subscription.objects.get(user=user, subgroup=subgroup)
+            restored_subscription = subscription.restore_and_update(data)
+            serializer = self.serializer_class(restored_subscription)
+            return Response(serializer.data, status=HTTP_201_CREATED)
+        else:
+            serializer = self.get_serializer(data=data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=HTTP_201_CREATED)
 
     def update(self, request, *args, **kwargs):
         serializer = self.serializer_class(self.get_object(), request.data, partial=True)
@@ -126,10 +135,14 @@ class SubscriptionAPIView(SyncMixin, ModelViewSet):
 
         return Response()
 
+    def perform_destroy(self, instance):
+        instance.safe_delete()
+
 
 class TimetableAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):
-    queryset = Timetbale.objects.all()
+    queryset = Timetbale.objects.filter(state=Class.ACTIVE)
     serializer_class = TimetableSerializer
+    sync_queryset = Timetbale.objects.all()
 
     def get_queryset(self):
         # if subgroup_id is used - get timetables (GET url - /.../timetables/?subgroup_id=<subgroup_id>)
@@ -143,8 +156,9 @@ class TimetableAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, Generic
 
 
 class ClassAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):
-    queryset = Class.objects.all()
+    queryset = Class.objects.filter(state=Class.ACTIVE)
     serializer_class = ClassSerializer
+    sync_queryset = Class.objects.all()
 
     def get_queryset(self):
         # if timetable_id is used - get classes (GET url - /.../classes/?timetable_id=<timetable_id>)
@@ -158,8 +172,9 @@ class ClassAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericView
 
 
 class LectureAPIView(SyncMixin, LoginNotRequiredMixin, RetrieveModelMixin, GenericViewSet):
-    queryset = Lecturer.objects.all()
+    queryset = Lecturer.objects.filter(state=Lecturer.ACTIVE)
     serializer_class = LecturerSerializer
+    sync_queryset = Lecturer.objects.all()
 
 
 class ClassTimeAPIView(LoginNotRequiredMixin, RetrieveModelMixin, GenericViewSet):
@@ -168,5 +183,6 @@ class ClassTimeAPIView(LoginNotRequiredMixin, RetrieveModelMixin, GenericViewSet
 
 
 class UniversityInfoAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):
-    queryset = UniversityInfo.objects.all()
+    queryset = UniversityInfo.objects.filter(state=UniversityInfo.ACTIVE)
     serializer_class = UniversityInfoSerializer
+    sync_queryset = UniversityInfo.objects.all()

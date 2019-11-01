@@ -69,12 +69,11 @@ class Subgroup(FantasticFourModel):
 
 class Subscription(CommonModel):
     title = models.CharField(max_length=150)
-    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
+    user = models.ForeignKey('users.User', related_name='subscriptions', on_delete=models.CASCADE)
     subgroup = models.ForeignKey(Subgroup, on_delete=models.CASCADE)
     is_main = models.BooleanField(default=False)
 
     basename = 'subscriptions'
-    related_user_path = 'user'
 
     class Meta:
         unique_together = ('user', 'subgroup')
@@ -82,13 +81,30 @@ class Subscription(CommonModel):
     def __str__(self):
         return self.title
 
+    @classmethod
+    def exists_and_deleted(cls, user, subgroup):
+        return Subscription.objects.filter(user_id=user, subgroup_id=subgroup, state=Subscription.DELETED).exists()
+
+    def restore_and_update(self, data=None):
+        # restore to default settings
+        self.state = self.ACTIVE
+        self.is_main = False
+        # updating information
+        if data:
+            subgroup_id = data.get('subgroup')
+            self.title = data.get('title', self.title)
+            self.subgroup = Subgroup.objects.get(id=subgroup_id) if subgroup_id else self.subgroup
+            self.is_main = data.get('is_main', self.is_main)
+        self.save()
+        return self
+
 
 class Timetbale(CommonModel):
     type_of_week = models.SmallIntegerField(choices=TypeWeek.all(), help_text='Тип недели')
     subgroup = models.ForeignKey(Subgroup, on_delete=models.CASCADE)
 
     basename = 'timetables'
-    related_user_path = 'subgroup__subscription__user'
+    related_subscription_path = 'subgroup__subscription__'
 
     class Meta:
         unique_together = ('subgroup', 'type_of_week')
@@ -119,7 +135,7 @@ class Lecturer(CommonModel):
     surname = models.CharField(max_length=64)
 
     basename = 'lecturers'
-    related_user_path = 'class__timetable__subgroup__subscription__user'
+    related_subscription_path = 'class__timetable__subgroup__subscription__'
 
     def __str__(self):
         return f'{self.name} {self.surname}'
@@ -161,7 +177,7 @@ class Class(CommonModel):
     timetable = models.ForeignKey(Timetbale, on_delete=models.CASCADE)
 
     basename = 'classes'
-    related_user_path = 'timetable__subgroup__subscription__user'
+    related_subscription_path = 'timetable__subgroup__subscription__'
 
     class Meta:
         unique_together = ('timetable', 'class_time', 'weekday')

@@ -16,37 +16,40 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'lzqbf5&hc9r)pj8ge0-2a0spyefzy8(!-l7v#er168$9l4ij0d'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env['debug']
+DEBUG = DEVELOPMENT = env['debug']
 FIREBASE_API_KEY = env['firebase_api_key']
 REDIS_HOST = env['redis_host']
 LOG_DIR = os.path.join(BASE_DIR, '../logs/')
 
-ADMINS = [('Valera Pavlikov', 'vokler98@gmail.com')]
+ADMINS = [('Valery Pavlikov', 'valerypavlikov@yandex.ru')]
 ALLOWED_HOSTS = ['*']
 
-# CORS
-CORS_ORIGIN_ALLOW_ALL = True  # redefined for iframe in XFrameMiddleware
+# =============================== CORS =========================================
+
 CORS_ALLOW_CREDENTIALS = True
 CORS_EXPOSE_HEADERS = ['sessionid']
 CORS_ALLOW_HEADERS = default_headers = (
-    'X-Requested-With',
-    'Content-Type',
-    'Cache-Control',
-    'Accept',
-    'Origin',
-    'Authorization',
-    'X-CSRFToken',
-    'User-Agent',
-    'Accept-Encoding',
     'sessionid',
-    'If-Modified-Since',
-    'Content-Length',
-    'Keep-Alive',
-    'Range',
-    'X-Frame-Options',
 )
 
-# Application definition
+# =============================== END CORS =====================================
+
+# =============================== EMAIL =====================================
+
+if DEVELOPMENT:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_HOST = 'smtp.yandex.ru'
+    EMAIL_PORT = 587
+    EMAIL_HOST_USER = env['email_host_user']
+    EMAIL_HOST_PASSWORD = env['email_host_password']
+    DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+    EMAIL_USE_TLS = True
+    SERVER_EMAIL = EMAIL_HOST_USER  # for logging
+
+# =============================== END EMAIL =================================
+
+# =============================== APPLICATION DEFINITION =======================
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -66,6 +69,10 @@ INSTALLED_APPS = [
     'university',
 ]
 
+# =============================== END APPLICATION DEFINITION ===================
+
+# =============================== MIDDLEWARE ===================================
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -77,9 +84,13 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'common.middleware.LoginRequiredMiddleware',
+    'common.middleware.UpdateLastActivityMiddleware',
 ]
 
-# LOGGING
+# =============================== END MIDDLEWARE ===============================
+
+# =============================== LOGGING ======================================
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
@@ -108,20 +119,37 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'simple'
-        },
+        }
     },
     'loggers': {
+        'errors': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+        },
         'informator': {
-            'handlers': ['infofile', 'console'],
+            'handlers': ['console'],
             'level': 'DEBUG',
-        },
-        'django': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
+        }
     },
 }
+
+if not DEVELOPMENT:
+    LOGGING['handlers']['mail_admins'] = {
+        'level': 'ERROR',
+        'filters': [],
+        'class': 'django.utils.log.AdminEmailHandler',
+    }
+    LOGGING['loggers']['errors'].update({'handlers': ['file', 'mail_admins']})
+    LOGGING['loggers']['informator'].update({'handlers': ['infofile']})
+    LOGGING['loggers']['django'] = {
+        'handlers': ['file', 'mail_admins'],
+        'level': 'DEBUG',
+        'propagate': True
+    }
+
+# =============================== END LOGGING ==================================
+
+# =============================== REST FRAMEWORK ===============================
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -132,6 +160,10 @@ REST_FRAMEWORK = {
     ),
     'EXCEPTION_HANDLER': 'common.utils.custom_exception_handler',
 }
+
+# =============================== END REST FRAMEWORK ===========================
+
+# =============================== DEFAULT SETTINGS =============================
 
 # =============================== CELERY =========================================
 
@@ -166,8 +198,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'timetable.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
+AUTH_USER_MODEL = 'users.User'
+
+# =============================== END DEFAULT SETTINGS =========================
+
+# =============================== DATABASES ====================================
 
 DATABASES = {
     'default': {
@@ -180,8 +215,9 @@ DATABASES = {
     }
 }
 
-# Password validation
-# https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
+# =============================== END DATABASES ================================
+
+# =============================== PASSWORD VALIDATION ==========================
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -198,8 +234,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
-# https://docs.djangoproject.com/en/1.11/topics/i18n/
+# =============================== END PASSWORD VALIDATION ======================
+
+# =============================== INTERNATIONALIZATION =========================
 
 LANGUAGE_CODE = 'en-us'
 
@@ -209,10 +246,11 @@ USE_I18N = True
 
 USE_L10N = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
+# =============================== END INTERNATIONALIZATION =====================
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# =============================== STATIC FILES =================================
+
+STATIC_ROOT = os.path.join(BASE_DIR, '../static/')  # for Nginx
 STATIC_URL = '/static/'
 
-AUTH_USER_MODEL = 'users.User'
+# =============================== END STATIC FILES =============================
