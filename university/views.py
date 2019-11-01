@@ -7,12 +7,10 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from common.mixins import LoginNotRequiredMixin, SyncMixin, required_params
+from . import serializers
 from .mixins import UniversityInfoMixin
 from .models import (Faculty, Occupation, Group, Subgroup, Subscription, Timetable, Class, Lecturer, ClassTime,
                      UniversityInfo)
-from .serializers import (FacultySerializer, OccupationSerializer, GroupSerializer, SubgroupSerializer,
-                          SubscriptionSerializer, TimetableSerializer, ClassSerializer, LecturerSerializer,
-                          ClassTimeSerializer, UniversityInfoSerializer)
 
 
 class FantasticFourAPIView(UniversityInfoMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):
@@ -21,12 +19,12 @@ class FantasticFourAPIView(UniversityInfoMixin, LoginNotRequiredMixin, ListModel
 
 class FacultyAPIView(FantasticFourAPIView):
     queryset = Faculty.objects.all()
-    serializer_class = FacultySerializer
+    serializer_class = serializers.FacultySerializer
 
 
 class OccupationAPIView(FantasticFourAPIView):
     queryset = Occupation.objects.all()
-    serializer_class = OccupationSerializer
+    serializer_class = serializers.OccupationSerializer
 
     def get_queryset(self):
         faculty_id = self.request.GET.get('faculty_id')
@@ -35,7 +33,7 @@ class OccupationAPIView(FantasticFourAPIView):
 
 class GroupAPIView(FantasticFourAPIView):
     queryset = Group.objects.all()
-    serializer_class = GroupSerializer
+    serializer_class = serializers.GroupSerializer
 
     def get_queryset(self):
         occupation_id = self.request.GET.get('occupation_id')
@@ -44,7 +42,7 @@ class GroupAPIView(FantasticFourAPIView):
 
 class SubgroupAPIView(FantasticFourAPIView):
     queryset = Subgroup.objects.all()
-    serializer_class = SubgroupSerializer
+    serializer_class = serializers.SubgroupSerializer
 
     def get_queryset(self):
         group_id = self.request.GET.get('group_id')
@@ -104,7 +102,7 @@ class UniversityAPIView(GenericViewSet):
 
 class SubscriptionAPIView(SyncMixin, ModelViewSet):
     queryset = Subscription.objects.filter(state=Subscription.ACTIVE)
-    serializer_class = SubscriptionSerializer
+    serializer_class = serializers.SubscriptionSerializer
     sync_queryset = Subscription.objects.all()
 
     def get_queryset(self):
@@ -116,7 +114,7 @@ class SubscriptionAPIView(SyncMixin, ModelViewSet):
 
 class TimetableAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):
     queryset = Timetable.objects.filter(state=Class.ACTIVE)
-    serializer_class = TimetableSerializer
+    serializer_class = serializers.TimetableSerializer
     sync_queryset = Timetable.objects.all()
 
     def get_queryset(self):
@@ -132,7 +130,7 @@ class TimetableAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, Generic
 
 class ClassAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):
     queryset = Class.objects.filter(state=Class.ACTIVE)
-    serializer_class = ClassSerializer
+    serializer_class = serializers.ClassSerializer
     sync_queryset = Class.objects.all()
 
     def get_queryset(self):
@@ -148,16 +146,16 @@ class ClassAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericView
 
 class LectureAPIView(SyncMixin, LoginNotRequiredMixin, RetrieveModelMixin, GenericViewSet):
     queryset = Lecturer.objects.filter(state=Lecturer.ACTIVE)
-    serializer_class = LecturerSerializer
+    serializer_class = serializers.LecturerSerializer
     sync_queryset = Lecturer.objects.all()
 
 
 class ClassTimeAPIView(LoginNotRequiredMixin, RetrieveModelMixin, GenericViewSet):
     queryset = ClassTime.objects.all()
-    serializer_class = ClassTimeSerializer
+    serializer_class = serializers.ClassTimeSerializer
 
 
 class UniversityInfoAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):
     queryset = UniversityInfo.objects.filter(state=UniversityInfo.ACTIVE)
-    serializer_class = UniversityInfoSerializer
+    serializer_class = serializers.UniversityInfoSerializer
     sync_queryset = UniversityInfo.objects.all()
