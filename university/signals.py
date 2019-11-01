@@ -16,16 +16,16 @@ def get_users_for_notification(model, ids):
     return users
 
 
-@receiver(post_save)
-def on_single_changes(sender, instance, **kwargs):
-    from university.models import Subscription, Timetable, Class, Lecturer
-
-    models = [Subscription, Timetable, Class, Lecturer]
-    if sender in models:
-        log.debug(f'INSTANCE WEEKDAY {instance.weekday}')
-        updated_ids = [instance.id]
-        users = get_users_for_notification(sender, updated_ids)
-        Pusher().send_notification(sender, users, updated_ids)
+# @receiver(post_save)
+# def on_single_changes(sender, instance, **kwargs):
+#     from university.models import Subscription, Timetable, Class, Lecturer
+#
+#     models = [Subscription, Timetable, Class, Lecturer]
+#     if sender in models:
+#         log.debug(f'INSTANCE WEEKDAY {instance.weekday}')
+#         updated_ids = [instance.id]
+#         users = get_users_for_notification(sender, updated_ids)
+#         Pusher().send_notification(sender, users, updated_ids)
 
 
 @receiver(post_bulk_update)
