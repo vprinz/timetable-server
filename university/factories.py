@@ -6,7 +6,7 @@ import pytz
 
 from common.factories import CommonFactory
 from users.factories import UserFactory
-from .models import Faculty, Occupation, Group, Subgroup, Subscription, Timetbale, Lecturer, ClassTime, Class
+from .models import Faculty, Occupation, Group, Subgroup, Subscription, Timetable, Lecturer, ClassTime, Class
 
 
 class FacultyFactory(factory.DjangoModelFactory):
@@ -108,7 +108,7 @@ class TimetableFactory(CommonFactory):
     subgroup = factory.SubFactory(SubgroupFactory)
 
     class Meta:
-        model = Timetbale
+        model = Timetable
 
 
 class LecturerFactory(CommonFactory):

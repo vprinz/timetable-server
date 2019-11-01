@@ -9,7 +9,7 @@ from university.models import Class
 from users.factories import UserFactory
 from ..factories import (FacultyFactory, OccupationFactory, GroupFactory, SubgroupFactory, SubscriptionFactory,
                          TimetableFactory, ClassFactory)
-from ..models import Faculty, Occupation, Group, Subgroup, Subscription, Timetbale
+from ..models import Faculty, Occupation, Group, Subgroup, Subscription, Timetable
 from ..serializers import (FacultySerializer, OccupationSerializer, GroupSerializer, SubgroupSerializer)
 
 
@@ -92,7 +92,7 @@ class RestAPIUniversity(BaseAPITestCase):
         s.save()
 
         # Changes for user (these changes shouldn't include to response)
-        timetable = Timetbale.objects.get(id=timetable_factory.id)
+        timetable = Timetable.objects.get(id=timetable_factory.id)
         timetable.type_of_week = 1
         timetable.save()
 

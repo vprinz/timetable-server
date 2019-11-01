@@ -82,7 +82,7 @@ class Subscription(CommonModel):
         return self.title
 
 
-class Timetbale(CommonModel):
+class Timetable(CommonModel):
     type_of_week = models.SmallIntegerField(choices=TypeWeek.all(), help_text='Тип недели')
     subgroup = models.ForeignKey(Subgroup, on_delete=models.CASCADE)
 
@@ -157,7 +157,7 @@ class Class(CommonModel):
     class_time = models.ForeignKey(ClassTime, on_delete=models.PROTECT, help_text='Время начала занятия')
     weekday = models.SmallIntegerField(choices=WEEKDAYS)
     lecturer = models.ForeignKey(Lecturer, on_delete=models.PROTECT)
-    timetable = models.ForeignKey(Timetbale, on_delete=models.CASCADE)
+    timetable = models.ForeignKey(Timetable, on_delete=models.CASCADE)
 
     basename = 'classes'
     related_subscription_path = 'timetable__subgroup__subscription__'

@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer, ReadOnlyField
 
-from .models import (Faculty, Occupation, Group, Subgroup, Subscription, Timetbale, Class, Lecturer, ClassTime,
+from .models import (Faculty, Occupation, Group, Subgroup, Subscription, Timetable, Class, Lecturer, ClassTime,
                      UniversityInfo)
 
 
@@ -57,7 +57,7 @@ class TimetableSerializer(ModelSerializer):
     faculty_id = ReadOnlyField(source='get_faculty')
 
     class Meta:
-        model = Timetbale
+        model = Timetable
         fields = ('id', 'type_of_week', 'subgroup_id', 'faculty_id')
         read_only_fields = ('id', 'type_of_week', 'subgroup_id', 'faculty_id')
 

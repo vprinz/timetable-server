@@ -8,7 +8,7 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from common.mixins import LoginNotRequiredMixin, SyncMixin, required_params
 from .mixins import UniversityInfoMixin
-from .models import (Faculty, Occupation, Group, Subgroup, Subscription, Timetbale, Class, Lecturer, ClassTime,
+from .models import (Faculty, Occupation, Group, Subgroup, Subscription, Timetable, Class, Lecturer, ClassTime,
                      UniversityInfo)
 from .serializers import (FacultySerializer, OccupationSerializer, GroupSerializer, SubgroupSerializer,
                           SubscriptionSerializer, TimetableSerializer, ClassSerializer, LecturerSerializer,
@@ -67,9 +67,9 @@ class UniversityAPIView(GenericViewSet):
                 'basename': Subscription.basename,
                 'related_user_path': f'{Subscription.related_subscription_path}{prefix_user_path}'
             },
-            Timetbale: {
-                'basename': Timetbale.basename,
-                'related_user_path': f'{Timetbale.related_subscription_path}{prefix_user_path}'
+            Timetable: {
+                'basename': Timetable.basename,
+                'related_user_path': f'{Timetable.related_subscription_path}{prefix_user_path}'
             },
             Class: {
                 'basename': Class.basename,
@@ -115,9 +115,9 @@ class SubscriptionAPIView(SyncMixin, ModelViewSet):
 
 
 class TimetableAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):
-    queryset = Timetbale.objects.filter(state=Class.ACTIVE)
+    queryset = Timetable.objects.filter(state=Class.ACTIVE)
     serializer_class = TimetableSerializer
-    sync_queryset = Timetbale.objects.all()
+    sync_queryset = Timetable.objects.all()
 
     def get_queryset(self):
         # if subgroup_id is used - get timetables (GET url - /.../timetables/?subgroup_id=<subgroup_id>)

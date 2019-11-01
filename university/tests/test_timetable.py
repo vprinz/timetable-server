@@ -8,7 +8,7 @@ from common.tests import BaseAPITestCase
 from common.utils import TypeWeek
 from users.factories import UserFactory
 from ..factories import SubscriptionFactory, TimetableFactory
-from ..models import Timetbale, Subgroup, Subscription
+from ..models import Timetable, Subgroup, Subscription
 from ..serializers import TimetableSerializer
 
 
@@ -28,7 +28,7 @@ class RestAPITimetable(BaseAPITestCase):
         url = self.reverse('timetables-list')
         response = self.client.get(url)
         subscriptions = Subscription.objects.filter(user=self.user)
-        timetable = Timetbale.objects.filter(subgroup__subscription__in=subscriptions)
+        timetable = Timetable.objects.filter(subgroup__subscription__in=subscriptions)
 
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(response.data, TimetableSerializer(timetable, many=True).data)
@@ -38,7 +38,7 @@ class RestAPITimetable(BaseAPITestCase):
         timetable_factory_denominator = TimetableFactory(subgroup=self.subgroup_35_2,
                                                          type_of_week=TypeWeek.denominator.value)
 
-        existing_ids = [t.id for t in Timetbale.objects.filter(subgroup__subscription__user=self.user)]
+        existing_ids = [t.id for t in Timetable.objects.filter(subgroup__subscription__user=self.user)]
         timestamp = int(datetime.timestamp(datetime.now() + timedelta(seconds=1)))
         data = {'existing_ids': existing_ids, 'timestamp': timestamp}
         url = self.reverse('timetables-sync')
@@ -50,10 +50,10 @@ class RestAPITimetable(BaseAPITestCase):
         time.sleep(1)
 
         # If something changed in subs
-        timetable_denominator = Timetbale.objects.get(id=timetable_factory_denominator.id)
+        timetable_denominator = Timetable.objects.get(id=timetable_factory_denominator.id)
         timetable_denominator.save()  # just save because nothing to change in timetable (we heed to get new modified)
 
-        timetable_numerator = Timetbale.objects.get(id=self.timetable_factory_numerator.id)
+        timetable_numerator = Timetable.objects.get(id=self.timetable_factory_numerator.id)
         timetable_numerator.delete()
 
         response = self.client.post(url, json.dumps(data), content_type=self.content_type)
