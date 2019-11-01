@@ -28,7 +28,9 @@ def on_single_changes(sender, instance, **kwargs):
         log.debug(f'INSTANCE WEEKDAY {instance.weekday}')
         updated_ids = [instance.id]
         users = get_users_for_notification(sender, updated_ids)
-        transaction.on_commit(Pusher().send_notification(sender, users, updated_ids))
+        # Pusher().send_notification(sender, users, updated_ids)
+        # pusher = Pusher()
+        transaction.on_commit(lambda: Pusher().send_notification(sender, users, updated_ids))
 
 
 @receiver(post_bulk_update)
