@@ -121,7 +121,7 @@ class Lecturer(CommonModel):
     related_subscription_path = 'class__timetable__subgroup__subscription__'
 
     def __str__(self):
-        return f'{self.name} {self.surname}'
+        return f'{self.surname} {self.name} {self.patronymic}'
 
 
 class Class(CommonModel):

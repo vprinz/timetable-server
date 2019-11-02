@@ -60,6 +60,7 @@ class ClassTimeAdmin(admin.ModelAdmin):
 class LecturerAdmin(admin.ModelAdmin):
     fields = ('id', ('created', 'modified'), ('name', 'patronymic', 'surname'), 'state')
     readonly_fields = ('id', 'created', 'modified')
+    ordering = ('surname',)
 
 
 @admin.register(UniversityInfo)
