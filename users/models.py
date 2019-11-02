@@ -3,6 +3,7 @@ from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django.utils import timezone
 
+from common.pusher import Pusher
 from university.models import Group
 
 
@@ -92,3 +93,10 @@ class Device(models.Model):
 
     def __str__(self):
         return f'{self.user} | {self.platform}'
+
+    @classmethod
+    def remove_invalid_tokens(cls):
+        pusher = Pusher()
+        registration_ids = cls.objects.values_list('token', flat=True)
+        valid_registration_ids = pusher.fcm.clean_registration_ids(registration_ids)
+        return cls.objects.exclude(token__in=valid_registration_ids).delete()
