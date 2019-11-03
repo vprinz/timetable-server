@@ -37,7 +37,7 @@ class FacultyAdmin(admin.ModelAdmin):
 
 @admin.register(Group)
 class GroupAdmin(admin.ModelAdmin):
-    fields = ('id', 'number')
+    fields = ('id', 'number', 'occupation')
     readonly_fields = ('id',)
     inlines = (SubgroupInline,)
 
