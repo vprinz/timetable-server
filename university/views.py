@@ -77,6 +77,10 @@ class UniversityAPIView(GenericViewSet):
             Lecturer: {
                 'basename': Lecturer.basename,
                 'related_user_path': f'{Lecturer.related_subscription_path}{prefix_user_path}'
+            },
+            ClassTime: {
+                'basename': ClassTime.basename,
+                'related_user_path': f'{ClassTime.related_subscription_path}{prefix_user_path}'
             }
         }
 
@@ -155,9 +159,10 @@ class LectureAPIView(SyncMixin, LoginNotRequiredMixin, RetrieveModelMixin, Gener
     sync_queryset = Lecturer.objects.all()
 
 
-class ClassTimeAPIView(LoginNotRequiredMixin, RetrieveModelMixin, GenericViewSet):
-    queryset = ClassTime.objects.all()
+class ClassTimeAPIView(SyncMixin, LoginNotRequiredMixin, RetrieveModelMixin, GenericViewSet):
+    queryset = ClassTime.objects.filter(state=ClassTime.ACTIVE)
     serializer_class = serializers.ClassTimeSerializer
+    sync_queryset = ClassTime.objects.all()
 
 
 class UniversityInfoAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):

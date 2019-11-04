@@ -18,9 +18,9 @@ def get_users_for_notification(model, ids):
 
 @receiver(post_save)
 def on_single_changes(sender, instance, **kwargs):
-    from university.models import Subscription, Timetable, Class, Lecturer
+    from university.models import Subscription, Timetable, Class, Lecturer, ClassTime
 
-    models = [Subscription, Timetable, Class, Lecturer]
+    models = [Subscription, Timetable, Class, Lecturer, ClassTime]
     if sender in models:
         updated_ids = [instance.id]
         users = get_users_for_notification(sender, updated_ids)
