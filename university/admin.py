@@ -24,7 +24,7 @@ class ClassInline(admin.TabularInline):
         'id', 'title', 'type_of_class', 'classroom', 'class_time', 'weekday', 'lecturer', 'state', 'created', 'modified'
     )
     readonly_fields = ('id', 'created', 'modified')
-    ordering = ('class_time__number', 'weekday')
+    ordering = ('weekday', 'class_time__number')
 
 
 @admin.register(Faculty)
