@@ -104,7 +104,7 @@ class ClassTime(CommonModel):
     start = models.TimeField()
     end = models.TimeField()
 
-    basename = 'classtimes'
+    basename = 'class-times'
     related_subscription_path = 'class__timetable__subgroup__subscription__'
 
     class Meta:
