@@ -8,10 +8,11 @@ from rest_framework.status import HTTP_405_METHOD_NOT_ALLOWED
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from common.mixins import LoginNotRequiredMixin, SyncMixin, required_params
-from . import serializers
-from .mixins import UniversityInfoMixin
-from .models import (Faculty, Occupation, Group, Subgroup, Subscription, Timetable, Class, Lecturer, ClassTime,
-                     UniversityInfo)
+from university import serializers
+from university.mixins import UniversityInfoMixin
+from university.models import (Faculty, Occupation, Group, Subgroup, Subscription, Timetable, Class, Lecturer,
+                               ClassTime,
+                               UniversityInfo)
 
 
 class FantasticFourAPIView(UniversityInfoMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):
@@ -77,10 +78,6 @@ class UniversityAPIView(GenericViewSet):
             Lecturer: {
                 'basename': Lecturer.basename,
                 'related_user_path': f'{Lecturer.related_subscription_path}{prefix_user_path}'
-            },
-            ClassTime: {
-                'basename': ClassTime.basename,
-                'related_user_path': f'{ClassTime.related_subscription_path}{prefix_user_path}'
             }
         }
 
