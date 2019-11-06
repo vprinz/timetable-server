@@ -27,6 +27,7 @@ class UniversityAPIView(BaseUniversityAPIView):
         if True in class_times_changes:
             result.data['base_names'].append(ClassTime.basename)
 
+        result.data.update({'timestamp': int(datetime.timestamp(datetime.now()))})
         return result
 
     @action(methods=['post'], detail=False, url_path='diff')
