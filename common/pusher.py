@@ -32,7 +32,7 @@ class Pusher:
                                                                                                    'device__token')
         else:
             users_data = user_objects.exclude(device=None). \
-                filter(device__token__in=valid_registration_ids).values('id', 'device__token', 'device__version')
+                filter(device__token__in=valid_registration_ids).values('id', 'device__token')
 
         subscription_is_main_path = f'{model.related_subscription_path}is_main'
         prefix_user_path = 'user'
