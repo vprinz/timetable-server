@@ -25,7 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
 class DeviceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Device
-        fields = ('id', 'token', 'platform', 'last_update')
+        fields = ('id', 'token', 'platform', 'version', 'last_update')
 
     def to_representation(self, instance):
         response = super(DeviceSerializer, self).to_representation(instance)

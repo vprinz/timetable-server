@@ -64,13 +64,17 @@ class User(PermissionsMixin, AbstractBaseUser):
     def set_device(self, params):
         token = params.get('token')
         platform = params.get('platform')
+        version = params.get('version')
+
         if token and platform:
             device, created = self.device_set.get_or_create(token=token, defaults={'platform': platform,
+                                                                                   'version': version,
                                                                                    'last_update': timezone.now()})
 
             if not created:
                 device.token = token
                 device.platform = platform
+                device.version = version
                 device.last_update = timezone.now()
                 device.save()
 

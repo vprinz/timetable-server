@@ -35,6 +35,7 @@ class UserAPIView(LoginNotRequiredMixin, GenericViewSet):
             if user != request.user:
                 logout(request)
             login(request, user)
+            request.data.update({'version': self.kwargs['version']})
             request.user.set_device(request.data)
             serializer = self.get_serializer(user)
             data = serializer.data
@@ -61,6 +62,7 @@ class UserAPIView(LoginNotRequiredMixin, GenericViewSet):
     @required_params
     @action(methods=['patch'], detail=False, permission_classes=[IsAuthenticated])
     def device(self, request, token, platform, *args, **kwargs):
+        request.data.update({'version': self.kwargs['version']})
         device = request.user.set_device(request.data)
         serializer = DeviceSerializer(device)
         return Response(serializer.data)
