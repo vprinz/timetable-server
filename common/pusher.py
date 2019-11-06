@@ -14,16 +14,27 @@ class Pusher:
         push_service = FCMNotification(api_key=settings.FIREBASE_API_KEY)
         return push_service
 
-    def send_notification(self, model, users, updated_ids):
+    def send_notification(self, model, user_objects, updated_ids):
+        from university.models import ClassTime
+        from users.models import Device
+
         data_message = {
             'message_title': 'updating',
             'basename': model.basename
         }
-        registration_ids = users.exclude(device=None).values_list('device__token', flat=True)
+        registration_ids = user_objects.exclude(device=None).values_list('device__token', flat=True)
         valid_registration_ids = self.fcm.clean_registration_ids(registration_ids)
 
-        users_data = users.exclude(device=None). \
-            filter(device__token__in=valid_registration_ids).values('id', 'device__token')
+        # TODO remove check after all users will update to version of API - v2
+        if model == ClassTime:
+            device_ids = Device.objects.filter(version='v2').values_list('id', flat=True)
+            users_data = user_objects.exclude(device=None). \
+                filter(device__id__in=device_ids, device__token__in=valid_registration_ids).values('id',
+                                                                                                   'device__token')
+        else:
+            users_data = user_objects.exclude(device=None). \
+                filter(device__token__in=valid_registration_ids).values('id', 'device__token', 'device__version')
+
         subscription_is_main_path = f'{model.related_subscription_path}is_main'
         prefix_user_path = 'user'
         for item in users_data:

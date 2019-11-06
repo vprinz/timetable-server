@@ -89,7 +89,7 @@ class Device(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     token = models.CharField(max_length=255)
     platform = models.CharField(max_length=20, choices=PLATFORMS)
-    version = models.CharField(max_length=8, null=True, blank=True, help_text='Version of API.')
+    version = models.CharField(max_length=8, null=True, blank=True, help_text='Version of API which is used by user.')
     last_update = models.DateTimeField()
 
     def __str__(self):

@@ -1,10 +1,12 @@
 from datetime import datetime
 
 from django.db.models import F, Case, When, Value, BooleanField
+from django.utils import timezone
 from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from common.decorators import required_params
-from university.models import ClassTime
+from ..models import Subscription, Class, ClassTime
 from ..v1.views import UniversityAPIView as BaseUniversityAPIView
 
 
@@ -30,6 +32,33 @@ class UniversityAPIView(BaseUniversityAPIView):
         result.data.update({'timestamp': int(datetime.timestamp(datetime.now()))})
         return result
 
-    @action(methods=['post'], detail=False, url_path='diff')
-    def migrations(self, request, *args, **kwargs):
-        pass
+    # TODO remove check after all users will update to version of API - v2
+    @required_params
+    @action(methods=['post'], detail=False)
+    def migrations(self, request, token, *args, **kwargs):
+        version = self.kwargs['version']
+        user_device = self.request.user.device_set.filter(token=token, version='v1')
+
+        if user_device.exists() and version == 'v2':
+            user_subscriptions = Subscription.objects.filter(user=self.request.user)
+
+            class_time_ids = list(ClassTime.objects.values_list('id', flat=True))
+            class_ids = list(Class.objects.
+                             filter(timetable__subgroup__subscription__in=user_subscriptions).
+                             values_list('id', flat=True))
+
+            result = [
+                {
+                    'basename': ClassTime.basename,
+                    'ids': class_time_ids
+                },
+                {
+                    'basename': Class.basename,
+                    'ids': class_ids
+                }
+            ]
+
+            user_device.update(version='v2', last_update=timezone.now())
+            return Response(result)
+        else:
+            return Response(list())
