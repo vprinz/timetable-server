@@ -99,10 +99,13 @@ class Timetable(CommonModel):
         return self.subgroup.group.occupation.faculty.id
 
 
-class ClassTime(models.Model):
+class ClassTime(CommonModel):
     number = models.SmallIntegerField()
     start = models.TimeField()
     end = models.TimeField()
+
+    basename = 'class-times'
+    related_subscription_path = 'class__timetable__subgroup__subscription__'
 
     class Meta:
         verbose_name = 'Number of class'
@@ -110,7 +113,6 @@ class ClassTime(models.Model):
 
     def __str__(self):
         return f'{self.number}-ая пара'
-
 
 class Lecturer(CommonModel):
     name = models.CharField(max_length=64)

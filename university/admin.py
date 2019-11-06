@@ -51,7 +51,7 @@ class TimetableAdmin(admin.ModelAdmin):
 
 @admin.register(ClassTime)
 class ClassTimeAdmin(admin.ModelAdmin):
-    fields = ('id', 'number', 'start', 'end')
+    fields = ('id', 'number', 'start', 'end', 'state')
     readonly_fields = ('id',)
     ordering = ('number',)
 

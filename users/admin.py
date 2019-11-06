@@ -16,7 +16,7 @@ class SubscriptionInline(TabularInline):
 class DeviceInline(TabularInline):
     model = Device
     extra = 0
-    fields = ('id', 'token', 'platform', 'last_update')
+    fields = ('id', 'token', 'platform', 'version', 'last_update')
 
 
 @register(User)
