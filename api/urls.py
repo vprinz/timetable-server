@@ -24,9 +24,9 @@ V1 = {
     r'university-info': university_v1.UniversityInfoAPIView,
 }
 
-V2 = {
+V2 = {**V1, **{
     r'university': university_v2.UniversityAPIView
-}
+}}
 
 
 def version_urls(version):
