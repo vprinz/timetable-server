@@ -22,12 +22,12 @@ def on_single_changes(sender, instance, **kwargs):
 
     models = [Subscription, Timetable, Class, Lecturer, ClassTime]
     if sender in models:
-        updated_ids = [instance.id]
-        users = get_users_for_notification(sender, updated_ids)
-        transaction.on_commit(lambda: Pusher().send_notification(sender, users, updated_ids))
+        ids = [instance.id]
+        users = get_users_for_notification(sender, ids)
+        message_title = 'updating' if instance.state == sender.ACTIVE else 'deleting'
+        transaction.on_commit(lambda: Pusher().send_notification(sender, users, ids, message_title))
 
-
-@receiver(post_bulk_update)
-def on_bulk_changes(sender, updated_ids, **kwargs):
-    users = get_users_for_notification(sender, updated_ids)
-    transaction.on_commit(lambda: Pusher().send_notification(sender, users, updated_ids))
+# @receiver(post_bulk_update)
+# def on_bulk_changes(sender, updated_ids, **kwargs):
+#     users = get_users_for_notification(sender, updated_ids)
+#     transaction.on_commit(lambda: Pusher().send_notification(sender, users, updated_ids))

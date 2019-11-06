@@ -14,12 +14,11 @@ class Pusher:
         push_service = FCMNotification(api_key=settings.FIREBASE_API_KEY)
         return push_service
 
-    def send_notification(self, model, user_objects, updated_ids):
+    def send_notification(self, model, user_objects, ids, message_title):
         from university.models import ClassTime
         from users.models import Device
-
         data_message = {
-            'message_title': 'updating',
+            'message_title': message_title,
             'basename': model.basename
         }
         registration_ids = user_objects.exclude(device=None).values_list('device__token', flat=True)
@@ -43,13 +42,13 @@ class Pusher:
             noisy_ids = model.objects. \
                 annotate(u_id=F(f'{model.related_subscription_path}{prefix_user_path}'),
                          subscription_is_main=F(subscription_is_main_path)). \
-                filter(id__in=updated_ids, u_id__in=[user_id], subscription_is_main=True). \
+                filter(id__in=ids, u_id__in=[user_id], subscription_is_main=True). \
                 values_list('id', flat=True)
 
             silent_ids = model.objects. \
                 annotate(u_id=F(f'{model.related_subscription_path}{prefix_user_path}'),
                          subscription_is_main=F(subscription_is_main_path)). \
-                filter(id__in=updated_ids, u_id__in=[user_id], subscription_is_main=False). \
+                filter(id__in=ids, u_id__in=[user_id], subscription_is_main=False). \
                 values_list('id', flat=True)
 
             registration_id = item['device__token']
