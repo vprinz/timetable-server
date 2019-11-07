@@ -21,7 +21,7 @@ class DeviceInline(TabularInline):
 
 @register(User)
 class UserAdmin(DjangoUserAdmin):
-    list_display = ('id', 'first_name', 'last_name', 'email')
+    list_display = ('id', 'email')
     ordering = ('-id',)
     inlines = (SubscriptionInline, DeviceInline)
     readonly_fields = ('id',)
