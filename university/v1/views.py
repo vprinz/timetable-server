@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.db.models import F, Case, When, Value, BooleanField
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from rest_framework.response import Response
@@ -10,13 +11,11 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from common.mixins import LoginNotRequiredMixin, SyncMixin, required_params
 from university import serializers
 from university.mixins import UniversityInfoMixin
-from university.models import (Faculty, Occupation, Group, Subgroup, Subscription, Timetable, Class, Lecturer,
-                               ClassTime,
-                               UniversityInfo)
+from university.models import *
 
 
 class FantasticFourAPIView(UniversityInfoMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):
-    pass
+    filter_backends = (DjangoFilterBackend,)
 
 
 class FacultyAPIView(FantasticFourAPIView):
@@ -27,28 +26,19 @@ class FacultyAPIView(FantasticFourAPIView):
 class OccupationAPIView(FantasticFourAPIView):
     queryset = Occupation.objects.all()
     serializer_class = serializers.OccupationSerializer
-
-    def get_queryset(self):
-        faculty_id = self.request.GET.get('faculty_id')
-        return self.queryset.filter(faculty_id=faculty_id)
+    filter_fields = ('faculty_id',)
 
 
 class GroupAPIView(FantasticFourAPIView):
     queryset = Group.objects.all()
     serializer_class = serializers.GroupSerializer
-
-    def get_queryset(self):
-        occupation_id = self.request.GET.get('occupation_id')
-        return self.queryset.filter(occupation_id=occupation_id)
+    filter_fields = ('occupation_id',)
 
 
 class SubgroupAPIView(FantasticFourAPIView):
     queryset = Subgroup.objects.all()
     serializer_class = serializers.SubgroupSerializer
-
-    def get_queryset(self):
-        group_id = self.request.GET.get('group_id')
-        return self.queryset.filter(group_id=group_id)
+    filter_fields = ('group_id',)
 
 
 class UniversityAPIView(GenericViewSet):

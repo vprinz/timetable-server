@@ -13,3 +13,5 @@ ipython==7.6.0
 pyfcm==1.4.7
 
 drf-yasg==1.17.0
+
+django-filter==2.2.0
