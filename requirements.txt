@@ -1,4 +1,4 @@
-django==2.2.8
+django==2.2.9
 django-extensions==2.1.9
 djangorestframework==3.9.4
 django-cors-headers==3.1.1
@@ -11,3 +11,5 @@ Faker==1.0.7
 ipython==7.6.0
 
 pyfcm==1.4.7
+
+drf-yasg==1.17.0
