@@ -68,6 +68,10 @@ class UniversityAPIView(GenericViewSet):
             Lecturer: {
                 'basename': Lecturer.basename,
                 'related_user_path': f'{Lecturer.related_subscription_path}{prefix_user_path}'
+            },
+            ClassTime: {
+                'basename': ClassTime.basename,
+                'related_user_path': f'{ClassTime.related_subscription_path}{prefix_user_path}'
             }
         }
 

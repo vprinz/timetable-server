@@ -1,8 +1,7 @@
 from django.conf.urls import url, include
 from rest_framework import routers
 
-from university.v1 import views as university_v1
-from university.v2 import views as university_v2
+from university import views as university_v1
 from users import views as users
 
 V1 = {
@@ -24,10 +23,6 @@ V1 = {
     r'university-info': university_v1.UniversityInfoAPIView,
 }
 
-V2 = {**V1, **{
-    r'university': university_v2.UniversityAPIView
-}}
-
 
 def version_urls(version):
     router = routers.DefaultRouter()
@@ -39,5 +34,4 @@ def version_urls(version):
 
 urlpatterns = [
     url(r'^(?P<version>v1)/', include(version_urls(V1))),
-    url(r'^(?P<version>v2)/', include(version_urls(V2)))
 ]
