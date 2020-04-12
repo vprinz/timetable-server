@@ -3,18 +3,21 @@ import json
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 
 from common.tests import BaseAPITestCase
-from .factories import UserFactory
-from .models import User
+from .factories import UserFactory, DeviceFactory
+from .models import User, Device
+from .serializers import DeviceSerializer
 
 
 class RestAPIUser(BaseAPITestCase):
 
-    def setUp(self):
-        super(RestAPIUser, self).setUp()
-        self.user_create_url = self.reverse('users-registration')
-        self.user_login_url = self.reverse('users-login')
-        self.user_info = self.reverse('users-user-info')
-        self.user_logout = self.reverse('users-logout')
+    @classmethod
+    def setUpClass(cls):
+        super(RestAPIUser, cls).setUpClass()
+        cls.user_create_url = cls.reverse('users-registration')
+        cls.user_login_url = cls.reverse('users-login')
+        cls.user_info = cls.reverse('users-user-info')
+        cls.user_logout = cls.reverse('users-logout')
+        cls.user_device = cls.reverse('users-device')
 
     def test_create_user_with_correct_data(self):
         data = json.dumps({'email': 'test-email@mail.com', 'password': 'Timetable123'})
@@ -80,3 +83,32 @@ class RestAPIUser(BaseAPITestCase):
         response = self.client.get(self.user_logout)
 
         self.assertEqual(response.status_code, HTTP_200_OK)
+
+    def test_device(self):
+        """Case for testing if device doesn't exist."""
+        token = 'f6V5isN83Fw:APA91bErGiPse5QZRNYUq4tm38xu1MJ-1koU90AOJdOp'
+        data = json.dumps({
+            'token': token,
+            'platform': Device.iOS,
+        })
+        response = self.client.patch(self.user_device, data=data, content_type=self.content_type)
+
+        device = Device.objects.get(token=token, platform=Device.iOS)
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertJSONEqual(response.content.decode(), DeviceSerializer(device).data)
+        self.assertEqual(User.objects.get(id=self.user.id).device_set.last(), device)
+
+    def test_update_device(self):
+        """Case for testing if device exists and needs to update."""
+        existing_token = 'ejkjawe:432ksjalde'
+        device_factory = DeviceFactory(token=existing_token, user=self.user, version=self.version)
+        data = json.dumps({
+            'token': existing_token,
+            'platform': Device.ANDROID,
+        })
+        response = self.client.patch(self.user_device, data=data, content_type=self.content_type)
+
+        device = Device.objects.get(id=device_factory.id)
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertJSONEqual(response.content.decode(), DeviceSerializer(device).data)
+        self.assertEqual(device.platform, Device.ANDROID)

@@ -34,10 +34,11 @@ class BaseAPITestCase(APITestCase):
     def setUp(self):
         self.client.force_login(user=self.user)
 
-    def reverse(self, view_name, args=None, kwargs=None, request=None, format=None, **extra):
+    @classmethod
+    def reverse(cls, view_name, args=None, kwargs=None, request=None, format=None, **extra):
         if kwargs is None:
             kwargs = {}
-        kwargs.update({'version': self.version})
+        kwargs.update({'version': cls.version})
         return _reverse(view_name, args, kwargs, request, format, **extra)
 
     def reverse_with_query_params(self, view_name, query_name, *args, **kwargs):

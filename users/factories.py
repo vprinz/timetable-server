@@ -1,7 +1,10 @@
 import string
-import factory.fuzzy
+from datetime import datetime
 
-from .models import User
+import factory.fuzzy
+import pytz
+
+from .models import User, Device
 
 
 class UserFactory(factory.DjangoModelFactory):
@@ -10,3 +13,13 @@ class UserFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = User
+
+
+class DeviceFactory(factory.DjangoModelFactory):
+    user = factory.SubFactory(UserFactory)
+    token = factory.fuzzy.FuzzyText(length=255)
+    platform = Device.iOS
+    last_update = factory.fuzzy.FuzzyDateTime(datetime(2019, 5, 31, tzinfo=pytz.UTC), datetime.now(pytz.UTC))
+
+    class Meta:
+        model = Device
