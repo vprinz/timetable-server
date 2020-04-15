@@ -97,14 +97,13 @@ class UniversityAPIView(GenericViewSet):
 
 
 class SubscriptionAPIView(SyncMixin, ModelViewSet):
-    queryset = Subscription.objects.filter(state=Subscription.ACTIVE)
+    queryset = Subscription.objects.all()
     serializer_class = serializers.SubscriptionSerializer
-    sync_queryset = Subscription.objects.all()
 
     def get_queryset(self):
         if self.action == 'sync':
-            return self.sync_queryset.filter(user=self.request.user)
-        return self.queryset.filter(user=self.request.user)
+            return self.queryset.filter(user=self.request.user)
+        return self.queryset.filter(state=Subscription.ACTIVE, user=self.request.user)
 
     def perform_destroy(self, instance):
         instance.safe_delete()
@@ -115,33 +114,29 @@ class SubscriptionAPIView(SyncMixin, ModelViewSet):
 
 
 class TimetableAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):
-    queryset = Timetable.objects.filter(state=Class.ACTIVE)
+    queryset = Timetable.objects.all()
     serializer_class = serializers.TimetableSerializer
-    sync_queryset = Timetable.objects.all()
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('subgroup_id',)
 
     def get_queryset(self):
-        # if subgroup_id is used - get timetables (GET url - /.../timetables/?subgroup_id=<subgroup_id>)
-        # if subgroup_id isn't used - for sync/meta methods (POST url - /.../timetables/sync/)
-        subgroup_id = self.request.query_params.get('subgroup_id')
-        if subgroup_id:
-            return self.queryset.filter(subgroup_id=subgroup_id)
-        else:
-            subscriptions = Subscription.objects.filter(user=self.request.user)
+        subscriptions = Subscription.objects.filter(user=self.request.user)
+        if self.action == 'sync':
             return self.queryset.filter(subgroup__subscription__in=subscriptions)
+        return self.queryset.filter(subgroup__subscription__in=subscriptions, state=Timetable.ACTIVE)
 
 
 class ClassAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):
-    queryset = Class.objects.filter(state=Class.ACTIVE)
+    queryset = Class.objects.all()
     serializer_class = serializers.ClassSerializer
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('timetable_id',)
-    sync_queryset = Class.objects.all()
 
     def get_queryset(self):
+        subscriptions = Subscription.objects.filter(user=self.request.user)
         if self.action == 'sync':
-            subscriptions = Subscription.objects.filter(user=self.request.user)
-            return self.sync_queryset.filter(timetable__subgroup__subscription__in=subscriptions)
-        return self.queryset
+            return self.queryset.filter(timetable__subgroup__subscription__in=subscriptions)
+        return self.queryset.filter(state=Class.ACTIVE)
 
 
 class LectureAPIView(SyncMixin, LoginNotRequiredMixin, RetrieveModelMixin, GenericViewSet):

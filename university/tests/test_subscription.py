@@ -103,36 +103,3 @@ class RestAPISubscription(BaseAPITestCase):
         deleted_ids = [deleted_subscription.id]
 
         self.init_sync(url, updated_ids, deleted_ids)
-
-    # def test_sync(self):
-    #     group_36 = Group.objects.get(number='36')
-    #     subgroup_35_2 = Subgroup.objects.get(group=self.group_35, number='2')
-    #     subgroup_36_1 = Subgroup.objects.get(group=group_36, number='1')
-    #
-    #     subs_factory_35_2 = SubscriptionFactory(subgroup=subgroup_35_2, user=self.user)
-    #     subs_factory_36_1 = SubscriptionFactory(subgroup=subgroup_36_1, user=self.user)
-    #
-    #     existing_ids = [s.id for s in Subscription.objects.filter(user=self.user)]
-    #     timestamp = int(datetime.timestamp(datetime.now() + timedelta(seconds=1)))
-    #     data = {'existing_ids': existing_ids, 'timestamp': timestamp}
-    #     url = self.reverse('subscriptions-sync')
-    #
-    #     # If nothing changed
-    #     response = self.client.post(url, json.dumps(data), content_type=self.content_type)
-    #     self.assertEqual(response.status_code, HTTP_200_OK)
-    #     self.assertJSONEqual(response.content.decode(), self.compare_response_with_sync([], []))
-    #     time.sleep(1)
-    #
-    #     # If something changed in subs
-    #     subs_35_2 = Subscription.objects.get(id=subs_factory_35_2.id)
-    #     subs_35_2.is_main = True
-    #     subs_35_2.save()
-    #
-    #     subs_36_1 = Subscription.objects.get(id=subs_factory_36_1.id)
-    #     subs_36_1.delete()
-    #
-    #     response = self.client.post(url, json.dumps(data), content_type=self.content_type)
-    #     self.assertEqual(response.status_code, HTTP_200_OK)
-    #     self.assertJSONEqual(response.content.decode(),
-    #                          self.compare_response_with_sync(updated_ids=[subs_35_2.id],
-    #                                                          deleted_ids=[subs_factory_36_1.id]))
