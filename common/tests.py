@@ -1,11 +1,15 @@
 import json
+from datetime import datetime, timedelta
 
 from rest_framework.reverse import reverse as _reverse
+from rest_framework.status import HTTP_200_OK
 from rest_framework.test import APITestCase
 
 from common.utils import TypeWeek
-from university.factories import (FacultyFactory, OccupationFactory, GroupFactory, SubgroupFactory, SubscriptionFactory,
-                                  TimetableFactory, ClassFactory)
+from university.factories import (
+    FacultyFactory, OccupationFactory, GroupFactory, SubgroupFactory,
+    SubscriptionFactory, TimetableFactory, ClassFactory
+)
 from university.models import Group, Subgroup
 from users.factories import UserFactory
 
@@ -48,7 +52,9 @@ class BaseAPITestCase(APITestCase):
             url += f'?{query_name}={get}'
         return url
 
-    def compare_response_with_sync(self, updated_ids, deleted_ids):
+    # -------- TEST FOR SYNC --------
+
+    def compare_sync(self, updated_ids, deleted_ids):
         """
         Compare response from the sync request.
         """
@@ -58,3 +64,16 @@ class BaseAPITestCase(APITestCase):
         }
 
         return json.dumps(result)
+
+    def init_sync(self, url, updated_ids, deleted_ids):
+        timestamp = int(datetime.timestamp(datetime.now() - timedelta(seconds=5)))
+        data = {
+            'already_handled': [],
+            'timestamp': timestamp
+        }
+
+        response = self.client.post(url, json.dumps(data), content_type=self.content_type)
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertJSONEqual(response.content.decode(), self.compare_sync(updated_ids, deleted_ids))
+
+    # -------- END TEST FOR SYNC ----
