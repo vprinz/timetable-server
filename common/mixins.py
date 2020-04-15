@@ -33,8 +33,8 @@ class SyncMixin:
         :return: list of ids which were updated or deleted.
         """
         try:
-            date_time = datetime.fromtimestamp(timestamp)
-            result = self.queryset.model.get_ids_for_sync(self.sync_queryset.exclude(id__in=already_handled), date_time)
+            time = datetime.fromtimestamp(timestamp)
+            result = self.queryset.model.get_ids_for_sync(self.get_queryset().exclude(id__in=already_handled), time)
             return Response(data=result)
         except Exception as e:
             return Response(data={'error': str(e)}, status=HTTP_400_BAD_REQUEST)

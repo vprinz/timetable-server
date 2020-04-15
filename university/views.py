@@ -102,6 +102,8 @@ class SubscriptionAPIView(SyncMixin, ModelViewSet):
     sync_queryset = Subscription.objects.all()
 
     def get_queryset(self):
+        if self.action == 'sync':
+            return self.sync_queryset.filter(user=self.request.user)
         return self.queryset.filter(user=self.request.user)
 
     def perform_destroy(self, instance):
@@ -131,17 +133,15 @@ class TimetableAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, Generic
 class ClassAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):
     queryset = Class.objects.filter(state=Class.ACTIVE)
     serializer_class = serializers.ClassSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('timetable_id',)
     sync_queryset = Class.objects.all()
 
     def get_queryset(self):
-        # if timetable_id is used - get classes (GET url - /.../classes/?timetable_id=<timetable_id>)
-        # if timetable_id isn't used - for sync/meta methods (POST url - /.../classes/sync/)
-        timetable_id = self.request.query_params.get('timetable_id')
-        if timetable_id:
-            return self.queryset.filter(timetable_id=timetable_id)
-        else:
+        if self.action == 'sync':
             subscriptions = Subscription.objects.filter(user=self.request.user)
-            return self.queryset.filter(timetable__subgroup__subscription__in=subscriptions)
+            return self.sync_queryset.filter(timetable__subgroup__subscription__in=subscriptions)
+        return self.queryset
 
 
 class LectureAPIView(SyncMixin, LoginNotRequiredMixin, RetrieveModelMixin, GenericViewSet):
