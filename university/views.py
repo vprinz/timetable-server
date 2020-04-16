@@ -140,9 +140,14 @@ class ClassAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericView
 
 
 class LecturerAPIView(SyncMixin, LoginNotRequiredMixin, RetrieveModelMixin, GenericViewSet):
-    queryset = Lecturer.objects.filter(state=Lecturer.ACTIVE)
+    queryset = Lecturer.objects.all()
     serializer_class = serializers.LecturerSerializer
-    sync_queryset = Lecturer.objects.all()
+
+    def get_queryset(self):
+        subscriptions = Subscription.objects.filter(user=self.request.user)
+        if self.action == 'sync':
+            return self.queryset.filter(class__timetable__subgroup__subscription__in=subscriptions)
+        return self.queryset.filter(state=Lecturer.ACTIVE)
 
 
 class ClassTimeAPIView(SyncMixin, LoginNotRequiredMixin, RetrieveModelMixin, GenericViewSet):
