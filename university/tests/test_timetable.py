@@ -38,3 +38,9 @@ class RestAPITimetable(BaseAPITestCase):
         deleted_ids = [timetable.id]
 
         self.init_sync(url, updated_ids, deleted_ids)
+
+    def test_meta(self):
+        timetables = Timetable.objects.filter(subgroup__subscription__in=[self.subscription])
+        url = self.reverse('timetables-meta')
+
+        self.init_meta(url, timetables)

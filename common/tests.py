@@ -53,7 +53,7 @@ class BaseAPITestCase(APITestCase):
             url += f'?{query_name}={get}'
         return url
 
-    # -------- TEST FOR SYNC --------
+    # -------- TEST SYNC --------
 
     def compare_sync(self, updated_ids, deleted_ids):
         """
@@ -77,4 +77,17 @@ class BaseAPITestCase(APITestCase):
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertJSONEqual(response.content.decode(), self.compare_sync(updated_ids, deleted_ids))
 
-    # -------- END TEST FOR SYNC ----
+    # -------- END TEST SYNC ----
+
+    # -------- TEST META --------
+
+    def init_meta(self, url, queryset):
+        data = {
+            'ids': list(queryset.values_list('id', flat=True))
+        }
+        response = self.client.post(url, data=json.dumps(data), content_type=self.content_type)
+
+        self.assertEqual(response.status_code, HTTP_200_OK)
+        self.assertEqual(len(response.data), queryset.count())
+
+    # -------- END TEST META ----

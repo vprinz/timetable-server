@@ -103,3 +103,9 @@ class RestAPISubscription(BaseAPITestCase):
         deleted_ids = [deleted_subscription.id]
 
         self.init_sync(url, updated_ids, deleted_ids)
+
+    def test_meta(self):
+        subscriptions = Subscription.objects.filter(user=self.user)
+        url = self.reverse('subscriptions-meta')
+
+        self.init_meta(url, subscriptions)

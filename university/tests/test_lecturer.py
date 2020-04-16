@@ -30,3 +30,9 @@ class RestAPILecturer(BaseAPITestCase):
         deleted_ids = []
 
         self.init_sync(url, updated_ids, deleted_ids)
+
+    def test_meta(self):
+        lecturers = Lecturer.objects.filter(class__timetable__subgroup__subscription__in=[self.subscription])
+        url = self.reverse('lecturers-meta')
+
+        self.init_meta(url, lecturers)

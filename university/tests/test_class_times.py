@@ -28,3 +28,9 @@ class RestAPIClassTimes(BaseAPITestCase):
         deleted_ids = []
 
         self.init_sync(url, updated_ids, deleted_ids)
+
+    def test_meta(self):
+        class_times = ClassTime.objects.filter(class__timetable__subgroup__subscription__in=[self.subscription])
+        url = self.reverse('class-times-meta')
+
+        self.init_meta(url, class_times)
