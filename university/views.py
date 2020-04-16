@@ -139,7 +139,7 @@ class ClassAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericView
         return self.queryset.filter(state=Class.ACTIVE)
 
 
-class LectureAPIView(SyncMixin, LoginNotRequiredMixin, RetrieveModelMixin, GenericViewSet):
+class LecturerAPIView(SyncMixin, LoginNotRequiredMixin, RetrieveModelMixin, GenericViewSet):
     queryset = Lecturer.objects.filter(state=Lecturer.ACTIVE)
     serializer_class = serializers.LecturerSerializer
     sync_queryset = Lecturer.objects.all()

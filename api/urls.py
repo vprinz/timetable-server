@@ -17,7 +17,7 @@ V1 = {
     r'subscriptions': university_v1.SubscriptionAPIView,
     r'timetables': university_v1.TimetableAPIView,
     r'classes': university_v1.ClassAPIView,
-    r'lecturers': university_v1.LectureAPIView,
+    r'lecturers': university_v1.LecturerAPIView,
     r'class-times': university_v1.ClassTimeAPIView,
 
     r'university-info': university_v1.UniversityInfoAPIView,
