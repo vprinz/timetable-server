@@ -19,10 +19,7 @@ class LoginNotRequiredMixin:
 class SyncMixin:
     """
         Mixin for synchronization server's data with client.
-        Fields:
-            - sync_queryset: queryset without filter() or exclude(). Just virgin queryset for working with all data.
     """
-    sync_queryset = None
 
     @required_params
     @action(methods=['post'], detail=False, permission_classes=[IsAuthenticated])

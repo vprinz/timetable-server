@@ -162,6 +162,10 @@ class ClassTimeAPIView(SyncMixin, LoginNotRequiredMixin, RetrieveModelMixin, Gen
 
 
 class UniversityInfoAPIView(SyncMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):
-    queryset = UniversityInfo.objects.filter(state=UniversityInfo.ACTIVE)
+    queryset = UniversityInfo.objects.all()
     serializer_class = serializers.UniversityInfoSerializer
-    sync_queryset = UniversityInfo.objects.all()
+
+    def get_queryset(self):
+        if self.action == 'sync':
+            return self.queryset
+        return self.queryset.filter(state=UniversityInfo.ACTIVE)
