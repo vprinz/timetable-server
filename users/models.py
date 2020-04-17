@@ -67,9 +67,9 @@ class User(PermissionsMixin, AbstractBaseUser):
         version = params.get('version')
 
         if token and platform:
-            device, created = self.device_set.get_or_create(token=token, defaults={'platform': platform,
-                                                                                   'version': version,
-                                                                                   'last_update': timezone.now()})
+            device, created = self.device_set.get_or_create(
+                token=token, defaults={'platform': platform, 'version': version, 'last_update': timezone.now()}
+            )
 
             if not created:
                 device.token = token

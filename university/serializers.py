@@ -47,9 +47,9 @@ class SubscriptionSerializer(ModelSerializer):
             'is_main': validated_data.get('is_main', False),
             'state': Subscription.ACTIVE
         }
-        subscription, created = Subscription.objects.update_or_create(user=validated_data['user'],
-                                                                      subgroup=validated_data['subgroup'],
-                                                                      defaults=defaults)
+        subscription, created = Subscription.objects.update_or_create(
+            user=validated_data['user'], subgroup=validated_data['subgroup'], defaults=defaults
+        )
         return subscription
 
 
