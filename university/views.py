@@ -11,7 +11,10 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from common.mixins import LoginNotRequiredMixin, SyncMixin, required_params
 from university import serializers
 from university.mixins import UniversityInfoMixin
-from university.models import *
+from university.models import (
+    Faculty, Subscription, Occupation, Group, Subgroup, Timetable, Class, Lecturer,
+    ClassTime, UniversityInfo
+)
 
 
 class FantasticFourAPIView(UniversityInfoMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):

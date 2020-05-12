@@ -4,7 +4,6 @@ from django.db import models
 from django.utils import timezone
 
 from common.pusher import Pusher
-from university.models import Group
 
 
 class UserManager(BaseUserManager):

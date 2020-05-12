@@ -1,5 +1,5 @@
 from django.contrib.admin import TabularInline, register
-from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin, UserAdmin
+from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import ugettext_lazy as _
 
 from university.models import Subscription

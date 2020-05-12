@@ -114,6 +114,7 @@ class ClassTime(CommonModel):
     def __str__(self):
         return f'{self.number}-ая пара'
 
+
 class Lecturer(CommonModel):
     name = models.CharField(max_length=64)
     patronymic = models.CharField(max_length=64)
