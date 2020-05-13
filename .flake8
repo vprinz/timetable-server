@@ -13,3 +13,26 @@ ignore =
     D105, # magic method
     D106, # nested class
     D107, # __init__
+
+# flake8-class-attributes-order
+class_attributes_order =
+    constant,
+    field,
+    outer_field,
+    meta_class,
+    nested_class,
+    __new__,
+    __init__,
+    __post_init__,
+    __str__,
+    magic_method,
+    save,
+    delete,
+    property_method,
+    private_property_method,
+    static_method,
+    private_static_method,
+    class_method,
+    private_class_method,
+    method,
+    private_method

@@ -48,7 +48,7 @@ class UniversityAPIView(GenericViewSet):
     @required_params
     @action(methods=['post'], detail=False, url_path='diff')
     def diff_basename(self, request, timestamp, *args, **kwargs):
-        """
+        """ # noqa
         :param timestamp: the time at which the result is returned.
         :return: list of base_names which were changed.
         """

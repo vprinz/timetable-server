@@ -14,12 +14,12 @@ class FantasticFourModel(models.Model):
     (Faculty, Occupation, Group, Subgroup).
     """
 
+    class Meta:
+        abstract = True
+
     @classmethod
     def content_type(cls):
         return ContentType.objects.get_for_model(cls)
-
-    class Meta:
-        abstract = True
 
 
 class Faculty(FantasticFourModel):
@@ -69,12 +69,12 @@ class Subgroup(FantasticFourModel):
 
 
 class Subscription(CommonModel):
+    basename = 'subscriptions'
+
     title = models.CharField(max_length=150)
+    is_main = models.BooleanField(default=False)
     user = models.ForeignKey('users.User', related_name='subscriptions', on_delete=models.CASCADE)
     subgroup = models.ForeignKey(Subgroup, on_delete=models.CASCADE)
-    is_main = models.BooleanField(default=False)
-
-    basename = 'subscriptions'
 
     class Meta:
         unique_together = ('user', 'subgroup')
@@ -84,11 +84,11 @@ class Subscription(CommonModel):
 
 
 class Timetable(CommonModel):
-    type_of_week = models.SmallIntegerField(choices=TypeWeek.all(), help_text='Тип недели')
-    subgroup = models.ForeignKey(Subgroup, on_delete=models.CASCADE)
-
     basename = 'timetables'
     related_subscription_path = 'subgroup__subscription__'
+
+    type_of_week = models.SmallIntegerField(choices=TypeWeek.all(), help_text='Тип недели')
+    subgroup = models.ForeignKey(Subgroup, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ('subgroup', 'type_of_week')
@@ -155,16 +155,16 @@ class Class(CommonModel):
         (SUNDAY, 'Воскресенье')
     )
 
+    basename = 'classes'
+    related_subscription_path = 'timetable__subgroup__subscription__'
+
     title = models.CharField(max_length=150)
     type_of_class = models.SmallIntegerField(choices=TYPE_OF_CLASS, help_text='Тип занятия')
     classroom = models.CharField(max_length=10)
-    class_time = models.ForeignKey(ClassTime, on_delete=models.PROTECT, help_text='Время начала занятия')
     weekday = models.SmallIntegerField(choices=WEEKDAYS)
+    class_time = models.ForeignKey(ClassTime, on_delete=models.PROTECT, help_text='Время начала занятия')
     lecturer = models.ForeignKey(Lecturer, on_delete=models.PROTECT)
     timetable = models.ForeignKey(Timetable, on_delete=models.CASCADE)
-
-    basename = 'classes'
-    related_subscription_path = 'timetable__subgroup__subscription__'
 
     class Meta:
         unique_together = ('timetable', 'class_time', 'weekday')
@@ -175,12 +175,12 @@ class Class(CommonModel):
 
 
 class UniversityInfo(CommonModel):
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    basename = 'university-info'
+
+    data = JSONField(default=dict)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey()
-    data = JSONField(default=dict)
-
-    basename = 'university-info'
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = 'University Info'

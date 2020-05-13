@@ -36,7 +36,7 @@ class BaseAPITestCase(APITestCase):
             title='Расписание на 1 семестр.', user=cls.user, subgroup=cls.subgroup_35_1, is_main=True
         )
 
-    def setUp(self):
+    def setUp(self):  # noqa
         self.client.force_login(user=self.user)
 
     @classmethod

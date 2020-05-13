@@ -9,15 +9,6 @@ from common.pusher import Pusher
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
-    def _create_user(self, email, password, **extra_fields):
-        if not email:
-            raise ValueError('Необходимо указать email')
-        email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
     def create_user(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
@@ -32,6 +23,15 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         return self._create_user(email, password, **extra_fields)
+
+    def _create_user(self, email, password, **extra_fields):
+        if not email:
+            raise ValueError('Необходимо указать email')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
 
 
 class User(PermissionsMixin, AbstractBaseUser):
@@ -81,19 +81,19 @@ class User(PermissionsMixin, AbstractBaseUser):
 
 
 class Device(models.Model):
-    iOS = 'iOS'
+    IOS = 'iOS'
     ANDROID = 'Android'
 
     PLATFORMS = (
-        (iOS, 'iOS'),
+        (IOS, 'iOS'),
         (ANDROID, 'Android')
     )
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
     token = models.CharField(max_length=255)
     platform = models.CharField(max_length=20, choices=PLATFORMS)
     version = models.CharField(max_length=8, null=True, blank=True, help_text='Version of API which is used by user.')
     last_update = models.DateTimeField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.user} | {self.platform}'

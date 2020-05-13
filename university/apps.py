@@ -5,4 +5,4 @@ class UniversityConfig(AppConfig):
     name = 'university'
 
     def ready(self):
-        import university.signals
+        import university.signals # noqa

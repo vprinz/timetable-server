@@ -23,7 +23,7 @@ class SyncMixin:
     @action(methods=['post'], detail=False, permission_classes=[IsAuthenticated])
     def sync(self, request, already_handled, timestamp, *args, **kwargs):
         """
-        Function for syncing content.
+        Function for syncing content. # noqa
 
         :param already_handled: ids which have already been updated on client side.
         :param timestamp: the time at which the result is returned.
@@ -36,14 +36,14 @@ class SyncMixin:
         except Exception as e:
             return Response(data={'error': str(e)}, status=HTTP_400_BAD_REQUEST)
 
-    def _get_meta_result(self, ids):
-        queryset = self.get_queryset().filter(pk__in=ids)
-        serializer = self.get_serializer(queryset, many=True)
-        result = serializer.data
-        return result
-
     @action(methods=['post'], detail=False, permission_classes=[IsAuthenticated])
     def meta(self, request, *args, **kwargs):
         ids = set(request.data.get('ids', []))
         result = self._get_meta_result(ids)
         return Response(result, status=HTTP_200_OK)
+
+    def _get_meta_result(self, ids):
+        queryset = self.get_queryset().filter(pk__in=ids)
+        serializer = self.get_serializer(queryset, many=True)
+        result = serializer.data
+        return result
