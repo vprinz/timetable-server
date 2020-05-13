@@ -17,14 +17,14 @@ class LoginNotRequiredMixin:
 
 
 class SyncMixin:
-    """
-        Mixin for synchronization server's data with client.
-    """
+    """Mixin for synchronization server's data with client."""
 
     @required_params
     @action(methods=['post'], detail=False, permission_classes=[IsAuthenticated])
     def sync(self, request, already_handled, timestamp, *args, **kwargs):
         """
+        Function for syncing content.
+
         :param already_handled: ids which have already been updated on client side.
         :param timestamp: the time at which the result is returned.
         :return: list of ids which were updated or deleted.
@@ -44,9 +44,6 @@ class SyncMixin:
 
     @action(methods=['post'], detail=False, permission_classes=[IsAuthenticated])
     def meta(self, request, *args, **kwargs):
-        """
-        :return: a list with an information of all instances that belongs to certain model.
-        """
         ids = set(request.data.get('ids', []))
         result = self._get_meta_result(ids)
         return Response(result, status=HTTP_200_OK)

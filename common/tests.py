@@ -56,9 +56,7 @@ class BaseAPITestCase(APITestCase):
     # -------- TEST SYNC --------
 
     def compare_sync(self, updated_ids, deleted_ids):
-        """
-        Compare response from the sync request.
-        """
+        """Compare response from the sync request."""
         result = {
             'updated_ids': updated_ids,
             'deleted_ids': deleted_ids

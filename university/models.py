@@ -10,6 +10,7 @@ from common.utils import TypeWeek
 class FantasticFourModel(models.Model):
     """
     Main model for four classes which appear during start app.
+
     (Faculty, Occupation, Group, Subgroup).
     """
 

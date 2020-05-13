@@ -38,7 +38,6 @@ class RestAPISubscription(BaseAPITestCase):
 
     def test_create_subscription_which_exists(self):
         """Case for testing update subscription. POST as PATCH."""
-
         url = self.reverse('subscriptions-list')
         data = {'subgroup': self.subgroup_35_1.id, 'title': 'New title'}
         response = self.client.post(url, data=json.dumps(data), content_type=self.content_type)
