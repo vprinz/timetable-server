@@ -45,10 +45,10 @@ class SubscriptionSerializer(ModelSerializer):
         defaults = {
             'title': validated_data.get('title', str()),
             'is_main': validated_data.get('is_main', False),
-            'state': Subscription.ACTIVE
+            'state': Subscription.ACTIVE,
         }
         subscription, created = Subscription.objects.update_or_create(
-            user=validated_data['user'], subgroup=validated_data['subgroup'], defaults=defaults
+            user=validated_data['user'], subgroup=validated_data['subgroup'], defaults=defaults,
         )
         return subscription
 
@@ -84,7 +84,7 @@ class ClassTimeSerializer(ModelSerializer):
         response = super(ClassTimeSerializer, self).to_representation(instance)
         response.update({
             'start': instance.start.strftime('%H:%M'),
-            'end': instance.end.strftime('%H:%M')
+            'end': instance.end.strftime('%H:%M'),
         })
         return response
 

@@ -22,7 +22,8 @@ class ClassInline(admin.TabularInline):
     model = Class
     extra = 0
     fields = (
-        'id', 'title', 'type_of_class', 'classroom', 'class_time', 'weekday', 'lecturer', 'state', 'created', 'modified'
+        'id', 'title', 'type_of_class', 'classroom', 'class_time',
+        'weekday', 'lecturer', 'state', 'created', 'modified',
     )
     readonly_fields = ('id', 'created', 'modified')
     ordering = ('weekday', 'class_time__number')

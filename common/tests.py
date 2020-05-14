@@ -32,7 +32,7 @@ class BaseAPITestCase(APITestCase):
         cls.timetable = TimetableFactory(subgroup=cls.subgroup_35_1, type_of_week=TypeWeek.numerator.value)
         cls.class_delphi = ClassFactory(title='Программирование в Delphi (для self.user)', timetable=cls.timetable)
         cls.subscription = SubscriptionFactory(
-            title='Расписание на 1 семестр.', user=cls.user, subgroup=cls.subgroup_35_1, is_main=True
+            title='Расписание на 1 семестр.', user=cls.user, subgroup=cls.subgroup_35_1, is_main=True,
         )
 
     def setUp(self):  # noqa
@@ -58,7 +58,7 @@ class BaseAPITestCase(APITestCase):
         """Compare response from the sync request."""
         result = {
             'updated_ids': updated_ids,
-            'deleted_ids': deleted_ids
+            'deleted_ids': deleted_ids,
         }
 
         return json.dumps(result)
@@ -67,7 +67,7 @@ class BaseAPITestCase(APITestCase):
         timestamp = int(datetime.timestamp(datetime.now() - timedelta(seconds=5)))
         data = {
             'already_handled': [],
-            'timestamp': timestamp
+            'timestamp': timestamp,
         }
 
         response = self.client.post(url, json.dumps(data), content_type=self.content_type)
@@ -80,7 +80,7 @@ class BaseAPITestCase(APITestCase):
 
     def init_meta(self, url, queryset):
         data = {
-            'ids': list(queryset.values_list('id', flat=True))
+            'ids': list(queryset.values_list('id', flat=True)),
         }
         response = self.client.post(url, data=json.dumps(data), content_type=self.content_type)
 

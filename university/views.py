@@ -57,24 +57,24 @@ class UniversityAPIView(GenericViewSet):
         models = {
             Subscription: {
                 'basename': Subscription.basename,
-                'related_user_path': f'{Subscription.related_subscription_path}{prefix_user_path}'
+                'related_user_path': f'{Subscription.related_subscription_path}{prefix_user_path}',
             },
             Timetable: {
                 'basename': Timetable.basename,
-                'related_user_path': f'{Timetable.related_subscription_path}{prefix_user_path}'
+                'related_user_path': f'{Timetable.related_subscription_path}{prefix_user_path}',
             },
             Class: {
                 'basename': Class.basename,
-                'related_user_path': f'{Class.related_subscription_path}{prefix_user_path}'
+                'related_user_path': f'{Class.related_subscription_path}{prefix_user_path}',
             },
             Lecturer: {
                 'basename': Lecturer.basename,
-                'related_user_path': f'{Lecturer.related_subscription_path}{prefix_user_path}'
+                'related_user_path': f'{Lecturer.related_subscription_path}{prefix_user_path}',
             },
             ClassTime: {
                 'basename': ClassTime.basename,
-                'related_user_path': f'{ClassTime.related_subscription_path}{prefix_user_path}'
-            }
+                'related_user_path': f'{ClassTime.related_subscription_path}{prefix_user_path}',
+            },
         }
 
         for model, data in models.items():
@@ -82,7 +82,7 @@ class UniversityAPIView(GenericViewSet):
                 changed=Case(
                     When(modified__gt=date_time, then=Value(True)),
                     default=Value(False), output_field=BooleanField()),
-                u_id=F(data['related_user_path'])
+                u_id=F(data['related_user_path']),
             ).filter(u_id=self.request.user.id).values_list('changed', flat=True)
 
             if True in changes:
@@ -91,7 +91,7 @@ class UniversityAPIView(GenericViewSet):
         university_info_changes = UniversityInfo.objects.annotate(
             changed=Case(
                 When(modified__gt=date_time, then=Value(True)),
-                default=Value(False), output_field=BooleanField())
+                default=Value(False), output_field=BooleanField()),
         ).values_list('changed', flat=True)
 
         if True in university_info_changes:

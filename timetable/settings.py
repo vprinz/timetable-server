@@ -95,10 +95,10 @@ LOGGING = {
     'disable_existing_loggers': True,
     'formatters': {
         'simple': {
-            'format': '%(levelname)s %(message)s'
+            'format': '%(levelname)s %(message)s',
         },
         'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s',
         },
     },
     'handlers': {
@@ -117,8 +117,8 @@ LOGGING = {
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
-            'formatter': 'simple'
-        }
+            'formatter': 'simple',
+        },
     },
     'loggers': {
         'errors': {
@@ -128,7 +128,7 @@ LOGGING = {
         'informator': {
             'handlers': ['console'],
             'level': 'DEBUG',
-        }
+        },
     },
 }
 
@@ -143,7 +143,7 @@ if not DEVELOPMENT:
     LOGGING['loggers']['django'] = {
         'handlers': ['file', 'mail_admins'],
         'level': 'DEBUG',
-        'propagate': True
+        'propagate': True,
     }
 
 # =============================== END LOGGING ==================================
@@ -198,7 +198,7 @@ DATABASES = {
         'PASSWORD': env.get('database_password', 'timetable'),
         'PORT': env.get('database_port', 5432),
         'USER': env.get('database_user', 'timetable'),
-    }
+    },
 }
 
 # =============================== END DATABASES ================================

@@ -17,7 +17,7 @@ class Pusher:
     def send_notification(self, model, user_objects, ids, message_title):
         data_message = {
             'message_title': message_title,
-            'basename': model.basename
+            'basename': model.basename,
         }
         registration_ids = user_objects.exclude(device=None).values_list('device__token', flat=True)
         valid_registration_ids = self.fcm.clean_registration_ids(registration_ids)
@@ -31,12 +31,12 @@ class Pusher:
 
             noisy_ids = model.objects.annotate(
                 u_id=F(f'{model.related_subscription_path}{prefix_user_path}'),
-                subscription_is_main=F(subscription_is_main_path)
+                subscription_is_main=F(subscription_is_main_path),
             ).filter(id__in=ids, u_id__in=[user_id], subscription_is_main=True).values_list('id', flat=True)
 
             silent_ids = model.objects.annotate(
                 u_id=F(f'{model.related_subscription_path}{prefix_user_path}'),
-                subscription_is_main=F(subscription_is_main_path)
+                subscription_is_main=F(subscription_is_main_path),
             ).filter(id__in=ids, u_id__in=[user_id], subscription_is_main=False).values_list('id', flat=True)
 
             registration_id = item['device__token']

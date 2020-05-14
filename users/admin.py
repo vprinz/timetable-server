@@ -31,7 +31,7 @@ class UserAdmin(DjangoUserAdmin):
             'id',
             ('first_name', 'last_name'),
             ('email', 'password'),
-            ('last_login', 'date_joined', 'last_activity')
+            ('last_login', 'date_joined', 'last_activity'),
         )}),
     )
 
@@ -39,7 +39,7 @@ class UserAdmin(DjangoUserAdmin):
         (_('Permissions'),
          {'fields': (
              ('is_active', 'is_staff', 'is_superuser'),
-             'groups', 'user_permissions'
+             'groups', 'user_permissions',
          )}),
     )
 

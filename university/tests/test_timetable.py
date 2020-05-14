@@ -16,7 +16,7 @@ class RestAPITimetable(BaseAPITestCase):
         new_user = UserFactory()
         self.subgroup_35_2 = Subgroup.objects.get(group=self.group_35, number='2')
         self.timetable_factory_numerator = TimetableFactory(
-            subgroup=self.subgroup_35_2, type_of_week=TypeWeek.numerator.value
+            subgroup=self.subgroup_35_2, type_of_week=TypeWeek.numerator.value,
         )
         SubscriptionFactory(title='Подписка New User', user=new_user, subgroup=self.subgroup_35_2)
 

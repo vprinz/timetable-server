@@ -23,7 +23,7 @@ class RestAPISubscription(BaseAPITestCase):
 
         self.student = UserFactory()
         self.not_user_subscription = SubscriptionFactory(
-            title='Timetable', user=self.student, subgroup=self.subgroup_36_1
+            title='Timetable', user=self.student, subgroup=self.subgroup_36_1,
         )
 
     def test_create_subscription(self):
@@ -93,7 +93,7 @@ class RestAPISubscription(BaseAPITestCase):
         active_subscription.save()
 
         deleted_subscription_factory = SubscriptionFactory(
-            title='My useless subscription', user=self.user, subgroup=self.subgroup_35_2
+            title='My useless subscription', user=self.user, subgroup=self.subgroup_35_2,
         )
         deleted_subscription = Subscription.objects.get(id=deleted_subscription_factory.id)
         deleted_subscription.state = Subscription.DELETED

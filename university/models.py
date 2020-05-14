@@ -134,7 +134,7 @@ class Class(CommonModel):
 
     TYPE_OF_CLASS = (
         (PRACTICE, 'Практическое занятие'),
-        (LECTURE, 'Лекция')
+        (LECTURE, 'Лекция'),
     )
 
     MONDAY = 1
@@ -152,7 +152,7 @@ class Class(CommonModel):
         (THURSDAY, 'Четверг'),
         (FRIDAY, 'Пятница'),
         (SATURDAY, 'Суббота'),
-        (SUNDAY, 'Воскресенье')
+        (SUNDAY, 'Воскресенье'),
     )
 
     basename = 'classes'

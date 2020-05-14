@@ -30,6 +30,6 @@ class DeviceSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         response = super(DeviceSerializer, self).to_representation(instance)
         response.update({
-            'last_update': instance.last_update.strftime('%d-%m-%Y %H:%M:%S')
+            'last_update': instance.last_update.strftime('%d-%m-%Y %H:%M:%S'),
         })
         return response

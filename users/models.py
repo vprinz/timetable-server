@@ -54,7 +54,7 @@ class User(PermissionsMixin, AbstractBaseUser):
         'active',
         default=True,
         help_text='Указывает, следует ли считать этого пользователя активным. Отмените выбор вместо удаления'
-                  'учетных записей.'
+                  'учетных записей.',
     )
 
     def get_full_name(self):
@@ -67,7 +67,7 @@ class User(PermissionsMixin, AbstractBaseUser):
 
         if token and platform:
             device, created = self.device_set.get_or_create(
-                token=token, defaults={'platform': platform, 'version': version, 'last_update': timezone.now()}
+                token=token, defaults={'platform': platform, 'version': version, 'last_update': timezone.now()},
             )
 
             if not created:
@@ -86,7 +86,7 @@ class Device(models.Model):
 
     PLATFORMS = (
         (IOS, 'iOS'),
-        (ANDROID, 'Android')
+        (ANDROID, 'Android'),
     )
 
     token = models.CharField(max_length=255)

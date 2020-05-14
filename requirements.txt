@@ -25,3 +25,4 @@ flake8-quotes==3.2.0
 flake8-class-attributes-order==0.1.0
 flake8-isort==3.0.0
 flake8-broken-line==0.2.0
+flake8-commas==2.0.0

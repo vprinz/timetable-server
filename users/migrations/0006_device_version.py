@@ -21,5 +21,5 @@ class Migration(migrations.Migration):
             name='version',
             field=models.CharField(blank=True, help_text='Version of API.', max_length=8, null=True),
         ),
-        migrations.RunPython(code=set_api_version)
+        migrations.RunPython(code=set_api_version),
     ]

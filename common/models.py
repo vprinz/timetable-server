@@ -34,14 +34,14 @@ class CommonModel(TimeStampedModel):
         query = queryset.filter(state=cls.ACTIVE).annotate(
             changed=Case(
                 When(modified__gt=date_time, then=Value(True)),
-                default=Value(False), output_field=BooleanField())
+                default=Value(False), output_field=BooleanField()),
         ).values('id', 'changed')
 
         updated_ids = set(row['id'] for row in query if row['changed'])
         deleted_ids = list(queryset.filter(state=cls.DELETED, modified__gt=date_time).values_list('id', flat=True))
         return {
             'updated_ids': updated_ids,
-            'deleted_ids': deleted_ids
+            'deleted_ids': deleted_ids,
         }
 
     def safe_delete(self):
