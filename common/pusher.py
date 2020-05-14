@@ -45,6 +45,6 @@ class Pusher:
             result = self.fcm.single_device_data_message(registration_id=registration_id, data_message=data_message)
 
             if result['failure'] > 0:
-                push_error = dict()
+                push_error = {}
                 push_error.update({'token': registration_id, 'errors': result['results'], 'data_message': data_message})
                 log.error(f'Push error: {push_error}')

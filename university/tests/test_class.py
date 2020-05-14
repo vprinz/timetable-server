@@ -35,7 +35,7 @@ class RestAPIClass(BaseAPITestCase):
 
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertEqual(response.data, ClassSerializer(classes, many=True).data)
-        self.assertEqual(set(data['timetable_id'] for data in response.data), {timetable.id})
+        self.assertEqual({data['timetable_id'] for data in response.data}, {timetable.id})
 
     def test_sync(self):
         first_class = Class.objects.get(id=self.class_delphi.id)

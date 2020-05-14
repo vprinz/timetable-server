@@ -18,7 +18,7 @@ class UserFactory(factory.DjangoModelFactory):
 class DeviceFactory(factory.DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     token = factory.fuzzy.FuzzyText(length=255)
-    platform = Device.iOS
+    platform = Device.IOS
     last_update = factory.fuzzy.FuzzyDateTime(datetime(2019, 5, 31, tzinfo=pytz.UTC), datetime.now(pytz.UTC))
 
     class Meta:

@@ -51,7 +51,7 @@ class UniversityAPIView(GenericViewSet):
         :param timestamp: the time at which the result is returned.
         :return: list of base_names which were changed.
         """
-        result = {'base_names': list()}
+        result = {'base_names': []}
         date_time = datetime.fromtimestamp(timestamp)
         prefix_user_path = request.user._meta.model_name
         models = {

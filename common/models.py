@@ -37,7 +37,7 @@ class CommonModel(TimeStampedModel):
                 default=Value(False), output_field=BooleanField()),
         ).values('id', 'changed')
 
-        updated_ids = set(row['id'] for row in query if row['changed'])
+        updated_ids = {row['id'] for row in query if row['changed']}
         deleted_ids = list(queryset.filter(state=cls.DELETED, modified__gt=date_time).values_list('id', flat=True))
         return {
             'updated_ids': updated_ids,
