@@ -10,8 +10,9 @@ post_bulk_update = Signal(providing_args=['updated_ids'])
 
 def get_users_for_notification(model, ids):
     User = get_user_model()
-    users_ids = model.objects.filter(id__in=ids). \
-        values_list(f'{model.related_subscription_path}{User._meta.model_name}', flat=True)
+    users_ids = model.objects.filter(
+        id__in=ids
+    ).values_list(f'{model.related_subscription_path}{User._meta.model_name}', flat=True)
     users = User.objects.filter(id__in=users_ids)
     return users
 

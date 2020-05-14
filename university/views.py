@@ -78,18 +78,21 @@ class UniversityAPIView(GenericViewSet):
         }
 
         for model, data in models.items():
-            changes = model.objects. \
-                annotate(changed=Case(When(modified__gt=date_time, then=Value(True)), default=Value(False),
-                                      output_field=BooleanField()), u_id=F(data['related_user_path'])). \
-                filter(u_id=self.request.user.id). \
-                values_list('changed', flat=True)
+            changes = model.objects.annotate(
+                changed=Case(
+                    When(modified__gt=date_time, then=Value(True)),
+                    default=Value(False), output_field=BooleanField()),
+                u_id=F(data['related_user_path'])
+            ).filter(u_id=self.request.user.id).values_list('changed', flat=True)
 
             if True in changes:
                 result['base_names'].append(data['basename'])
 
-        university_info_changes = UniversityInfo.objects. \
-            annotate(changed=Case(When(modified__gt=date_time, then=Value(True)), default=Value(False),
-                                  output_field=BooleanField())).values_list('changed', flat=True)
+        university_info_changes = UniversityInfo.objects.annotate(
+            changed=Case(
+                When(modified__gt=date_time, then=Value(True)),
+                default=Value(False), output_field=BooleanField())
+        ).values_list('changed', flat=True)
 
         if True in university_info_changes:
             result['base_names'].append(UniversityInfo.basename)
