@@ -9,7 +9,6 @@ from rest_framework.viewsets import GenericViewSet
 
 from common.decorators import required_params
 from common.mixins import LoginNotRequiredMixin
-
 from users.forms import AuthenticationForm
 from users.models import User
 from users.serializers import DeviceSerializer, UserSerializer

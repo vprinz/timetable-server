@@ -13,9 +13,6 @@ class QuerySet(BaseQuerySet):
 
 
 class CommonModel(TimeStampedModel):
-    basename = None
-    related_subscription_path = str()  # TODO: refactor
-
     ACTIVE = 0
     DELETED = 1
     STATES = (
@@ -26,6 +23,8 @@ class CommonModel(TimeStampedModel):
     state = SmallIntegerField(default=ACTIVE, choices=STATES)
 
     objects = QuerySet.as_manager()
+    basename = None
+    related_subscription_path = str()  # TODO: refactor
 
     class Meta:
         abstract = True

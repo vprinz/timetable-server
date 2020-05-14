@@ -14,6 +14,8 @@ ignore =
     D106, # nested class
     D107, # __init__
 
+exclude = manage.py
+
 # flake8-class-attributes-order
 class_attributes_order =
     constant,
