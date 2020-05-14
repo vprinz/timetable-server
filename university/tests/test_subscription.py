@@ -1,9 +1,11 @@
 import json
 
-from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
+from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
+                                   HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND)
 
 from common.tests import BaseAPITestCase
 from users.factories import UserFactory
+
 from ..factories import SubscriptionFactory
 from ..models import Group, Subgroup, Subscription
 

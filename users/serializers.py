@@ -2,7 +2,7 @@ from django.contrib.auth import password_validation
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from .models import User, Device
+from .models import Device, User
 
 
 class UserSerializer(serializers.ModelSerializer):

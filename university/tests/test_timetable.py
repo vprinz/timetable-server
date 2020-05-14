@@ -3,8 +3,9 @@ from rest_framework.status import HTTP_200_OK
 from common.tests import BaseAPITestCase
 from common.utils import TypeWeek
 from users.factories import UserFactory
+
 from ..factories import SubscriptionFactory, TimetableFactory
-from ..models import Timetable, Subgroup, Subscription
+from ..models import Subgroup, Subscription, Timetable
 from ..serializers import TimetableSerializer
 
 

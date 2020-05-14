@@ -1,6 +1,7 @@
 from rest_framework.status import HTTP_200_OK
 
 from common.tests import BaseAPITestCase
+
 from ..factories import LecturerFactory
 from ..models import Class, Lecturer
 from ..serializers import LecturerSerializer

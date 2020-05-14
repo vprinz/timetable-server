@@ -1,4 +1,4 @@
-from django.db.models import Case, When, Value, BooleanField, SmallIntegerField
+from django.db.models import BooleanField, Case, SmallIntegerField, Value, When
 from django.db.models.query import QuerySet as BaseQuerySet
 from django_extensions.db.models import TimeStampedModel
 

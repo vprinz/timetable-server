@@ -1,7 +1,7 @@
 from rest_framework.serializers import ModelSerializer, ReadOnlyField
 
-from .models import (Faculty, Occupation, Group, Subgroup, Subscription, Timetable, Class, Lecturer, ClassTime,
-                     UniversityInfo)
+from .models import (Class, ClassTime, Faculty, Group, Lecturer, Occupation,
+                     Subgroup, Subscription, Timetable, UniversityInfo)
 
 
 class FacultySerializer(ModelSerializer):

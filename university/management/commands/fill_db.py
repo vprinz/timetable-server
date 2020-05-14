@@ -1,8 +1,8 @@
-from django.core.management import BaseCommand
 from django.contrib.auth.hashers import make_password
+from django.core.management import BaseCommand
 
+from university.models import Faculty, Group, Occupation, Subgroup
 from users.models import User
-from university.models import Faculty, Occupation, Group, Subgroup
 
 
 class Command(BaseCommand):

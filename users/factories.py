@@ -4,7 +4,7 @@ from datetime import datetime
 import factory.fuzzy
 import pytz
 
-from .models import User, Device
+from users.models import Device, User
 
 
 class UserFactory(factory.DjangoModelFactory):

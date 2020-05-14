@@ -6,7 +6,9 @@ import pytz
 
 from common.factories import CommonFactory
 from users.factories import UserFactory
-from .models import Faculty, Occupation, Group, Subgroup, Subscription, Timetable, Lecturer, ClassTime, Class
+
+from .models import (Class, ClassTime, Faculty, Group, Lecturer, Occupation,
+                     Subgroup, Subscription, Timetable)
 
 
 class FacultyFactory(factory.DjangoModelFactory):

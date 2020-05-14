@@ -7,12 +7,14 @@ from rest_framework.status import HTTP_200_OK
 from common.tests import BaseAPITestCase
 from university.models import Class
 from users.factories import UserFactory
-from ..factories import (
-    FacultyFactory, OccupationFactory, GroupFactory, SubgroupFactory,
-    SubscriptionFactory, TimetableFactory, ClassFactory
-)
-from ..models import Faculty, Occupation, Group, Subgroup, Subscription, Timetable
-from ..serializers import (FacultySerializer, OccupationSerializer, GroupSerializer, SubgroupSerializer)
+
+from ..factories import (ClassFactory, FacultyFactory, GroupFactory,
+                         OccupationFactory, SubgroupFactory,
+                         SubscriptionFactory, TimetableFactory)
+from ..models import (Faculty, Group, Occupation, Subgroup, Subscription,
+                      Timetable)
+from ..serializers import (FacultySerializer, GroupSerializer,
+                           OccupationSerializer, SubgroupSerializer)
 
 
 class RestAPIUniversity(BaseAPITestCase):

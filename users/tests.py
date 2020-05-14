@@ -1,11 +1,13 @@
 import json
 
-from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST
+from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
+                                   HTTP_400_BAD_REQUEST)
 
 from common.tests import BaseAPITestCase
-from .factories import UserFactory, DeviceFactory
-from .models import User, Device
-from .serializers import DeviceSerializer
+
+from users.factories import DeviceFactory, UserFactory
+from users.models import Device, User
+from users.serializers import DeviceSerializer
 
 
 class RestAPIUser(BaseAPITestCase):

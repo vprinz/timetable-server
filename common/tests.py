@@ -6,10 +6,9 @@ from rest_framework.status import HTTP_200_OK
 from rest_framework.test import APITestCase
 
 from common.utils import TypeWeek
-from university.factories import (
-    FacultyFactory, OccupationFactory, GroupFactory, SubgroupFactory,
-    SubscriptionFactory, TimetableFactory, ClassFactory
-)
+from university.factories import (ClassFactory, FacultyFactory, GroupFactory,
+                                  OccupationFactory, SubgroupFactory,
+                                  SubscriptionFactory, TimetableFactory)
 from university.models import Group, Subgroup
 from users.factories import UserFactory
 

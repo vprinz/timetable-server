@@ -1,9 +1,8 @@
 from functools import wraps
 
+from django.utils.decorators import available_attrs
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
-
-from django.utils.decorators import available_attrs
 
 
 def required_params(func):

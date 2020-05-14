@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from django.db.models import F, Case, When, Value, BooleanField
+from django.db.models import BooleanField, Case, F, Value, When
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
@@ -11,10 +11,9 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from common.mixins import LoginNotRequiredMixin, SyncMixin, required_params
 from university import serializers
 from university.mixins import UniversityInfoMixin
-from university.models import (
-    Faculty, Subscription, Occupation, Group, Subgroup, Timetable, Class, Lecturer,
-    ClassTime, UniversityInfo
-)
+from university.models import (Class, ClassTime, Faculty, Group, Lecturer,
+                               Occupation, Subgroup, Subscription, Timetable,
+                               UniversityInfo)
 
 
 class FantasticFourAPIView(UniversityInfoMixin, LoginNotRequiredMixin, ListModelMixin, GenericViewSet):

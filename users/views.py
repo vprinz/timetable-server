@@ -4,14 +4,15 @@ from django.contrib.auth import login, logout
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED
+from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 from rest_framework.viewsets import GenericViewSet
 
 from common.decorators import required_params
 from common.mixins import LoginNotRequiredMixin
-from .forms import AuthenticationForm
-from .models import User
-from .serializers import UserSerializer, DeviceSerializer
+
+from users.forms import AuthenticationForm
+from users.models import User
+from users.serializers import DeviceSerializer, UserSerializer
 
 
 class UserAPIView(LoginNotRequiredMixin, GenericViewSet):

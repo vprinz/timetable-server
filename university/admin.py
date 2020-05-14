@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from .models import Faculty, Occupation, Group, Subgroup, Timetable, ClassTime, Lecturer, Class, UniversityInfo
+from .models import (Class, ClassTime, Faculty, Group, Lecturer, Occupation,
+                     Subgroup, Timetable, UniversityInfo)
 
 
 class SubgroupInline(admin.TabularInline):

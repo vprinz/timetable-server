@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import ugettext_lazy as _
 
 from university.models import Subscription
-from .models import User, Device
+from users.models import Device, User
 
 
 class SubscriptionInline(TabularInline):
