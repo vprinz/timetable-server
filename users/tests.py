@@ -90,11 +90,11 @@ class RestAPIUser(BaseAPITestCase):
         token = 'f6V5isN83Fw:APA91bErGiPse5QZRNYUq4tm38xu1MJ-1koU90AOJdOp'
         data = json.dumps({
             'token': token,
-            'platform': Device.iOS,
+            'platform': Device.IOS,
         })
         response = self.client.patch(self.user_device, data=data, content_type=self.content_type)
 
-        device = Device.objects.get(token=token, platform=Device.iOS)
+        device = Device.objects.get(token=token, platform=Device.IOS)
         self.assertEqual(response.status_code, HTTP_200_OK)
         self.assertJSONEqual(response.content.decode(), DeviceSerializer(device).data)
         self.assertEqual(User.objects.get(id=self.user.id).device_set.last(), device)
