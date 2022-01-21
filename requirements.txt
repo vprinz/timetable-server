@@ -8,7 +8,7 @@ psycopg2-binary==2.8.5
 factory-boy==2.12.0
 Faker==4.0.3
 
-ipython==7.13.0
+ipython==7.16.3
 
 pyfcm==1.4.7
 
